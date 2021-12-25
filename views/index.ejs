@@ -23,17 +23,24 @@
                     <option value="friday" name="day">Friday</option>
                 </select>
                 <button class="btn btn-large btn-success">Submit</button>
-                <div class="card" style="width: 18rem;">
+                <div class="card" style="width: 100%">
                     <div class="card-header">
-                      <b class="courseTitle">Title </b> <br>
-                      <small class="courseName"> Course Name</small>
+                        <b class="cardTitle">
+                            <% try{ %>
+                                <%= title %>
+                            <% }catch(e) { %>
+                                Title
+                            <% } %>  
+                        </b>
+                        <br>
+                        <small class="cardName"> Course Name</small>
                     </div>
                     <ul class="list-group list-group-flush">
-                      <li class="list-group-item">section: <span id="section">section</span> </li>
-                      <li class="list-group-item">crn: <span id="crn">crn</span></li>
-                      <li class="list-group-item">A third item</li>
+                        <li class="list-group-item cardSection">Section: <span id="section">section</span> </li>
+                        <li class="list-group-item cardCRN">CRN: <span id="crn">crn</span></li>
+                        <li class="list-group-item cardCredots"> Credits: <span id="credits">credits</span> </li>
                     </ul>
-                  </div>
+                </div>
             </div>
             <div class="col-lg-8 mb-3">
                 <table>
@@ -48,6 +55,7 @@
                     </tr>
                     <tr class="r7">
                         <td class="time">07:00</td>
+                        <form action=""></form>
                         <td class="box border border-1 monday">
                             <div class="content"></div>
                         </td>
@@ -373,4 +381,5 @@
     integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
     crossorigin="anonymous"></script>
 <script type="module" src="app.js"></script>
+
 </html>
