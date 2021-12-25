@@ -56,3 +56,8 @@ table td > div {
 .occupied:hover{
     cursor: pointer;
 }
+
+.card-header{
+    text-align: center;
+    font-size: large;
+}

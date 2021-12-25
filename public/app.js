@@ -67,6 +67,7 @@ boxes.forEach(box =>{
     box.addEventListener("mouseenter", () => {
         if (box.classList.contains("occupied")) {
             const commonCRN = document.querySelectorAll(`.${box.classList[box.classList.length - 1]}`)
+            let currCourse = new Course("TEST","TEST","TEST","TEST","TEST","TEST","TEST","TEST")
             for (let course of commonCRN) {
                 course.style.transform = "scale(1.1)";
             }
