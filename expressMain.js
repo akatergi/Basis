@@ -3,6 +3,7 @@ const app = express()
 const path = require("path")
 const request = require("request-promise");
 const cheerio = require("cheerio");
+app.use(express.json());
 
 app.use(express.static(__dirname + "/public"));
 app.listen(3000, () => console.log("Listening on port 3000"))
@@ -26,4 +27,15 @@ app.get("/",(req,res)=>{
     
     GetData("F").then(E=>console.log(E))
     res.render("index.ejs")
+})
+
+app.get("/dog", (req, res) => {
+    res.json({
+        bob:10,
+        adel:10,
+        ben:{
+            age:14,
+            name:"ben"
+        }
+    })
 })
