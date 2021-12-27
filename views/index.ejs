@@ -14,35 +14,22 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-2">
-                <select name="Day" id="dayPicker">
-                    <option value="monday" name="day">Monday</option>
-                    <option value="tuesday" name="day">Tuesday</option>
-                    <option value="wednesday" name="day">Wednesday</option>
-                    <option value="thursday" name="day">Thursday</option>
-                    <option value="friday" name="day">Friday</option>
-                </select>
-                <button class="btn btn-large btn-success">Submit</button>
-                <div class="card" style="width: 100%">
+            <div class="col-6 col-lg-2">
+                <div class="card mt-5" style="width: 100%">
                     <div class="card-header">
-                        <b class="cardTitle">
-                            <% try{ %>
-                                <%= title %>
-                            <% }catch(e) { %>
-                                Title
-                            <% } %>  
-                        </b>
+                        <b id="cardTitle"> Title </b>
                         <br>
-                        <small class="cardName"> Course Name</small>
+                        <small id="cardName"> Course Name</small>
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item cardSection">Section: <span id="section">section</span> </li>
                         <li class="list-group-item cardCRN">CRN: <span id="crn">crn</span></li>
                         <li class="list-group-item cardCredots"> Credits: <span id="credits">credits</span> </li>
+                        <li class="list-group-item cardSeats"> Seats Available: <span id="seats">?/?</span> </li>
                     </ul>
                 </div>
             </div>
-            <div class="col-lg-8 mb-3">
+            <div class="col-lg-9 mb-3">
                 <table>
                     <tr class="top">
                         <th>Times</th>
@@ -53,322 +40,33 @@
                         <th>FRIDAY</th>
                         <th>SATURDAY</th>
                     </tr>
-                    <tr class="r7">
-                        <td class="time">07:00</td>
-                        <form action=""></form>
-                        <td class="box border border-1 monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border border-1 tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border border-1 wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border border-1 thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border border-1 friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border border-1 saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r8">
-                        <td class="time">08:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r9">
-                        <td class="time">09:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r10">
-                        <td class="time">10:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r11">
-                        <td class="time">11:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r12">
-                        <td class="time">12:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r13">
-                        <td class="time">13:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r14">
-                        <td class="time">14:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r15">
-                        <td class="time">15:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r16">
-                        <td class="time">16:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r17">
-                        <td class="time">17:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r18">
-                        <td class="time">18:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r19">
-                        <td class="time">19:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r20">
-                        <td class="time">20:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday rightborder">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
-                    <tr class="r21">
-                        <td class="time">21:00</td>
-                        <td class="box border monday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border tuesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border wednesday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border thursday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border friday">
-                            <div class="content"></div>
-                        </td>
-                        <td class="box border saturday">
-                            <div class="content"></div>
-                        </td>
-                    </tr>
+                    <% for(let sched of Schedules) {%>
+                            <% for(let i=7; i<22; i++) {%>
+                            <tr class="r<%= i %>">
+                                <td class="time"><%= `${i}:00` %> </td>
+                                <td class="box border monday">
+                                    <div class="content"></div>
+                                </td>
+                                <td class="box border tuesday">
+                                    <div class="content">
+                                    </div>
+                                </td>
+                                <td class="box border wednesday">
+                                    <div class="content"></div>
+                                </td>
+                                <td class="box border thursday">
+                                    <div class="content">
+                                    </div>
+                                </td>
+                                <td class="box border friday">
+                                    <div class="content"></div>
+                                </td>
+                                <td class="box border saturday">
+                                    <div class="content"></div>
+                                </td>
+                            </tr>
+                            <% } %>
+                        <% } %>
                 </table>
             </div>
         </div>
@@ -380,6 +78,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
     integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
     crossorigin="anonymous"></script>
+<script>
+    let Schedules = <%- JSON.stringify(Schedules) %>
+</script>
 <script type="module" src="app.js"></script>
 
 </html>
