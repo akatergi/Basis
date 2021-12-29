@@ -5,6 +5,25 @@ body{
 table{
     width:100%;
     table-layout: fixed;
+    /* border-spacing: 0px; */
+}
+
+.rightArrow, .leftArrow{
+    color:chocolate;
+    text-align: center;
+    width: 2rem;
+    height: 2rem;
+    font-size: large;
+    text-decoration: none;
+    background-color: lightgreen;
+    border: 2px solid yellow;
+    border-radius: 50%;
+    transition: transform 200ms
+}
+
+.rightArrow:hover, .leftArrow:hover{
+    color: chocolate;
+    transform: scale(1.5);
 }
 
 td, th{
@@ -12,15 +31,26 @@ td, th{
     margin:0px;
     padding:0px;
 }
+td{
+    transition: border-bottom 400ms;
+}
+
+.time{
+    display: flex;
+    justify-content: center;
+}
 
 .box{
     background-color: white;
+    border: 1px solid lightgray;
+    box-sizing: border-box;
 }
 
 .occupied{
     -webkit-box-shadow: -6px 8px 18px -4px rgba(0,0,0,0.7); 
     box-shadow: -6px 8px 18px -4px rgba(0,0,0,0.7);
-    transition: background-color 250ms;
+    transition: color 400ms;
+    transition: background-color 400ms;
 }
 
 .courseTime, .courseName{
@@ -35,7 +65,7 @@ td, th{
 }
 
 tr.top{
-    margin:1em;
+    height:2.9rem;
 }
 
 table td > div {
@@ -66,14 +96,29 @@ div.contentTop{
     flex-direction: column;
     justify-content: flex-start;
 }
+
 div.contentBott{
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
 }
+
+div.contentBoth{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .blockTitle{
-    margin-top:0.5em;
+    margin-top:0.3em;
     font-weight:700;
     display:block;
-    color:
+    margin-bottom: 0;
+}
+
+#arrows{
+    display:flex;
+    justify-content: space-evenly;
+    margin-top: 2em;
+    margin-bottom: 2em;
 }

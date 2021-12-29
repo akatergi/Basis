@@ -14,8 +14,8 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-6 col-lg-2">
-                <div class="card mt-5" style="width: 100%">
+            <div class="col-2 col-lg-2">
+                <div class="card sticky-top mt-5">
                     <div class="card-header">
                         <b id="cardTitle"> Title </b>
                         <br>
@@ -30,6 +30,11 @@
                 </div>
             </div>
             <div class="col-lg-9 mb-3">
+                <div id="arrows">
+                    <a href="#" class="leftArrow"> &lt </a>
+                    <span id="currSched"> <span id="index">1</span> of <span id="total"><%= Schedules.length %> </span></span>
+                    <a href="#" class="rightArrow"> &gt </a>
+                </div>
                 <table>
                     <tr class="top">
                         <th>Times</th>
@@ -41,27 +46,26 @@
                         <th>SATURDAY</th>
                     </tr>
                     <% for(let sched of Schedules) {%>
-                            <% for(let i=7; i<22; i++) {%>
+                            <% for(let i=7; i<23; i++) {%>
                             <tr class="r<%= i %>">
                                 <td class="time"><%= `${i}:00` %> </td>
-                                <td class="box border monday">
+                                <td class="box monday">
                                     <div class="content"></div>
                                 </td>
-                                <td class="box border tuesday">
+                                <td class="box tuesday">
+                                    <div class="content"></div>
+                                </td>
+                                <td class="box wednesday">
+                                    <div class="content"></div>
+                                </td>
+                                <td class="box thursday">
                                     <div class="content">
                                     </div>
                                 </td>
-                                <td class="box border wednesday">
+                                <td class="box friday">
                                     <div class="content"></div>
                                 </td>
-                                <td class="box border thursday">
-                                    <div class="content">
-                                    </div>
-                                </td>
-                                <td class="box border friday">
-                                    <div class="content"></div>
-                                </td>
-                                <td class="box border saturday">
+                                <td class="box saturday">
                                     <div class="content"></div>
                                 </td>
                             </tr>

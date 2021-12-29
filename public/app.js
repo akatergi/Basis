@@ -1,37 +1,6 @@
-const btn = document.querySelector("button")
-const dayPicker = document.querySelector("#dayPicker")
-
-class Course {
-    constructor(Term, CRN, Subject, Code, Section, Title, CH, BH, College, SeatsT, SeatsA, BT1, ET1, Buil1, R1, Schedule1, BT2, ET2, Buil2, R2, Schedule2, IName, ISName, LCRN) {
-        this.Term = Term.slice(0, Term.length - 8)
-        this.CRN = CRN
-        this.Subject = Subject
-        this.Code = Code
-        this.Section = Section
-        this.Title = Title
-        this.CH = parseInt(CH)
-        this.BH = parseInt(BH)
-        this.College = College
-        this.SeatsT = parseInt(SeatsT)
-        this.SeatsA = parseInt(SeatsA)
-        this.BT1 = parseInt(BT1)
-        this.ET1 = parseInt(ET1)
-        this.Buil1 = Buil1
-        this.R1 = R1
-        this.Schedule1 = Schedule1.replaceAll(".", "")
-        this.BT2 = parseInt(BT2)
-        this.ET2 = parseInt(ET2)
-        this.Buil2 = Buil2
-        this.R2 = R2
-        this.Schedule2 = Schedule2.replaceAll(".", "")
-        this.IName = IName
-        this.ISName = ISName
-        this.LCRN = LCRN.split(", or ") //array
-    }
-}
+// set Variables
 
 let i = 0
-
 let letterDays = {
     "M": "monday",
     "T": "tuesday",
@@ -39,6 +8,13 @@ let letterDays = {
     "R": "thursday",
     "F": "friday",
 }
+const colorsConst = ["red", "green", "yellow", "lightblue", "violet", "brown", "pink", "lightyellow", "aliceblue", "aqua", "lightcyan", "lightcoral", "lightsalmon", 'lightslategray', 'lightseagreen']
+let colors = ["red", "green", "yellow", "lightblue", "violet", "brown", "pink", "lightyellow", "aliceblue", "aqua", "lightcyan", "lightcoral", "lightsalmon", 'lightslategray', 'lightseagreen']
+let nextSchedArrow = document.querySelector(".rightArrow")
+let index = document.querySelector("#index")
+let prevSchedArrow = document.querySelector(".leftArrow")
+
+//Functions
 
 function fixTimes(BT, ET) {
     let B = BT.toString()
@@ -63,13 +39,17 @@ function fixTimes(BT, ET) {
     return { startHour, startMin, endHour, endMin }
 }
 
-const colors = ["red", "green", "yellow", "lightblue", "indigo", "violet", "brown", "pink"]
+function sampleColor() {
+    if (colors.length) return colors.splice(Math.floor(Math.random() * colors.length), 1)[0]
+    else {
+        colors = colorsConst
+        return colors.splice(Math.floor(Math.random() * colors.length), 1)[0]
+    }
+}
 
 function genSched(i) {
     for (let course of Schedules[i]) {
         let { startHour, startMin, endHour, endMin } = fixTimes(course.BT1, course.ET1)
-        console.log(startHour, ":", startMin, " ", endHour, ":", endMin)
-        let color = colors[Math.floor(Math.random() * colors.length)]
         let cH = startHour
         let written = false
         let cM = startMin
@@ -78,19 +58,31 @@ function genSched(i) {
         while (cH <= endHour) {
             if (cH < endHour) {
                 for (let day of course.Schedule1) {
+                    let td = document.querySelector(`.r${cH} .${letterDays[day]}`)
+                    td.style.borderBottom = `1px solid ${course.color}`
                     let content = document.querySelector(`.r${cH} .${letterDays[day]} .content`)
-                    content.classList.add("contentBott")
                     let courseBlock = document.createElement("div")
                     courseBlock.classList.add("course")
                     let percentage = (60 - cM) / 60 * 100
                     courseBlock.style.height = `${percentage}%`
-                    if (written === false && percentage > 50) {
+                    if (written === false && percentage >= 50) {
                         courseBlock.innerHTML = `<span class='blockTitle'> ${course.Subject + " " + course.Code}</span> <small class='blockSub'> ${startHour + ":" + (startMin < 10 ? `0${startMin}` : startMin) + "-" + endHour + ":" + (endMin < 10 ? `0${endMin}` : endMin)} </small>`;
                         overrideWritten = true;
                     }
+                    if (!content.classList.contains("contentTop")) {
+                        content.classList.add("contentBott")
+                    }
+                    else {
+                        content.classList.remove("contentTop")
+                        content.classList.add("contentBoth")
+                    }
                     content.append(courseBlock)
                     courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
-                    courseBlock.style.backgroundColor = color
+                    courseBlock.style.backgroundColor = course.color
+                    if (i === 0) courseBlock.style.borderRadius = "7px 7px 0px 0px"
+                    content.append(courseBlock)
+                    courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
+                    courseBlock.style.backgroundColor = course.color
                     if (i === 0) courseBlock.style.borderRadius = "7px 7px 0px 0px"
                 }
             }
@@ -98,32 +90,103 @@ function genSched(i) {
                 cM = endMin
                 for (let day of course.Schedule1) {
                     let content = document.querySelector(`.r${cH} .${letterDays[day]} .content`)
-                    content.classList.add("contentTop")
                     let courseBlock = document.createElement("div")
                     courseBlock.classList.add("course")
                     courseBlock.style.height = `${100 - ((60 - cM) / 60 * 100)}%`
-                    content.append(courseBlock)
+                    if (!content.classList.contains("contentBott")) {
+                        content.classList.add("contentTop")
+                        content.append(courseBlock)
+                    }
+                    else {
+                        content.classList.remove("contentBott")
+                        content.classList.add("contentBoth")
+                        let courseBott = document.querySelector(`.r${cH} .${letterDays[day]} .occupied`)
+                        courseBott.before(courseBlock)
+                    }
                     courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                     if (written === false) {
+                        overrideWritten = true
                         courseBlock.innerHTML = `<span class='blockTitle'> ${course.Subject + " " + course.Code}</span> <small class='blockSub'> ${startHour + ":" + (startMin < 10 ? `0${startMin}` : startMin) + "-" + endHour + ":" + (endMin < 10 ? `0${endMin}` : endMin)} </small>`
                     }
-                    const td = document.querySelector(`.r${cH} .${letterDays[day]}`)
-                    td.classList.remove("border")
-                    td.style.border = "none"
-                    courseBlock.style.backgroundColor = color
-                    courseBlock.style.borderRadius = "0px 0px 7px 7px"
+                    courseBlock.style.backgroundColor = course.color
+                    if (i === 0) courseBlock.style.borderRadius = "7px 7px 7px 7px"
+                    else courseBlock.style.borderRadius = "0px 0px 7px 7px"
                 }
             }
-            console.log(cH)
             cH++;
             i++;
             cM = 0;
             if (overrideWritten) written = true
         }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        if (course.BT2) {
+            let { startHour, startMin, endHour, endMin } = fixTimes(course.BT2, course.ET2)
+            let cH = startHour
+            let written = false
+            let cM = startMin
+            let i = 0
+            let overrideWritten = false
+            while (cH <= endHour) {
+                if (cH < endHour) {
+                    for (let day of course.Schedule2) {
+                        let content = document.querySelector(`.r${cH} .${letterDays[day]} .content`)
+                        content.classList.add("contentBott")
+                        let courseBlock = document.createElement("div")
+                        courseBlock.classList.add("course")
+                        let percentage = (60 - cM) / 60 * 100
+                        courseBlock.style.height = `${percentage}%`
+                        if (written === false && percentage >= 50) {
+                            courseBlock.innerHTML = `<span class='blockTitle'> ${course.Subject + " " + course.Code}</span> <small class='blockSub'> ${startHour + ":" + (startMin < 10 ? `0${startMin}` : startMin) + "-" + endHour + ":" + (endMin < 10 ? `0${endMin}` : endMin)} </small>`;
+                            overrideWritten = true;
+                        }
+                        content.append(courseBlock)
+                        courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
+                        courseBlock.style.backgroundColor = course.color
+                        if (i === 0) courseBlock.style.borderRadius = "7px 7px 0px 0px"
+                    }
+                }
+                if (cH === endHour) {
+                    cM = endMin
+                    for (let day of course.Schedule2) {
+                        let content = document.querySelector(`.r${cH} .${letterDays[day]} .content`)
+                        content.classList.add("contentTop")
+                        let courseBlock = document.createElement("div")
+                        courseBlock.classList.add("course")
+                        courseBlock.style.height = `${100 - ((60 - cM) / 60 * 100)}%`
+                        content.append(courseBlock)
+                        courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
+                        if (written === false) {
+                            courseBlock.innerHTML = `<span class='blockTitle'> ${course.Subject + " " + course.Code}</span> <small class='blockSub'> ${startHour + ":" + (startMin < 10 ? `0${startMin}` : startMin) + "-" + endHour + ":" + (endMin < 10 ? `0${endMin}` : endMin)} </small>`
+                        }
+                        courseBlock.style.backgroundColor = course.color
+                        courseBlock.style.borderRadius = "0px 0px 7px 7px"
+                    }
+                }
+                cH++;
+                i++;
+                cM = 0;
+                if (overrideWritten) written = true
+            }
+        }
     }
 }
 
-genSched(i)
+function clearSched() {
+    let tds = document.querySelectorAll("td")
+    tds.forEach(td => {
+        if (!td.classList.contains("time")) {
+            td.classList.remove(".contentTop", ".contentBott")
+        }
+    })
+    let contents = document.querySelectorAll(".content")
+    contents.forEach(content => {
+        content.innerHTML = "";
+        content.classList.remove("contentTop")
+        content.classList.remove("contentBott")
+    })
+}
 
 function findByCRN(CRN) { //Make it so that it only checks current Sched
     for (let sched of Schedules) {
@@ -133,45 +196,88 @@ function findByCRN(CRN) { //Make it so that it only checks current Sched
     }
 }
 
-const boxes = document.querySelectorAll(".course")
-boxes.forEach(box => {
-    let color = box.style.backgroundColor
-    box.addEventListener("mouseenter", () => {
-        if (box.classList.contains("occupied")) {
-            const commonCRN = document.querySelectorAll(`.${box.classList[box.classList.length - 1]}`)
-            for (let course of commonCRN) {
-                course.style.backgroundColor = "darkblue";
-                course.style.color = "white"
+function updateBoxes() {
+    boxes.forEach(box => {
+        let color = box.style.backgroundColor
+        let crnClass = box.classList[box.classList.length - 1]
+        box.addEventListener("mouseenter", () => {
+            if (box.classList.contains("occupied")) {
+                const commonCRN = document.querySelectorAll(`.${crnClass}`)
+                for (let course of commonCRN) {
+                    let p = course.parentElement
+                    let p2 = p.parentElement
+                    if (p.classList.contains("contentBott")) p2.style.borderBottom = "1px solid darkblue";
+                    else if (p.classList.contains("contentBoth")) {
+                        let children = p.childNodes
+                        let last = children[children.length - 1]
+                        if (last.classList.contains(crnClass)) p2.style.borderBottom = "1px solid darkblue"
+                    }
+                    course.style.backgroundColor = "darkblue";
+                    course.style.color = "white";
+                }
             }
-        }
-    })
-    box.addEventListener("mouseleave", () => {
-        if (box.classList.contains("occupied")) {
-            const commonCRN = document.querySelectorAll(`.${box.classList[box.classList.length - 1]}`)
-            for (let course of commonCRN) {
-                course.style.backgroundColor = color;
-                course.style.color = "black"
+        })
+        box.addEventListener("mouseleave", () => {
+            if (box.classList.contains("occupied")) {
+                const commonCRN = document.querySelectorAll(`.${crnClass}`)
+                for (let course of commonCRN) {
+                    let p = course.parentElement
+                    let p2 = p.parentElement
+                    if (p.classList.contains("contentBott")) p2.style.borderBottom = `1px solid ${color}`;
+                    else if (p.classList.contains("contentBoth")) {
+                        let children = p.childNodes
+                        let last = children[children.length - 1]
+                        if (last.classList.contains(crnClass)) p2.style.borderBottom = `1px solid ${color}`
+                    }
+                    course.style.backgroundColor = color;
+                    course.style.color = "black"
+                }
             }
-        }
-    })
+        })
 
-    box.addEventListener("click", async () => {
-        if (box.classList.contains("occupied")) {
-            const CRN = box.classList[box.classList.length - 1].slice(9)
-            let section = document.querySelector("#section")
-            let crn = document.querySelector("#crn")
-            let credits = document.querySelector("#credits")
-            let seats = document.querySelector("#seats")
-            let course = findByCRN(CRN)
-            let cardTitle = document.querySelector("#cardTitle")
-            let cardName = document.querySelector("#cardName")
-            console.log(course, course.seatsA, course.seatsT)
-            section.innerText = course.Section
-            crn.innerText = course.CRN
-            credits.innerText = course.CH
-            seats.innerText = `${course.SeatsA}/${course.SeatsA + course.SeatsT}`
-            cardTitle.innerText = `${course.Subject} ${course.Code}`
-            cardName.innerText = course.Title
-        }
+        box.addEventListener("click", async () => {
+            if (box.classList.contains("occupied")) {
+                const CRN = box.classList[box.classList.length - 1].slice(9)
+                let section = document.querySelector("#section")
+                let crn = document.querySelector("#crn")
+                let credits = document.querySelector("#credits")
+                let seats = document.querySelector("#seats")
+                let course = findByCRN(CRN)
+                let cardTitle = document.querySelector("#cardTitle")
+                let cardName = document.querySelector("#cardName")
+                section.innerText = course.Section
+                crn.innerText = course.CRN
+                credits.innerText = course.CH
+                seats.innerText = `${course.SeatsA}/${course.SeatsA + course.SeatsT}`
+                cardTitle.innerText = `${course.Subject} ${course.Code}`
+                cardName.innerText = course.Title
+            }
+        })
     })
+}
+
+nextSchedArrow.addEventListener("click", () => {
+    if (i < Schedules.length - 1) {
+        clearSched()
+        i++;
+        index.innerText = i + 1
+        genSched(i)
+        boxes = document.querySelectorAll(".course");
+        updateBoxes()
+    }
 })
+
+prevSchedArrow.addEventListener("click", () => {
+    if (i > 0) {
+        clearSched()
+        i--;
+        index.innerText = i + 1
+        genSched(i)
+        boxes = document.querySelectorAll(".course");
+        updateBoxes()
+    }
+})
+
+genSched(i)
+let boxes = document.querySelectorAll(".course")
+updateBoxes()
