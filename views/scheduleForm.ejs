@@ -1,15 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-    <form action="/schedules">
-        <input type="text" name="scheduleConfig">
+    <form action="/filter">
+        <h1>term</h1>
+        <select name="Term" id="selectTerm">
+            <option value="202210">Fall 2021-22</option>
+            <option value="202220">Spring 2021-2022</option>
+            <option value="202230">Summer 2021-2022</option>
+        </select>
+
+        <h1>CRNS</h1>
+        <div id="setCRNs">
+        </div>
+        <button id='addCRN'>Add CRN</button>
+
+        <h1>Courses</h1>
+        <div id="courses">
+            <input type="text" name="sections[]" placeholder="MATH201"> <br>
+            <input type="text" name="sections[]" placeholder="PHYS210"> <br>
+            <input type="text" name="sections[]" placeholder="EECE230"> <br>
+            <input type="text" name="sections[]" placeholder="BIOL201"> <br>
+        </div>
+
         <button>Submit</button>
     </form>
 </body>
+
+<script src="form.js"></script>
+
 </html>

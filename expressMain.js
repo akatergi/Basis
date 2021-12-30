@@ -3,7 +3,6 @@ const app = express()
 const path = require("path")
 const request = require("request-promise");
 const cheerio = require("cheerio");
-const { Course, GetPermutations } = require("./public/bobsCode")
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }))
@@ -14,16 +13,17 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(__dirname + "/public"));
 app.listen(3000, () => console.log("Listening on port 3000"))
 
-app.post("/schedules", (req, res) => {
-  let Schedules = "Schedules"
-  res.redirect("/schedules")
+app.get("/new", (req, res) => {
+  res.render("scheduleForm")
+
 })
 
-app.get("/", (req, res) => {
-  res.render("scheduleForm")
+app.get("/filter", (req, res) => {
+  console.log(req.query)
+  res.send("test")
 })
 
 app.get("/schedules", (req, res) => {
-  let {Schedules} = require("./Schedules")
+  let { Schedules } = require("./Schedules")
   res.render("index.ejs", { Schedules })
 })
