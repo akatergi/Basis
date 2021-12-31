@@ -3,6 +3,7 @@ const app = express()
 const path = require("path")
 const request = require("request-promise");
 const cheerio = require("cheerio");
+const {GetProfs} = require("./public/Tools")
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }))
@@ -18,12 +19,24 @@ app.get("/new", (req, res) => {
 
 })
 
-app.get("/filter", (req, res) => {
-  console.log(req.query)
-  res.send("test")
+app.get("/filter", async (req, res) => {
+  let {Term, setCRNs, sections} = req.query
+  if(!setCRNs) setCRNs = []
+  console.log(setCRNs)
+  let courses = []
+  for(let section of sections){
+    let profs = await GetProfs(Term, section.slice(0,4), section.slice(4,section.length));
+    courses.push({CourseName:section, Professors:profs})
+  }
+  res.render("filterForm",{Term, setCRNs, courses})
 })
 
 app.get("/schedules", (req, res) => {
   let { Schedules } = require("./Schedules")
   res.render("index.ejs", { Schedules })
+})
+
+app.get("/test", (req,res) => {
+  console.log(req.query)
+  res.send("hi")
 })
