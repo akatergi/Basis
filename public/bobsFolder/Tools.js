@@ -138,6 +138,7 @@ module.exports.compare = compare;
 
 function check(ArrayOfSections, Section) {
   for (let CurrentSection of ArrayOfSections) {
+    console.log(hasLab(CurrentSection), hasLab(Section), CurrentSection)
     if (
       CurrentSection.Subject + CurrentSection.Code ===
       Section.Subject + Section.Code
@@ -149,24 +150,24 @@ function check(ArrayOfSections, Section) {
     )
       return false;
     if (
-      !hasLab(ArrayOfSections) &&
+      !hasLab(CurrentSection) &&
       hasLab(Section) &&
       intersectingDays(CurrentSection.Schedule1, Section.Schedule2) &&
       overLap(CurrentSection.BT1, CurrentSection.ET1, Section.BT2, Section.ET2)
     )
       return false;
     if (
-      hasLab(ArrayOfSections) &&
+      hasLab(CurrentSection) &&
       hasLab(Section) &&
       intersectingDays(CurrentSection.Schedule2, Section.Schedule2) &&
       overLap(CurrentSection.BT2, CurrentSection.ET2, Section.BT2, Section.ET2)
     )
       return false;
     if (
-      hasLab(ArrayOfSections) &&
-      hasLab(Section) &&
+      hasLab(CurrentSection) &&
+      !hasLab(Section) &&
       intersectingDays(CurrentSection.Schedule2, Section.Schedule2) &&
-      overLap(CurrentSection.BT2, CurrentSection.ET2, Section.BT2, Section.ET2)
+      overLap(CurrentSection.BT2, CurrentSection.ET2, Section.BT1, Section.ET1)
     )
       return false;
   }
@@ -477,6 +478,7 @@ class Course {
     this.IName = IName;
     this.ISName = ISName;
     this.LCRN = LCRN.split(", or ");
+    if (this.LCRN.length == 1 && this.LCRN[0] == "") this.LCRN = []
     this.LinkedSections = [];
     this.Color = null;
   }

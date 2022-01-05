@@ -460,7 +460,11 @@ function printStuff(Perms) {
             ", " +
             intToTime(x.ET1) +
             ") " +
-            x.Schedule1
+            x.Schedule1 + "\n" +"(" +
+            intToTime(x.BT2) +
+            ", " +
+            intToTime(x.ET2) +
+            ") " + x.Schedule2
         ).join("\n")
     );
   }
@@ -484,24 +488,18 @@ async function giveNamesGetObjects(Term, CourseNames) {
 async function test() {
   let TestTerm = "202220";
   let TestCRNs = [
-    "21722",
-    "21185",
-    "21186",
-    "21175",
-    "21177",
-    "21392",
-    "21397"
+    "21184",
   ];
   let TestCustomCourses = [];
-  let TestCourses = await giveNamesGetObjects(TestTerm, []);
-  TestCourses = TestCourses.concat([
-    {
-      CourseName: "H1",
-      SeatsFilter: true,
-      ProfessorFilter: [],
-      Elective: true
-    }
-  ]);
+  let TestCourses = await giveNamesGetObjects(TestTerm, ["ENGL206"]);
+  // TestCourses = TestCourses.concat([
+  //   {
+  //     CourseName: "H1",
+  //     SeatsFilter: true,
+  //     ProfessorFilter: [],
+  //     Elective: true
+  //   }
+  // ]);
   let setSections = await searchByCRNs(TestTerm, TestCRNs);
   let Perms = await getPermutations(
     TestTerm,
@@ -513,3 +511,5 @@ async function test() {
   );
   console.log("\n\n\n\n\n\nPermutations are", Perms.length);
   printStuff(Perms);}
+
+  test()
