@@ -1,9 +1,7 @@
-const { result, update } = require("lodash");
-
 var {
   Course,
   HasLab,
-  HasRecitation,
+  IsLinked,
   IsRecitation,
   UpdateJSONs,
   CheckSectionWithFilters,
@@ -23,7 +21,9 @@ var {
   GetMinTime,
   Swap,
   GetDayDif,
-  GetColor
+  GetColor,
+  validateSection,
+  TimeToInt
 } = require("./Tools.js")
 
 async function GetCourse(Term, Courses, PStartTime, PEndTime){
@@ -133,7 +133,7 @@ async function GetCourse(Term, Courses, PStartTime, PEndTime){
       }
       Reasons += "\nAvailable Recitations:\n"
       for (let R of ListOfFilteredRecitations){
-        Reasons += "/" + R.Section + S.CRN
+        Reasons += "/" + R.Section + R.CRN
       }
       throw new Error(`Available sections and available recitations but no section/linkedCRN combination available for\n${CourseSubject + CourseCode} that applies with given filter!\n${Reasons}`)}
     CoursesToReturn.push(FinalListOfFilteredSections)
@@ -170,13 +170,12 @@ async function GetSections(Term, Courses, PStartTime, PEndTime){
   return ListOfSections
 }
 
-async function GetPermutations(Term, SetCRNS = [], CustomSections = [], Courses, PStartTime = null, PEndTime = null){
+async function GetPermutations(Term, SetSections = [], CustomSections = [], Courses, PStartTime = null, PEndTime = null){
   let AllSections = await GetSections(Term, Courses, PStartTime, PEndTime)
-  let SetSections = await SearchByCRNs(Term, SetCRNS)
   for (let Section of CustomSections){
     SetSections.push(Section)
   }
-  CheckIfConflictingArray(SetSections) //throws an error if the SetCourses (CRNs given by user) are conflicting.
+  CheckIfConflictingArray(SetSections, PStartTime, PEndTime) //throws an error if the SetCourses (CRNs given by user) are conflicting.
   var MaxTime = 0
   var MinTime = 2400
   var DayOccurences = [0,0,0,0,0,0]
@@ -192,6 +191,10 @@ async function GetPermutations(Term, SetCRNS = [], CustomSections = [], Courses,
   var LeastTimeDif = 2400
   var PermWithLeastDays = null
   var MostDayDif = 0
+
+  for (let Section of SetSections){
+    if (!Section.Color) Section.Color = GetColor()
+  }
 
   function rec(Perm, Min, Max, DO, index) {
     if (index == n){
@@ -211,7 +214,7 @@ async function GetPermutations(Term, SetCRNS = [], CustomSections = [], Courses,
     else{
       for (let Section of AllSections[index]){
         if (Check(Perm, Section)){
-          if (HasRecitation(Section)){
+          if (IsLinked(Section)){
             for (let Recitation of Section.LinkedSections){
               if (Check(Perm, Recitation)) rec(Perm.concat(Section, Recitation), GetMinTime(Section, Min, Recitation), GetMaxTime(Section, Max, Recitation), GetDayOccurences(Section, DO, Recitation), index + 1)
             }
@@ -237,3 +240,4 @@ async function GetPermutations(Term, SetCRNS = [], CustomSections = [], Courses,
   }
   return ArrayOfPermutations
 }
+module.exports.GetPermutations = GetPermutations

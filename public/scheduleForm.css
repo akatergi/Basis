@@ -1,0 +1,40 @@
+body{
+    background-color: aliceblue;
+}
+
+.card-text{
+    line-height:20%;
+}
+
+.optional{
+    font-size: small;
+    font-weight: 400;
+    color:red
+}
+
+.CRNInpGrp{
+    display:flex;
+    align-items: center;
+}
+
+.clearButton{
+    margin-left:0.4em;
+    margin-right:0.4em;
+    text-decoration: none;
+    color:red;
+    transition: all 200ms;
+}
+
+.clearButton:hover{
+    color:red;
+    transform: scale(1.3);
+    cursor: pointer;
+}
+
+.courseInp{
+    margin:0px 0px 0px 0px;
+}
+
+#schedMain{
+    overflow: auto;
+}

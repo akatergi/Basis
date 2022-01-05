@@ -13,10 +13,10 @@ function HasLab(Section){
 }
 module.exports.HasLab = HasLab
 
-function HasRecitation(Section){
+function IsLinked(Section){
   return Section.LCRN[0] != ""
 }
-module.exports.HasRecitation = HasRecitation
+module.exports.IsLinked = IsLinked
 
 function IsRecitation(Section){
   return !isNumberorL(Section.Section)
@@ -33,9 +33,12 @@ function CheckSectionWithFilters(Section, SeatsFilter, ProfsFilter, PStartTime, 
 }
 module.exports.CheckSectionWithFilters = CheckSectionWithFilters
 
-function CheckIfConflictingArray(A){
-  for (let i = 0; i < A.length; i++){
-     if (!Check(A.slice(0,i), A[i])) throw new Error("Given CRNs are conflicting")
+function CheckIfConflictingArray(Sections, PBT, PET){
+  for (let i = 0; i < Sections.length - 1; i++){
+    if (Sections[i].BT1 < PBT && PBT != null) throw new Error(`Section: ${Sections[i].Subject + Sections[i].Code + "-" + Sections[i].Section + "(" + Sections[i].CRN + ")"} starts before ${IntToTime(PBT)}`)
+    if (Sections[i].ET1 > PET && PET != null) throw new Error(`Section: ${Sections[i].Subject + Sections[i].Code + "-" + Sections[i].Section + "(" + Sections[i].CRN + ")"} starts after ${IntToTime(PET)}`)
+    if (HasLab(Sections[i]) && PET != null && PET < Sections[i].ET2) throw new Error(`Lab of Section: ${Sections[i].Subject + Sections[i].Code + "-" + Sections[i].Section + "(" + Sections[i].CRN + ")"} starts before ${IntToTime(PET)}`)
+    if (!Check(Sections.slice(0,i), Sections[i])) throw new Error("Given CRNs are conflicting")
   }
 }
 module.exports.CheckIfConflictingArray = CheckIfConflictingArray
@@ -161,10 +164,7 @@ function IntToTime(I){
   let Hours = S.slice(0,n-2)
   if (Hours == "12") return Hours + ":" + Minutes + " PM"
   else if (I < 1200) return Hours + ":" + Minutes + " AM"
-  else{
-    Hours = parseInt(Hours) - 12
-    return String(Hours) + ":" + Minutes + " PM"
-  }
+  else return String(parseInt(Hours) - 12) + ":" + Minutes + " PM"
 }
 module.exports.IntToTime = IntToTime
 
@@ -204,26 +204,31 @@ module.exports.GetData = GetData
 
 async function SearchByCRNs(Term, CRNs){
   for (let CRN of CRNs){
+    if (CRN.length != 5) throw new Error(`CRN: ${CRN} does not exist, must be of length 5`)
     if (CRN[0] != Term[4]) throw new Error(`CRN: ${CRN} does not exist whithin the ${CodeToTerm(Term)[0]} term`)
   }
+
   let n = CRNs.length
   if (n == 0) return []
   let TermIsFall = (CodeToTerm(Term)[0] == "Fall")
-  let CoursesToReturn = []
+  let SectionsToReturn = []
   for (let L of "ABCDEFGHIJKLMNOPQRSTUVWXYZ"){
     let data = await ReadJSONFile(L)
     let FirstSpringCRN = data[0]
     let AllCoursesOfLetterL = data[1]
     for (let index = (TermIsFall ? 0 : FirstSpringCRN); index < (TermIsFall ? FirstSpringCRN : AllCoursesOfLetterL.length); index++){
+      let Section = AllCoursesOfLetterL[index]
       for (let i = 0 ; i < CRNs.length ; i++){
-        if (AllCoursesOfLetterL[index].CRN === CRNs[i]){
+        if (Section.CRN === CRNs[i]){
           CRNs.splice(i,1)
-          CoursesToReturn.push(AllCoursesOfLetterL[index])
-          if (CoursesToReturn.length == n) return CoursesToReturn
+          if (Section.BT1 == null || Section.ET1 == null) throw new Error(`Section of CRN: ${Section.CRN} has no Begin and End Time`)
+          SectionsToReturn.push(Section)
+          if (SectionsToReturn.length == n) return SectionsToReturn
         }
       }
     }
   }
+  throw new Error(`${CRNs + ((CRNs.length == 1) ? "does":"do")} not exist`)
 }
 module.exports.SearchByCRNs = SearchByCRNs
 
@@ -325,6 +330,14 @@ function BinarySearch(Term, AllCoursesOfLetterL, CourseSubject, CourseCode, low,
   }
 }
 module.exports.BinarySearch = BinarySearch
+
+function TimeToInt(Time, PM){// 09:30
+  Time = Time.split(":")
+  let Hours = Time[0]
+  let Mins = Time[1]
+  return parseInt(Hours)*100 + parseInt(Mins) + ((Hours != "12" && PM == true) ? 1200:0)
+}
+module.exports.TimeToInt = TimeToInt
 
 class Course {
   constructor(Term, CRN, Subject, Code, Section, Title, CH, BH, College, SeatsT, SeatsA, BT1, ET1, Buil1, R1, Schedule1, BT2, ET2, Buil2, R2, Schedule2, IName, ISName, LCRN) {

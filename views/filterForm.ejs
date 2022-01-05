@@ -7,7 +7,7 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="/test">
+    <form action="/schedules" method="POST">
     <h1>Start Time</h1>
     <input type="number" name="sHour"> <input type="number" name="sMinute">
     <select name="stime">
@@ -23,19 +23,18 @@
     </select>
 
     <input type="hidden" name="Term" value="<%= Term %> ">
-    <% for(let crn of setCRNs) {%> 
-        <input type="hidden" name="setCRNs[]" value="<%= crn %> ">
-    <% } %> 
+    
+    <input type="hidden" name="setSections" value="<%= JSON.stringify(SetSections) %> ">
 
     <h1>Courses + Profs</h1>
     <% let i=0 %> 
     <% for(let course of courses) {%>
         <h3><%= course.CourseName %> </h3>
-        <input type="checkbox" name="courses[<%= course.CourseName %> ][seatAvailability]" value="true" >
-        <% for(let prof of course.Professors) {%>
-            <% prof===". STAFF" ? prof="TBA" : prof%> 
-           <input type="checkbox" id="check-<%= prof.replace(/\s/g, '')%>-<%= course.CourseName %> " value="<%= prof %> " name="courses[<%= course.CourseName %> ][profs]" checked>
-           <label for="check-<%= prof.replace(/\s/g, '') %>"> <%= prof %> </label>
+        <input type="hidden" name="courses[<%- i %>][CourseName]" value="<%= course.CourseName %>" >
+        <input type="checkbox" name="courses[<%- i %>][SeatsFilter]" value="true" >
+        <% for(let prof of course.Professors) {%> 
+           <input type="checkbox" id="check-<%= prof.replace(/\s/g, '')%>-<%= course.CourseName %>" value="<%= prof %>" name="courses[<%- i %>][ProfessorFilter][]" checked>
+           <label for="check-<%= prof.replace(/\s/g, '') %>"> <%= prof===". STAFF" ? prof="TBA" : prof %> </label>
         <% } i++ %>
     <% } %>
     <br>

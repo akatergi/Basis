@@ -59,7 +59,7 @@ function genSched(i) {
             if (cH < endHour) {
                 for (let day of course.Schedule1) {
                     let td = document.querySelector(`.r${cH} .${letterDays[day]}`)
-                    td.style.borderBottom = `1px solid ${course.color}`
+                    td.style.borderBottom = `1px solid ${course.Color}`
                     let content = document.querySelector(`.r${cH} .${letterDays[day]} .content`)
                     let courseBlock = document.createElement("div")
                     courseBlock.classList.add("course")
@@ -78,11 +78,11 @@ function genSched(i) {
                     }
                     content.append(courseBlock)
                     courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
-                    courseBlock.style.backgroundColor = course.color
+                    courseBlock.style.backgroundColor = course.Color
                     if (i === 0) courseBlock.style.borderRadius = "7px 7px 0px 0px"
                     content.append(courseBlock)
                     courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
-                    courseBlock.style.backgroundColor = course.color
+                    courseBlock.style.backgroundColor = course.Color
                     if (i === 0) courseBlock.style.borderRadius = "7px 7px 0px 0px"
                 }
             }
@@ -108,7 +108,7 @@ function genSched(i) {
                         overrideWritten = true
                         courseBlock.innerHTML = `<span class='blockTitle'> ${course.Subject + " " + course.Code}</span> <small class='blockSub'> ${startHour + ":" + (startMin < 10 ? `0${startMin}` : startMin) + "-" + endHour + ":" + (endMin < 10 ? `0${endMin}` : endMin)} </small>`
                     }
-                    courseBlock.style.backgroundColor = course.color
+                    courseBlock.style.backgroundColor = course.Color
                     if (i === 0) courseBlock.style.borderRadius = "7px 7px 7px 7px"
                     else courseBlock.style.borderRadius = "0px 0px 7px 7px"
                 }
@@ -143,7 +143,7 @@ function genSched(i) {
                         }
                         content.append(courseBlock)
                         courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
-                        courseBlock.style.backgroundColor = course.color
+                        courseBlock.style.backgroundColor = course.Color
                         if (i === 0) courseBlock.style.borderRadius = "7px 7px 0px 0px"
                     }
                 }
@@ -160,7 +160,7 @@ function genSched(i) {
                         if (written === false) {
                             courseBlock.innerHTML = `<span class='blockTitle'> ${course.Subject + " " + course.Code}</span> <small class='blockSub'> ${startHour + ":" + (startMin < 10 ? `0${startMin}` : startMin) + "-" + endHour + ":" + (endMin < 10 ? `0${endMin}` : endMin)} </small>`
                         }
-                        courseBlock.style.backgroundColor = course.color
+                        courseBlock.style.backgroundColor = course.Color
                         courseBlock.style.borderRadius = "0px 0px 7px 7px"
                     }
                 }
@@ -189,10 +189,8 @@ function clearSched() {
 }
 
 function findByCRN(CRN) { //Make it so that it only checks current Sched
-    for (let sched of Schedules) {
-        for (let course of sched) {
-            if (course.CRN === CRN) return course
-        }
+    for (let course of Schedules[i]) {
+        if (course.CRN === CRN) return course
     }
 }
 
@@ -245,12 +243,15 @@ function updateBoxes() {
                 let course = findByCRN(CRN)
                 let cardTitle = document.querySelector("#cardTitle")
                 let cardName = document.querySelector("#cardName")
+                let instructor = document.querySelector("#instructor")
                 section.innerText = course.Section
                 crn.innerText = course.CRN
                 credits.innerText = course.CH
                 seats.innerText = `${course.SeatsA}/${course.SeatsA + course.SeatsT}`
                 cardTitle.innerText = `${course.Subject} ${course.Code}`
                 cardName.innerText = course.Title
+                if(course.IName==="." && course.ISName==="STAFF") instructor.innerText = 'TBA'
+                else instructor.innerText = `${course.IName} ${course.ISName}`
             }
         })
     })

@@ -11,7 +11,7 @@
     <title>Document</title>
 </head>
 
-<body>
+<body> 
     <div class="container-fluid">
         <div class="row">
             <div class="col-2 col-lg-2">
@@ -26,10 +26,11 @@
                         <li class="list-group-item cardCRN">CRN: <span id="crn">crn</span></li>
                         <li class="list-group-item cardCredots"> Credits: <span id="credits">credits</span> </li>
                         <li class="list-group-item cardSeats"> Seats Available: <span id="seats">?/?</span> </li>
+                        <li class="list-group-item cardSeats"> Instructor: <span id="instructor">instructor</span> </li>
                     </ul>
                 </div>
             </div>
-            <div class="col-lg-9 mb-3">
+            <div class="col-lg-9 mb-3" id='schedMain'>
                 <div id="arrows">
                     <a href="#" class="leftArrow"> &lt </a>
                     <span id="currSched"> <span id="index">1</span> of <span id="total"><%= Schedules.length %> </span></span>
@@ -45,31 +46,29 @@
                         <th>FRIDAY</th>
                         <th>SATURDAY</th>
                     </tr>
-                    <% for(let sched of Schedules) {%>
-                            <% for(let i=7; i<23; i++) {%>
-                            <tr class="r<%= i %>">
-                                <td class="time"><%= `${i}:00` %> </td>
-                                <td class="box monday">
-                                    <div class="content"></div>
-                                </td>
-                                <td class="box tuesday">
-                                    <div class="content"></div>
-                                </td>
-                                <td class="box wednesday">
-                                    <div class="content"></div>
-                                </td>
-                                <td class="box thursday">
-                                    <div class="content">
-                                    </div>
-                                </td>
-                                <td class="box friday">
-                                    <div class="content"></div>
-                                </td>
-                                <td class="box saturday">
-                                    <div class="content"></div>
-                                </td>
-                            </tr>
-                            <% } %>
+                        <% for(let i=7; i<23; i++) {%>
+                        <tr class="r<%= i %>">
+                            <td class="time"><%= `${i}:00` %> </td>
+                            <td class="box monday">
+                                <div class="content"></div>
+                            </td>
+                            <td class="box tuesday">
+                                <div class="content"></div>
+                            </td>
+                            <td class="box wednesday">
+                                <div class="content"></div>
+                            </td>
+                            <td class="box thursday">
+                                <div class="content">
+                                </div>
+                            </td>
+                            <td class="box friday">
+                                <div class="content"></div>
+                            </td>
+                            <td class="box saturday">
+                                <div class="content"></div>
+                            </td>
+                        </tr>
                         <% } %>
                 </table>
             </div>
