@@ -262,7 +262,7 @@ async function getArraysOfFilteredSections(
       let FinalListOfFilteredSections = [];
       for (let S of ListOfFilteredSections) {
         for (let R of ListOfFilteredRecitations) {
-          if (R.LCRN == S.CRN) S.LinkedSections.push(R);
+          if (R.LCRN.includes(S.CRN)) S.LinkedSections.push(R);
         }
         if (S.LinkedSections) FinalListOfFilteredSections.push(S);
       }
@@ -279,7 +279,7 @@ async function getArraysOfFilteredSections(
             ).join("\n")}`);
       }
 
-      if (!(Elective && FinalListOfFilteredSections.length == 0))
+      if ((!Elective && FinalListOfFilteredSections.length != 0) || Elective)
         CoursesToReturn.push(FinalListOfFilteredSections);
     }
   }
@@ -478,10 +478,10 @@ async function giveNamesGetObjects(Term, CourseNames) {
 }
 
 async function test() {
-  let TestTerm = "202210";
+  let TestTerm = "202220";
   let TestCRNs = [];
   let TestCustomCourses = [];
-  let TestCourses = await giveNamesGetObjects(TestTerm, ["MATH201"]);
+  let TestCourses = await giveNamesGetObjects(TestTerm, ["PHYS210"]);
   // TestCourses = TestCourses.concat([
   //   {
   //     CourseName: "H1",

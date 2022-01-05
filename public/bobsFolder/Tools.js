@@ -466,7 +466,7 @@ class Course {
     this.Schedule2 = Schedule2.replaceAll(".", "");
     this.IName = IName;
     this.ISName = ISName;
-    this.LCRN = LCRN.split(", or ");
+    this.LCRN = LCRN.split(", or ").map(x => x.slice(0,5));
     if (this.LCRN.length == 1 && this.LCRN[0] == "") this.LCRN = []
     this.LinkedSections = [];
     this.Color = null;
