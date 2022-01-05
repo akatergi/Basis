@@ -278,20 +278,11 @@ async function readElectives() {
 }
 module.exports.readElectives = readElectives;
 
-async function validateSubjects(Subjects) {
+async function validateCourseName(Term, Subject, Code) {
   let Courses = await readCourses();
-  for (let Subject of Subjects) {
-    let Found = true;
-    for (let Term in Courses) {
-      if (!Courses[Term][Subject]) {
-        Found = false;
-        break;
-      }
-    }
-    if (!Found) throw new Error(`Subject ${Subject} does not exist`);
-  }
+  if (!Courses[Term][Subject][Code]) throw new Error(`${Subject + Code} does not exist in the ${codeToTerm(Term)[0]} term`);
 }
-module.exports.validateSubjects = validateSubjects;
+module.exports.validateCourseName = validateCourseName;
 
 async function searchByCRNs(Term, CRNsToBeConverted) {
   let CRNs = await readCRNs();
