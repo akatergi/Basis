@@ -415,7 +415,7 @@ async function getElectives() {
     QT: []
   };
   let CRNs = await readCRNs();
-  const $ = cheerio.load(fs.readFileSync("./GeneralEducation.html"));
+  const $ = cheerio.load(fs.readFileSync("./public/bobsFolder/GeneralEducation.html"));
   $("body > table > tbody > tr").each((index, element) => {
     if (index > 0) {
       Electives[D[$($(element).find("td")[4]).text().trim()]].push(
