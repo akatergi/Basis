@@ -7,3 +7,11 @@ body{
     font-weight: 400;
     color:red
 }
+
+.fg{
+    display:flex;
+}
+
+.seatCheck{
+    color: darkgoldenrod;
+}

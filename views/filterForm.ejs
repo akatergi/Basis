@@ -8,23 +8,35 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <h2>Preferred Start Time <span class="optional">(optional)</span></h2>
-                            <small class="card-text text-muted mb-5">Input your preferred start time</small>
-                            <input type="number" name="sHour"> <input type="number" name="sMinute">
-                            <select name="stime">
-                                <option value="AM">AM</option>
-                                <option value="PM">PM</option>
-                            </select>
+                            <small class="card-text text-muted mb-5">Input your preferred start time. All sections that start before
+                                this time will be filtered out.
+                            </small>
+                            <div class="form-group fg mt-2">
+                                <input type="number" name="sHour" class="form-control"> <input type="number" name="sMinute" class="form-control me-3">
+                                <select class="form-select" name="stime">
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-6">
-                    <h1>End Time</h1>
-                    <input type="number" name="eHour"> <input type="number" name="eMinute">
-                    <select name="etime">
-                        <option value="AM">AM</option>
-                        <option value="PM">PM</option>
-                    </select>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2>Preferred End Time <span class="optional">(optional)</span></h2>
+                            <small class="card-text text-muted mb-5">Input your preferred end time. All sections that start after
+                                this time will be filtered out.
+                            </small>
+                            <div class="form-group fg mt-2">
+                                <input type="number" name="eHour" class="form-control"> <input type="number" name="eMinute" class="form-control me-3">
+                                <select class="form-select" name="etime">
+                                    <option value="AM">AM</option>
+                                    <option value="PM" selected>PM</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <input type="hidden" name="Term" value="<%= Term %> ">
@@ -32,20 +44,38 @@
                 <input type="hidden" name="setSections" value="<%= JSON.stringify(SetSections) %> ">
 
                 <h1>Courses + Profs</h1>
+                <small class="card-text text-muted mb-3">For each of the below courses, select the filters you desire. Check on the "seat
+                    availability" box if you want to filter out all sections of a course that do not have capacity. In addition, check on all professors that
+                    you would like to take this course with and uncheck all professors that you would like to filter out.
+                </small>
                 <% let i=0 %>
                 <% for(let course of courses) {%>
-                    <h3>
-                        <%= course.CourseName %>
-                    </h3>
-                    <input type="hidden" name="courses[<%- i %>][CourseName]" value="<%= course.CourseName %>">
-                    <input type="checkbox" name="courses[<%- i %>][SeatsFilter]" value="true">
-                    <% for(let prof of course.Professors) {%>
-                        <input type="checkbox" id="check-<%= prof.replace(/\s/g, '')%>-<%= course.CourseName %>"
-                            value="<%= prof %>" name="courses[<%- i %>][ProfessorFilter][]" checked>
-                        <label for="check-<%= prof.replace(/\s/g, '') %>">
-                            <%= prof===". STAFF" ? prof="TBA" : prof %>
-                        </label>
-                        <% } i++ %>
+                    <div class="col">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h3>
+                                    <%= course.CourseName %>
+                                </h3>
+                                <input type="hidden" name="courses[<%- i %>][CourseName]" value="<%= course.CourseName %>">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="courses[<%- i %>][SeatsFilter]" value="true" id="seats-<%= i %>">
+                                    <label for="seats-<%=i%>" class="form-check-label">
+                                        <span class="seatCheck"> <i class="fas fa-chair"></i> Seat Availability </span>
+                                    </label>
+                                </div>
+
+                                <% for(let prof of course.Professors) {%>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="check-<%= prof.replace(/\s/g, '')%>-<%= course.CourseName %>"
+                                            value="<%= prof %>" name="courses[<%- i %>][ProfessorFilter][]" checked>
+                                        <label class="form-check-label" for="check-<%= prof.replace(/\s/g, '') %>">
+                                            <i class="fas fa-user-tie"></i> <%= prof===". STAFF" ? prof="TBA" : prof %>
+                                        </label>
+                                    </div>
+                                <% } i++ %>
+                            </div>
+                        </div>
+                    </div>
                 <% } %>
                 <br>
                 <button>Generate Permutations</button>
