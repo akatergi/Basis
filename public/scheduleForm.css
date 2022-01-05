@@ -2,10 +2,6 @@ body{
     background-color: aliceblue;
 }
 
-.card-text{
-    line-height:20%;
-}
-
 .optional{
     font-size: small;
     font-weight: 400;
@@ -33,8 +29,4 @@ body{
 
 .courseInp{
     margin:0px 0px 0px 0px;
-}
-
-#schedMain{
-    overflow: auto;
 }

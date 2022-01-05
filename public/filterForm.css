@@ -1,0 +1,9 @@
+body{
+    background-color: aliceblue;
+}
+
+.optional{
+    font-size: small;
+    font-weight: 400;
+    color:red
+}

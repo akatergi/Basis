@@ -10,6 +10,7 @@ table{
 }
 
 .rightArrow, .leftArrow{
+    cursor: pointer;
     color:chocolate;
     text-align: center;
     width: 2rem;

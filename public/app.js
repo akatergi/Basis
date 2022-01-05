@@ -8,12 +8,10 @@ let letterDays = {
     "R": "thursday",
     "F": "friday",
 }
-const colorsConst = ["red", "green", "yellow", "lightblue", "violet", "brown", "pink", "lightyellow", "aliceblue", "aqua", "lightcyan", "lightcoral", "lightsalmon", 'lightslategray', 'lightseagreen']
-let colors = ["red", "green", "yellow", "lightblue", "violet", "brown", "pink", "lightyellow", "aliceblue", "aqua", "lightcyan", "lightcoral", "lightsalmon", 'lightslategray', 'lightseagreen']
 let nextSchedArrow = document.querySelector(".rightArrow")
 let index = document.querySelector("#index")
 let prevSchedArrow = document.querySelector(".leftArrow")
-
+let boxes;
 //Functions
 
 function fixTimes(BT, ET) {
@@ -38,17 +36,10 @@ function fixTimes(BT, ET) {
     }
     return { startHour, startMin, endHour, endMin }
 }
-
-function sampleColor() {
-    if (colors.length) return colors.splice(Math.floor(Math.random() * colors.length), 1)[0]
-    else {
-        colors = colorsConst
-        return colors.splice(Math.floor(Math.random() * colors.length), 1)[0]
-    }
-}
-
+console.log(Schedules[0])
 function genSched(i) {
     for (let course of Schedules[i]) {
+        // console.log(course.Subject, course.Code, course.Color)
         let { startHour, startMin, endHour, endMin } = fixTimes(course.BT1, course.ET1)
         let cH = startHour
         let written = false
@@ -87,12 +78,13 @@ function genSched(i) {
                 }
             }
             if (cH === endHour) {
-                cM = endMin
+                endMin === 0 ? cM = 60 : cM = endMin
                 for (let day of course.Schedule1) {
                     let content = document.querySelector(`.r${cH} .${letterDays[day]} .content`)
                     let courseBlock = document.createElement("div")
                     courseBlock.classList.add("course")
                     courseBlock.style.height = `${100 - ((60 - cM) / 60 * 100)}%`
+                    console.log(`cM: ${cM}, endMin: ${endMin}, ${100 - ((60 - cM) / 60 * 100)}`)
                     if (!content.classList.contains("contentBott")) {
                         content.classList.add("contentTop")
                         content.append(courseBlock)
@@ -177,7 +169,7 @@ function clearSched() {
     let tds = document.querySelectorAll("td")
     tds.forEach(td => {
         if (!td.classList.contains("time")) {
-            td.classList.remove(".contentTop", ".contentBott")
+            td.style.borderBottom = "1px solid lightgray"
         }
     })
     let contents = document.querySelectorAll(".content")
@@ -185,6 +177,7 @@ function clearSched() {
         content.innerHTML = "";
         content.classList.remove("contentTop")
         content.classList.remove("contentBott")
+        content.classList.remove("contentBoth")
     })
 }
 
@@ -250,7 +243,7 @@ function updateBoxes() {
                 seats.innerText = `${course.SeatsA}/${course.SeatsA + course.SeatsT}`
                 cardTitle.innerText = `${course.Subject} ${course.Code}`
                 cardName.innerText = course.Title
-                if(course.IName==="." && course.ISName==="STAFF") instructor.innerText = 'TBA'
+                if (course.IName === "." && course.ISName === "STAFF") instructor.innerText = 'TBA'
                 else instructor.innerText = `${course.IName} ${course.ISName}`
             }
         })
@@ -268,6 +261,9 @@ nextSchedArrow.addEventListener("click", () => {
     }
 })
 
+let clearbtn = document.querySelector("#clearButton")
+clearbtn.addEventListener("click", clearSched)
+
 prevSchedArrow.addEventListener("click", () => {
     if (i > 0) {
         clearSched()
@@ -280,5 +276,5 @@ prevSchedArrow.addEventListener("click", () => {
 })
 
 genSched(i)
-let boxes = document.querySelectorAll(".course")
+boxes = document.querySelectorAll(".course")
 updateBoxes()

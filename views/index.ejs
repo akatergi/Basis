@@ -32,9 +32,9 @@
             </div>
             <div class="col-lg-9 mb-3" id='schedMain'>
                 <div id="arrows">
-                    <a href="#" class="leftArrow"> &lt </a>
+                    <a class="leftArrow"> &lt </a>
                     <span id="currSched"> <span id="index">1</span> of <span id="total"><%= Schedules.length %> </span></span>
-                    <a href="#" class="rightArrow"> &gt </a>
+                    <a class="rightArrow"> &gt </a>
                 </div>
                 <table>
                     <tr class="top">
@@ -71,6 +71,9 @@
                         </tr>
                         <% } %>
                 </table>
+            </div>
+            <div class="col-1">
+                <button id="clearButton" class="btn btn-danger btn-large"></button>
             </div>
         </div>
     </div>

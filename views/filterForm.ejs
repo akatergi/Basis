@@ -1,44 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+<link rel="stylesheet" href="filterForm.css">
+<% layout("layouts/boilerplate") %>
+    <h1 class="display-3 text-center mt-3 mb-4" id="title">Filter Schedules</h1>
     <form action="/schedules" method="POST">
-    <h1>Start Time</h1>
-    <input type="number" name="sHour"> <input type="number" name="sMinute">
-    <select name="stime">
-        <option value="AM">AM</option>
-        <option value="PM">PM</option>
-    </select>
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2>Preferred Start Time <span class="optional">(optional)</span></h2>
+                            <small class="card-text text-muted mb-5">Input your preferred start time</small>
+                            <input type="number" name="sHour"> <input type="number" name="sMinute">
+                            <select name="stime">
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
-    <h1>End Time</h1>
-    <input type="number" name="eHour"> <input type="number" name="eMinute">
-    <select name="etime">
-        <option value="AM">AM</option>
-        <option value="PM">PM</option>
-    </select>
+                <div class="col-6">
+                    <h1>End Time</h1>
+                    <input type="number" name="eHour"> <input type="number" name="eMinute">
+                    <select name="etime">
+                        <option value="AM">AM</option>
+                        <option value="PM">PM</option>
+                    </select>
+                </div>
 
-    <input type="hidden" name="Term" value="<%= Term %> ">
-    
-    <input type="hidden" name="setSections" value="<%= JSON.stringify(SetSections) %> ">
+                <input type="hidden" name="Term" value="<%= Term %> ">
 
-    <h1>Courses + Profs</h1>
-    <% let i=0 %> 
-    <% for(let course of courses) {%>
-        <h3><%= course.CourseName %> </h3>
-        <input type="hidden" name="courses[<%- i %>][CourseName]" value="<%= course.CourseName %>" >
-        <input type="checkbox" name="courses[<%- i %>][SeatsFilter]" value="true" >
-        <% for(let prof of course.Professors) {%> 
-           <input type="checkbox" id="check-<%= prof.replace(/\s/g, '')%>-<%= course.CourseName %>" value="<%= prof %>" name="courses[<%- i %>][ProfessorFilter][]" checked>
-           <label for="check-<%= prof.replace(/\s/g, '') %>"> <%= prof===". STAFF" ? prof="TBA" : prof %> </label>
-        <% } i++ %>
-    <% } %>
-    <br>
-    <button>Generate Permutations</button>
+                <input type="hidden" name="setSections" value="<%= JSON.stringify(SetSections) %> ">
+
+                <h1>Courses + Profs</h1>
+                <% let i=0 %>
+                <% for(let course of courses) {%>
+                    <h3>
+                        <%= course.CourseName %>
+                    </h3>
+                    <input type="hidden" name="courses[<%- i %>][CourseName]" value="<%= course.CourseName %>">
+                    <input type="checkbox" name="courses[<%- i %>][SeatsFilter]" value="true">
+                    <% for(let prof of course.Professors) {%>
+                        <input type="checkbox" id="check-<%= prof.replace(/\s/g, '')%>-<%= course.CourseName %>"
+                            value="<%= prof %>" name="courses[<%- i %>][ProfessorFilter][]" checked>
+                        <label for="check-<%= prof.replace(/\s/g, '') %>">
+                            <%= prof===". STAFF" ? prof="TBA" : prof %>
+                        </label>
+                        <% } i++ %>
+                <% } %>
+                <br>
+                <button>Generate Permutations</button>
+            </div>
+        </div>
     </form>
-</body>
-</html>
