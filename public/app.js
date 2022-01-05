@@ -123,6 +123,8 @@ function genSched(i) {
             while (cH <= endHour) {
                 if (cH < endHour) {
                     for (let day of course.Schedule2) {
+                        let td = document.querySelector(`.r${cH} .${letterDays[day]}`)
+                        td.style.borderBottom = `1px solid ${course.Color}`
                         let content = document.querySelector(`.r${cH} .${letterDays[day]} .content`)
                         content.classList.add("contentBott")
                         let courseBlock = document.createElement("div")

@@ -55,7 +55,6 @@ app.post("/filter", async (req,res) => {
     sections[i] = sections[i].toUpperCase().replace(" ", "")
     let sec = sections[i]
     try {
-      console.log(Term, sec.slice(0, 4), sec.slice(4))
       var profs = await getProfessors(Term, sec.slice(0, 4), sec.slice(4));
     } catch(e) {
       req.flash("error", e.message)
@@ -66,11 +65,15 @@ app.post("/filter", async (req,res) => {
   req.session.SetSections = SetSections;
   req.session.courses = courses;
   req.session.Term = Term
+  res.redirect("/filter")
 })
 
 app.get("/filter", async (req, res) => {
   let { Term, SetSections, courses } = req.session
-  console.log(Term, SetSections, courses)
+  if(!Term || !SetSections || !courses){
+    req.flash("error", "Missing paramters!")
+    return res.redirect("/new")
+  }
   res.render("filterForm", { Term, SetSections, courses })
 })
 
@@ -104,7 +107,10 @@ app.post("/schedules", async (req, res) => {
 })
 
 app.get("/schedules", (req, res) => {
-  if (!req.session.Schedules) res.send("error")
+  if (!req.session.Schedules){
+    req.flash("error", "Something went wrong")
+    return res.redirect("/filter")
+  }
   else {
     let Schedules = req.session.Schedules
     res.render("index.ejs", { Schedules })
