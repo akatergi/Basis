@@ -1,23 +1,11 @@
 {
-  "name": "proj",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "axios": "^0.24.0",
-    "browserify": "^17.0.0",
     "cheerio": "^1.0.0-rc.10",
-    "ejs": "^3.1.6",
-    "ejs-mate": "^3.0.0",
     "express": "^4.17.2",
-    "express-session": "^1.17.2",
-    "path": "^0.12.7",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^3.1.0",
+    "open": "^8.4.0",
+    "querystring": "^0.2.1",
     "request-promise": "^4.2.6"
   }
 }
