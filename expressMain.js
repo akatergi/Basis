@@ -60,11 +60,11 @@ app.post("/schedules", async (req, res) => {
     course.Elective = false
   }
   var Schedules
-  // try{
+  try{
     Schedules = await getPermutations(Term, setSections, CustomSections, courses, PStartTime, PEndTime)
-  // } catch(err) {
-  //   return res.send(err.message)
-  // }
+  } catch(err) {
+    return res.send(err.message)
+  }
   req.session.Schedules = Schedules
   res.redirect("/schedules")
 })
