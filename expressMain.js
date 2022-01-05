@@ -25,6 +25,8 @@ app.get("/new", (req, res) => {
   res.render("scheduleForm")
 })
 
+
+
 app.get("/filter", async (req, res) => {
   let { Term, setCRNs, sections } = req.query
   if (!setCRNs) setCRNs = []
