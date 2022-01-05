@@ -58,7 +58,7 @@ async function getArraysOfFilteredSections(
   PEndTime
 ) {
   const Courses = await readCourses();
-  const Electives = await readElectives();
+  // const Electives = await readElectives();
   let CoursesToReturn = [];
   for (let CourseFilterObject of CourseFilterObjects) {
     let Sections;
@@ -515,4 +515,3 @@ async function test() {
   );
   console.log("\n\n\n\n\n\nPermutations are", Perms.length);
   printStuff(Perms);
-}
