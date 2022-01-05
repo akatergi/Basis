@@ -16,7 +16,6 @@ var {
   getColor,
   readCourses,
   searchByCRNs,
-  validateSubjects,
   readElectives,
   codeToTerm
 } = require("./Tools.js");
@@ -57,8 +56,8 @@ async function getArraysOfFilteredSections(
   PStartTime,
   PEndTime
 ) {
-  const Courses = await readCourses();
-  const Electives = await readElectives();
+  const Courses = await readCourses(Term);
+  const Electives = await readElectives(Term);
   let CoursesToReturn = [];
   for (let CourseFilterObject of CourseFilterObjects) {
     let Sections;
@@ -511,3 +510,5 @@ async function test() {
   );
   console.log("\n\n\n\n\n\nPermutations are", Perms.length);
   printStuff(Perms);}
+
+  test()
