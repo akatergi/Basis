@@ -2,9 +2,9 @@ const express = require("express")
 const app = express()
 const path = require("path")
 const ejsMate = require("ejs-mate")
-const { GetProfs, SearchByCRNs, TimeToInt } = require("./public/Tools")
+const { getProfessors, searchByCRNs, timeToInt } = require("./public/bobsFolder/Tools")
 app.use(express.json());
-const { GetPermutations } = require("./public/DataDCS")
+const { GetPermutations } = require("./public/bobsFolder/Main")
 const session = require("express-session")
 app.engine("ejs", ejsMate)
 
@@ -30,13 +30,13 @@ app.get("/new", (req, res) => {
 app.get("/filter", async (req, res) => {
   let { Term, setCRNs, sections } = req.query
   if (!setCRNs) setCRNs = []
-  let SetSections = await SearchByCRNs(Term, setCRNs)
+  let SetSections = await searchByCRNs(Term, setCRNs)
   if (!sections) sections = []
   let courses = []
   for (let i = 0; i < sections.length; i++) {
     sections[i] = sections[i].toUpperCase().replace(" ", "")
     let sec = sections[i]
-    let profs = await GetProfs(Term, sec.slice(0, 4), sec.slice(4));
+    let profs = await getProfessors(Term, sec.slice(0, 4), sec.slice(4));
     courses.push({ CourseName: sec, Professors: profs })
   }
   res.render("filterForm", { Term, SetSections, courses })
@@ -47,9 +47,9 @@ app.post("/schedules", async (req, res) => {
   Term = "202220"
   let PStartTime, PEndTime;
   if (sHour === "") PStartTime = null
-  else PStartTime = TimeToInt(sHour + ":" + sMinute, stime === "PM")
+  else PStartTime = timeToInt(sHour + ":" + sMinute, stime === "PM")
   if (eHour === "") PEndTime = null
-  else PEndTime = TimeToInt(eHour + ":" + eMinute, etime === "PM")
+  else PEndTime = timeToInt(eHour + ":" + eMinute, etime === "PM")
 
   let CustomSections = []
   setSections = JSON.parse(setSections)
