@@ -39,8 +39,8 @@ app.get("/new", (req, res) => {
   res.render("scheduleForm")
 })
 
-app.get("/filter", async (req, res) => {
-  let { Term, setCRNs, sections } = req.query
+app.post("/filter", async (req,res) => {
+  let { Term, setCRNs, sections } = req.body
 
   if (!setCRNs) setCRNs = []
   try {
@@ -63,6 +63,14 @@ app.get("/filter", async (req, res) => {
     }
     courses.push({ CourseName: sec, Professors: profs })
   }
+  req.session.SetSections = SetSections;
+  req.session.courses = courses;
+  req.session.Term = Term
+})
+
+app.get("/filter", async (req, res) => {
+  let { Term, SetSections, courses } = req.session
+  console.log(Term, SetSections, courses)
   res.render("filterForm", { Term, SetSections, courses })
 })
 

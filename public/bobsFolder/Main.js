@@ -479,30 +479,3 @@ async function giveNamesGetObjects(Term, CourseNames) {
   }
   return A;
 }
-
-async function test() {
-  let TestTerm = "202210";
-  let TestCRNs = [];
-  let TestCustomCourses = [];
-  let TestCourses = await giveNamesGetObjects(TestTerm, ["MATH201"]);
-  // TestCourses = TestCourses.concat([
-  //   {
-  //     CourseName: "H1",
-  //     SeatsFilter: true,
-  //     ProfessorFilter: [],
-  //     Elective: true
-  //   }
-  // ]);
-  let setSections = await searchByCRNs(TestTerm, TestCRNs);
-  let Perms = await getPermutations(
-    TestTerm,
-    setSections,
-    TestCustomCourses,
-    TestCourses,
-    null,
-    null
-  );
-  console.log("\n\n\n\n\n\nPermutations are", Perms.length);
-  printStuff(Perms);}
-
-  test()
