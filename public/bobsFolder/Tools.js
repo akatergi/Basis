@@ -98,10 +98,10 @@ const colorsConst = [
 let colors = [...colorsConst];
 
 function getColor() {
-  if (colors.length)
-    return colors.splice(Math.floor(Math.random() * colors.length), 1)[0];
+  if (colors.length){
+    return colors.splice(Math.floor(Math.random() * colors.length), 1)[0];}
   else {
-    colors = colorsConst;
+    colors = [...colorsConst];
     return colors.splice(Math.floor(Math.random() * colors.length), 1)[0];
   }
 }
