@@ -257,35 +257,29 @@ function getDayOccurences(Section, Days, Recitation = { Schedule1: "" }) {
 }
 module.exports.getDayOccurences = getDayOccurences;
 
-async function readCourses() {
-  let path = "./public/bobsFolder/Courses.json";
-  if (!fs.existsSync(path)) await getCoursesAndCRNs();
+async function readCourses(Term) {
+  let path = `./public/bobsFolder/${codeToTerm(Term)[1]}/Courses.json`;
+  if (!fs.existsSync(path)) await getCoursesAndCRNs(Term)
   return JSON.parse(fs.readFileSync(path));
 }
 module.exports.readCourses = readCourses;
 
-async function readCRNs() {
-  let path = "./public/bobsFolder/CRNs.json";
-  if (!fs.existsSync(path)) await getCoursesAndCRNs();
+async function readCRNs(Term) {
+  let path = `./public/bobsFolder/${codeToTerm(Term)[1]}/CRNs.json`;
+  if (!fs.existsSync(path)) await getCoursesAndCRNs(Term);
   return JSON.parse(fs.readFileSync(path));
 }
 module.exports.readCRNs = readCRNs;
 
-async function readElectives() {
-  let path = "./public/bobsFolder/Electives.json";
-  if (!fs.existsSync(path)) await getElectives();
+async function readElectives(Term) {
+  let path = `./public/bobsFolder/${codeToTerm(Term)[[1]]}/${codeToTerm(Term)[0]}/Electives.json`;
+  if (!fs.existsSync(path)) await getElectives(Term);
   return JSON.parse(fs.readFileSync(path));
 }
 module.exports.readElectives = readElectives;
 
-async function validateCourseName(Term, Subject, Code) {
-  let Courses = await readCourses();
-  if (!Courses[Term][Subject][Code]) throw new Error(`${Subject + Code} does not exist in the ${codeToTerm(Term)[0]} term`);
-}
-module.exports.validateCourseName = validateCourseName;
-
 async function searchByCRNs(Term, CRNsToBeConverted) {
-  let CRNs = await readCRNs();
+  let CRNs = await readCRNs(Term);
   for (let i in CRNsToBeConverted) {
     let CRN = CRNsToBeConverted[i];
     if (CRN.length != 5)
@@ -306,11 +300,7 @@ async function searchByCRNs(Term, CRNsToBeConverted) {
 module.exports.searchByCRNs = searchByCRNs;
 
 async function getProfessors(Term, CourseSubject, CourseCode) {
-  try{
-    var Sections = (await readCourses())[Term][CourseSubject][CourseCode];
-  } catch{
-    throw new Error(`No course found ${CourseSubject}`)
-  }
+  let Sections = (await readCourses(Term))[Term][CourseSubject][CourseCode];
   if (!Sections)
     throw new Error(
       `No Sections for ${CourseSubject + CourseCode} in the ${
@@ -327,7 +317,7 @@ async function getProfessors(Term, CourseSubject, CourseCode) {
 }
 module.exports.getProfessors = getProfessors;
 
-async function getCoursesAndCRNs() {
+async function getCoursesAndCRNs(Term) {
   let Courses = {};
   let CRNs = {};
   for (let Letter of "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
@@ -381,8 +371,8 @@ async function getCoursesAndCRNs() {
       }
     });
   }
-  fs.writeFileSync("./public/bobsFolder/Courses.json", JSON.stringify(Courses));
-  fs.writeFileSync("./public/bobsFolder/CRNs.json", JSON.stringify(CRNs));
+  fs.writeFileSync(`./public/bobsFolder/${codeToTerm(Term)[1]}/Courses.json`, JSON.stringify(Courses));
+  fs.writeFileSync(`./public/bobsFolder/${codeToTerm(Term)[1]}/CRNs.json`, JSON.stringify(CRNs));
 }
 module.exports.getCoursesAndCRNs = getCoursesAndCRNs;
 
@@ -397,7 +387,7 @@ D = {
   "Quantitative Thought": "QT"
 };
 
-async function getElectives() {
+async function getElectives(Term) {
   let Electives = {
     SS1: [],
     SS2: [],
@@ -408,8 +398,9 @@ async function getElectives() {
     En: [],
     QT: []
   };
-  let CRNs = await readCRNs();
-  const $ = cheerio.load(fs.readFileSync("./public/bobsFolder/GeneralEducation.html"));
+  let CRNs = await readCRNs(Term);
+  Term = codeToTerm(Term)
+  const $ = cheerio.load(fs.readFileSync(`./public/bobsFolder/${Term[1]}/${Term[0]}/GeneralEducation.html`));
   $("body > table > tbody > tr").each((index, element) => {
     if (index > 0) {
       Electives[D[$($(element).find("td")[4]).text().trim()]].push(
@@ -417,7 +408,7 @@ async function getElectives() {
       );
     }
   });
-  fs.writeFileSync("./public/bobsFolder/Electives.json", JSON.stringify(Electives));
+  fs.writeFileSync(`./public/bobsFolder/${Term[1]}/${Term[0]}/Electives.json`, JSON.stringify(Electives));
 }
 module.exports.getElectives = getElectives;
 

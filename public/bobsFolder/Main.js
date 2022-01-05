@@ -16,7 +16,6 @@ var {
   getColor,
   readCourses,
   searchByCRNs,
-  validateSubjects,
   readElectives,
   codeToTerm
 } = require("./Tools.js");
@@ -57,8 +56,8 @@ async function getArraysOfFilteredSections(
   PStartTime,
   PEndTime
 ) {
-  const Courses = await readCourses();
-  const Electives = await readElectives();
+  const Courses = await readCourses(Term);
+  const Electives = await readElectives(Term);
   let CoursesToReturn = [];
   for (let CourseFilterObject of CourseFilterObjects) {
     let Sections;
@@ -460,11 +459,7 @@ function printStuff(Perms) {
             ", " +
             intToTime(x.ET1) +
             ") " +
-            x.Schedule1 + "\n" +"(" +
-            intToTime(x.BT2) +
-            ", " +
-            intToTime(x.ET2) +
-            ") " + x.Schedule2
+            x.Schedule1
         ).join("\n")
     );
   }
@@ -486,12 +481,10 @@ async function giveNamesGetObjects(Term, CourseNames) {
 }
 
 async function test() {
-  let TestTerm = "202220";
-  let TestCRNs = [
-    "21184",
-  ];
+  let TestTerm = "202210";
+  let TestCRNs = [];
   let TestCustomCourses = [];
-  let TestCourses = await giveNamesGetObjects(TestTerm, ["ENGL206"]);
+  let TestCourses = await giveNamesGetObjects(TestTerm, ["MATH201"]);
   // TestCourses = TestCourses.concat([
   //   {
   //     CourseName: "H1",
@@ -511,3 +504,5 @@ async function test() {
   );
   console.log("\n\n\n\n\n\nPermutations are", Perms.length);
   printStuff(Perms);}
+
+  test()
