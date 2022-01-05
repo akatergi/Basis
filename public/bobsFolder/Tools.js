@@ -5,10 +5,10 @@ const fs = require("fs");
 const overLap = (S1, F1, S2, F2) => S1 < F2 && S2 < F1;
 module.exports.overLap = overLap;
 
-const hasLab = ({ Schedule2 }) => Schedule2;
+const hasLab = ({ Schedule2 }) => Boolean(Schedule2);
 module.exports.hasLab = hasLab;
 
-const isLinked = ({ LCRN }) => LCRN[0];
+const isLinked = ({ LCRN }) => Boolean(LCRN.length);
 module.exports.isLinked = isLinked;
 
 const isRecitation = ({ Section }) => !isNumberorL(Section);
@@ -138,7 +138,6 @@ module.exports.compare = compare;
 
 function check(ArrayOfSections, Section) {
   for (let CurrentSection of ArrayOfSections) {
-    console.log(hasLab(CurrentSection), hasLab(Section), CurrentSection)
     if (
       CurrentSection.Subject + CurrentSection.Code ===
       Section.Subject + Section.Code
@@ -166,7 +165,7 @@ function check(ArrayOfSections, Section) {
     if (
       hasLab(CurrentSection) &&
       !hasLab(Section) &&
-      intersectingDays(CurrentSection.Schedule2, Section.Schedule2) &&
+      intersectingDays(CurrentSection.Schedule2, Section.Schedule1) &&
       overLap(CurrentSection.BT2, CurrentSection.ET2, Section.BT1, Section.ET1)
     )
       return false;
