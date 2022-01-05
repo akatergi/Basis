@@ -27,7 +27,6 @@ app.use(session({
 app.use(flash())
 app.use((req,res,next)=>{
   res.locals.messages = req.flash("error")
-  console.log(res.locals.messages)
   next()
 })
 
@@ -42,14 +41,26 @@ app.get("/new", (req, res) => {
 
 app.get("/filter", async (req, res) => {
   let { Term, setCRNs, sections } = req.query
+
   if (!setCRNs) setCRNs = []
-  let SetSections = await searchByCRNs(Term, setCRNs)
+  try {
+  var SetSections = await searchByCRNs(Term, setCRNs)
+  } catch(e){
+    req.flash("error", e.message)
+    return res.redirect("/new")
+  }
   if (!sections) sections = []
   let courses = []
   for (let i = 0; i < sections.length; i++) {
     sections[i] = sections[i].toUpperCase().replace(" ", "")
     let sec = sections[i]
-    let profs = await getProfessors(Term, sec.slice(0, 4), sec.slice(4));
+    try {
+      console.log(Term, sec.slice(0, 4), sec.slice(4))
+      var profs = await getProfessors(Term, sec.slice(0, 4), sec.slice(4));
+    } catch(e) {
+      req.flash("error", e.message)
+      return res.redirect("/new")
+    }
     courses.push({ CourseName: sec, Professors: profs })
   }
   res.render("filterForm", { Term, SetSections, courses })
