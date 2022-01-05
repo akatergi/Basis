@@ -12,6 +12,12 @@ body{
     display:flex;
 }
 
+.colon{
+    font-size:large;
+    margin-left:0.2rem;
+    margin-right:0.2rem;
+}
+
 .seatCheck{
     color: darkgoldenrod;
 }
