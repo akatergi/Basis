@@ -58,7 +58,7 @@ async function getArraysOfFilteredSections(
   PEndTime
 ) {
   const Courses = await readCourses();
-  // const Electives = await readElectives();
+  const Electives = await readElectives();
   let CoursesToReturn = [];
   for (let CourseFilterObject of CourseFilterObjects) {
     let Sections;

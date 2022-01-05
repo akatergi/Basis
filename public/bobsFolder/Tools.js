@@ -258,21 +258,21 @@ function getDayOccurences(Section, Days, Recitation = { Schedule1: "" }) {
 module.exports.getDayOccurences = getDayOccurences;
 
 async function readCourses() {
-  let path = "Courses.json";
+  let path = "./public/bobsFolder/Courses.json";
   if (!fs.existsSync(path)) await getCoursesAndCRNs();
   return JSON.parse(fs.readFileSync(path));
 }
 module.exports.readCourses = readCourses;
 
 async function readCRNs() {
-  let path = "CRNs.json";
+  let path = "./public/bobsFolder/CRNs.json";
   if (!fs.existsSync(path)) await getCoursesAndCRNs();
   return JSON.parse(fs.readFileSync(path));
 }
 module.exports.readCRNs = readCRNs;
 
 async function readElectives() {
-  let path = "Electives.json";
+  let path = "./public/bobsFolder/Electives.json";
   if (!fs.existsSync(path)) await getElectives();
   return JSON.parse(fs.readFileSync(path));
 }
@@ -386,8 +386,8 @@ async function getCoursesAndCRNs() {
       }
     });
   }
-  fs.writeFileSync("Courses.json", JSON.stringify(Courses));
-  fs.writeFileSync("CRNs.json", JSON.stringify(CRNs));
+  fs.writeFileSync("./public/bobsFolder/Courses.json", JSON.stringify(Courses));
+  fs.writeFileSync("./public/bobsFolder/CRNs.json", JSON.stringify(CRNs));
 }
 module.exports.getCoursesAndCRNs = getCoursesAndCRNs;
 
@@ -403,7 +403,6 @@ D = {
 };
 
 async function getElectives() {
-  console.log("HERE")
   let Electives = {
     SS1: [],
     SS2: [],
@@ -423,7 +422,7 @@ async function getElectives() {
       );
     }
   });
-  fs.writeFileSync("Electives.json", JSON.stringify(Electives));
+  fs.writeFileSync("./public/bobsFolder/Electives.json", JSON.stringify(Electives));
 }
 module.exports.getElectives = getElectives;
 
