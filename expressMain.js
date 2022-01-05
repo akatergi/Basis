@@ -57,11 +57,11 @@ app.post("/schedules", async (req, res) => {
   for (let course of courses) {
     if (course.SeatsFilter === "true") course.SeatsFilter = true;
     else course.SeatsFilter = false;
+    if(!course.ProfessorFilter) course.ProfessorFilter=[]
     course.Elective = false
   }
-  var Schedules
   try{
-    Schedules = await getPermutations(Term, setSections, CustomSections, courses, PStartTime, PEndTime)
+    var Schedules = await getPermutations(Term, setSections, CustomSections, courses, PStartTime, PEndTime)
   } catch(err) {
     return res.send(err.message)
   }
