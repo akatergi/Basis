@@ -57,9 +57,13 @@ app.post("/schedules", async (req, res) => {
     if (course.SeatsFilter === "true") course.SeatsFilter = true;
     else course.SeatsFilter = false;
   }
-
-  req.session.Schedules = await GetPermutations(Term, setSections, CustomSections, courses, PStartTime, PEndTime)
-
+  try{
+    var Schedules = await GetPermutations(Term, setSections, CustomSections, courses, PStartTime, PEndTime)
+  }
+  catch(e){
+    res.send(e)
+  }
+  req.session.Schedules = Schedules
   res.redirect("/schedules")
 })
 
