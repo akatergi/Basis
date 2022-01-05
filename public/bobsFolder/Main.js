@@ -516,5 +516,3 @@ async function test() {
   console.log("\n\n\n\n\n\nPermutations are", Perms.length);
   printStuff(Perms);
 }
-
-test();
