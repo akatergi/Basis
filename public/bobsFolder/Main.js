@@ -459,11 +459,7 @@ function printStuff(Perms) {
             ", " +
             intToTime(x.ET1) +
             ") " +
-            x.Schedule1 + "\n" +"(" +
-            intToTime(x.BT2) +
-            ", " +
-            intToTime(x.ET2) +
-            ") " + x.Schedule2
+            x.Schedule1
         ).join("\n")
     );
   }
@@ -485,12 +481,10 @@ async function giveNamesGetObjects(Term, CourseNames) {
 }
 
 async function test() {
-  let TestTerm = "202220";
-  let TestCRNs = [
-    "21184",
-  ];
+  let TestTerm = "202210";
+  let TestCRNs = [];
   let TestCustomCourses = [];
-  let TestCourses = await giveNamesGetObjects(TestTerm, ["ENGL206"]);
+  let TestCourses = await giveNamesGetObjects(TestTerm, ["MATH201"]);
   // TestCourses = TestCourses.concat([
   //   {
   //     CourseName: "H1",
