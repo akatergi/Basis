@@ -306,7 +306,11 @@ async function searchByCRNs(Term, CRNsToBeConverted) {
 module.exports.searchByCRNs = searchByCRNs;
 
 async function getProfessors(Term, CourseSubject, CourseCode) {
-  let Sections = (await readCourses())[Term][CourseSubject][CourseCode];
+  try{
+    var Sections = (await readCourses())[Term][CourseSubject][CourseCode];
+  } catch{
+    throw new Error(`No course found ${CourseSubject}`)
+  }
   if (!Sections)
     throw new Error(
       `No Sections for ${CourseSubject + CourseCode} in the ${
