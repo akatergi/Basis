@@ -22,9 +22,8 @@ const checkSectionWithFilters = (
   PEndTime
 ) => {
   if (ProfessorFilter.length == 0) throw new Error(`Select at least one professor for ${Section.Subject + Section.Code}`)
-  (!SeatsFilter || Section.SeatsA > 0) &&
-  (isRecitation(Section) ||
-    ProfessorFilter.includes(Section.IName + " " + Section.ISName)) &&
+  return (!SeatsFilter || Section.SeatsA > 0) &&
+  (isRecitation(Section) || ProfessorFilter.includes(Section.IName + " " + Section.ISName)) &&
   (!PStartTime || Section.BT1 >= PStartTime) &&
   (!PEndTime || Section.ET1 <= PEndTime) &&
   (!PEndTime || !hasLab(Section) || Section.ET2 <= PEndTime);}
