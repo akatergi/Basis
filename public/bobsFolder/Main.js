@@ -303,8 +303,8 @@ async function getArraysOfFilteredSections(
  * 3- ProfesserFilter Array of string: e.g., ['Louay Bazzi', 'Ibrahim Issa'] contains names of selected professors,
  * if left empty then no professor is fitlered out
  * 4- Elective boolean: is set to true if our CourseFilter Object is for electives, false otherwise
- * @param  {number} PStartTime=null Preferred Start Time, filters out all sections that start before it (null by Default)
- * @param  {number} PEndTime=null Preferred End Time, filters out all sections that end after it (null by Default)
+ * @param  {?number} PStartTime=null Preferred Start Time, filters out all sections that start before it (null by Default)
+ * @param  {?number} PEndTime=null Preferred End Time, filters out all sections that end after it (null by Default)
  * @returns {Array.<Array.<Course>} Array of filtered and sorted sections to be permuted
  */
 async function convertCourseNamesToSections(
@@ -332,9 +332,9 @@ async function convertCourseNamesToSections(
  * It takes all the inputs, converts them accordingly, validates that there are no inputted errors, and permutes all filtered sections.
  * It also makes the first permutation be the one with the least time difference and the second with the most day difference
  * @param  {string} Term 6 Digit Term Code e.g., 202220, 202110
- * @param  {Object[]} SetSections=[] Array of Course Objects that were set by the user using their CRNs (Empty by Default)
- * @param  {Object[]} CustomSections=[] Array of Course Objects that were custom made by the user (Empty by Default)
- * @param  {{CourseName: string, SeatsFilter: boolean, ProfessorFilter: Array, Elective: boolean}[]} CourseFilterObjects
+ * @param  {Object[]} [SetSections=[]] Array of Course Objects that were set by the user using their CRNs (Empty by Default)
+ * @param  {Object[]} [CustomSections=[]] Array of Course Objects that were custom made by the user (Empty by Default)
+ * @param  {{CourseName: string, SeatsFilter: boolean, ProfessorFilter: Array, Elective: boolean}[]}CourseFilterObjects
  * Array of CourseFilter Objects. Each Filter Object contains 4 Attributes:
  * 1- CourseName string: e.g., 'EECE230', 'CMPS211', 'MATH251' if CourseFilterObject is not an elective, Otherwise:
  * switch (CourseName)
@@ -348,8 +348,8 @@ async function convertCourseNamesToSections(
  * 3- ProfesserFilter Array of string: e.g., ['Louay Bazzi', 'Ibrahim Issa'] contains names of selected professors,
  * if left empty then no professor is fitlered out
  * 4- Elective boolean: is set to true if our CourseFilter Object is for electives, false otherwise
- * @param  {number} PStartTime=null Preferred Start Time, filters out all sections that start before it (null by Default)
- * @param  {number} PEndTime=null Preferred End Time, filters out all sections that end after it (null by Default)
+ * @param  {?number} PStartTime=null Preferred Start Time, filters out all sections that start before it (null by Default)
+ * @param  {?number} PEndTime=null Preferred End Time, filters out all sections that end after it (null by Default)
  * @returns {Array.<Array.<Course>>} Array of Permutations, each permutation is unique and contains one of each course
  */
 async function getPermutations(
