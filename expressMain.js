@@ -71,7 +71,12 @@ app.post("/filter", async (req,res) => {
 app.get("/filter", async (req, res) => {
   let { Term, SetSections, courses } = req.session
   if(!Term || !SetSections || !courses){
-    req.flash("error", "Missing paramters!")
+    req.flash("error", "Missing parameters!")
+    return res.redirect("/new")
+  }
+  
+  if(SetSections.length===0 && courses.length===0){
+    req.flash("error", "Need at least one course to create schedule!")
     return res.redirect("/new")
   }
   res.render("filterForm", { Term, SetSections, courses })

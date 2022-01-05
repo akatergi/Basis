@@ -264,7 +264,7 @@ nextSchedArrow.addEventListener("click", () => {
 })
 
 let clearbtn = document.querySelector("#clearButton")
-clearbtn.addEventListener("click", clearSched)
+// clearbtn.addEventListener("click", clearSched)
 
 prevSchedArrow.addEventListener("click", () => {
     if (i > 0) {
