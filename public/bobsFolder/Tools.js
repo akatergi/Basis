@@ -410,6 +410,7 @@ D = {
 };
 
 async function getElectives() {
+  console.log("HERE")
   let Electives = {
     SS1: [],
     SS2: [],

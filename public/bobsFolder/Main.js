@@ -58,7 +58,7 @@ async function getArraysOfFilteredSections(
   PEndTime
 ) {
   const Courses = await readCourses();
-  const Electives = await readElectives();
+  // const Electives = await readElectives();
   let CoursesToReturn = [];
   for (let CourseFilterObject of CourseFilterObjects) {
     let Sections;
@@ -482,39 +482,3 @@ async function giveNamesGetObjects(Term, CourseNames) {
   }
   return A;
 }
-
-async function test() {
-  let TestTerm = "202220";
-  let TestCRNs = [
-    "21722",
-    "21185",
-    "21186",
-    "21175",
-    "21177",
-    "21392",
-    "21397"
-  ];
-  let TestCustomCourses = [];
-  let TestCourses = await giveNamesGetObjects(TestTerm, []);
-  TestCourses = TestCourses.concat([
-    {
-      CourseName: "H1",
-      SeatsFilter: true,
-      ProfessorFilter: [],
-      Elective: true
-    }
-  ]);
-  let setSections = await searchByCRNs(TestTerm, TestCRNs);
-  let Perms = await getPermutations(
-    TestTerm,
-    setSections,
-    TestCustomCourses,
-    TestCourses,
-    null,
-    null
-  );
-  console.log("\n\n\n\n\n\nPermutations are", Perms.length);
-  printStuff(Perms);
-}
-
-test();
