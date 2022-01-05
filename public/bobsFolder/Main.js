@@ -443,9 +443,6 @@ module.exports.getPermutations = getPermutations;
 
 
 
-
-
-
 function printStuff(Perms) {
   for (let Perm of Perms) {
     console.log(
