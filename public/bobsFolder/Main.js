@@ -46,8 +46,8 @@ var {
  * 3- ProfesserFilter Array of string: e.g., ['Louay Bazzi', 'Ibrahim Issa'] contains names of selected professors,
  * if left empty then no professor is fitlered out
  * 4- Elective boolean: is set to true if our CourseFilter Object is for electives, false otherwise
- * @param  {number} PStartTime=null Preferred Start Time, filters out all sections that start before it (null by Default)
- * @param  {number} PEndTime=null Preferred End Time, filters out all sections that end after it (null by Default)
+ * @param  {?number} PStartTime=null Preferred Start Time, filters out all sections that start before it (null by Default)
+ * @param  {?number} PEndTime=null Preferred End Time, filters out all sections that end after it (null by Default)
  * @returns {Array.<Array.<Course>} Array of filtered sections to be sorted
  */
 async function getArraysOfFilteredSections(
@@ -501,5 +501,3 @@ async function test() {
   );
   console.log("\n\n\n\n\n\nPermutations are", Perms.length);
   printStuff(Perms);}
-
-  test()
