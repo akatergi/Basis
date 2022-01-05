@@ -6,6 +6,7 @@ const { getProfessors, searchByCRNs, timeToInt } = require("./public/bobsFolder/
 app.use(express.json());
 const { getPermutations } = require("./public/bobsFolder/Main")
 const session = require("express-session")
+const flash = require("connect-flash")
 app.engine("ejs", ejsMate)
 
 app.use(express.urlencoded({ extended: true }))
@@ -13,8 +14,22 @@ app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '/views'))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(session({
-  secret: "1234", resave: false, saveUninitialized: false
+  secret: "1234",
+  resave: false,
+  saveUninitialized: false,
+  cookie:{
+    httpOnly: true,
+    expires: Date.now() + 1000*60*60*24*7,
+    maxAge: Date.now() + 1000*60*60*24*7
+  }
 }))
+
+app.use(flash())
+app.use((req,res,next)=>{
+  res.locals.messages = req.flash("error")
+  console.log(res.locals.messages)
+  next()
+})
 
 app.use(express.static(__dirname + "/public"));
 app.listen(3000, () => console.log("Listening on port 3000"))
@@ -22,7 +37,6 @@ app.listen(3000, () => console.log("Listening on port 3000"))
 app.get("/", (req, res) => res.redirect("/new"))
 
 app.get("/new", (req, res) => {
-  // res.send("Hi")
   res.render("scheduleForm")
 })
 
@@ -63,7 +77,8 @@ app.post("/schedules", async (req, res) => {
   try{
     var Schedules = await getPermutations(Term, setSections, CustomSections, courses, PStartTime, PEndTime)
   } catch(err) {
-    return res.send(err.message)
+    req.flash("error", err.message)
+    return res.redirect("/filter")
   }
   req.session.Schedules = Schedules
   res.redirect("/schedules")
