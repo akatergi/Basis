@@ -9,7 +9,5 @@ function x() {
     }
 }
 
-for (let i = 0; i < 10; i++) {
-    console.log(x())
-    console.log(letters)
-}
+
+console.log("a    b c    d eee e   f".replace(" ",""))

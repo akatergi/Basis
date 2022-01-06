@@ -14,7 +14,7 @@ app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '/views'))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(session({
-  secret: "1234",
+  secret: `s_'mfWntka+d]&>F>[cS(/j]r"[8cWUQs<P~`,
   resave: false,
   saveUninitialized: false,
   cookie:{
@@ -52,7 +52,7 @@ app.post("/filter", async (req,res) => {
   if (!sections) sections = []
   let courses = []
   for (let i = 0; i < sections.length; i++) {
-    sections[i] = sections[i].toUpperCase().replace(" ", "")
+    sections[i] = sections[i].toUpperCase().replace(/\s/g, '')
     let sec = sections[i]
     try {
       var profs = await getProfessors(Term, sec.slice(0, 4), sec.slice(4));
