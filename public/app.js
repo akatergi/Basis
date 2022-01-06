@@ -12,9 +12,11 @@ let nextSchedArrow = document.querySelector(".rightArrow")
 let index = document.querySelector("#index")
 let prevSchedArrow = document.querySelector(".leftArrow")
 let boxes;
+const mainSchedules = [...Schedules]
 let custom = document.querySelector("#custom")
 let lockedCRNs = []
-
+let total = document.querySelector("#total")
+let idxSpan = document.querySelector("#index")
 //Functions
 
 function labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin) {
@@ -299,16 +301,34 @@ function updateBoxes() {
 
         box.addEventListener("dblclick", () => {
             const CRN = box.classList[box.classList.length - 1].slice(9)
+            let currentSched = Schedules[i]
 
             if(lockedCRNs.includes(CRN)){
                 lockedCRNs.splice(lockedCRNs.indexOf(CRN),1)
+                Schedules = Schedules.filter( sched => {
+                    for(let course of sched) if(course.CRN===CRN) return true
+                    return false
+                })
+                let newIdxOfSched = Schedules.indexOf(currentSched)
+                i = newIdxOfSched
+                total.innerText = Schedules.length
+                idxSpan.innerText = newIdxOfSched+1
+                clearSched()
+                genSched(i)
             }
             
             else{
                 lockedCRNs.push(CRN)
-                for(let sched of Schedules){
-                    
-                }
+                Schedules = Schedules.filter( sched => {
+                    for(let course of sched) if(course.CRN===CRN) return true
+                    return false
+                })
+                let newIdxOfSched = Schedules.indexOf(currentSched)
+                i = newIdxOfSched
+                total.innerText = Schedules.length
+                idxSpan.innerText = newIdxOfSched+1
+                clearSched()
+                genSched(i)
             }
         })
     })
