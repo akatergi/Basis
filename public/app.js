@@ -311,7 +311,7 @@ function updateBoxes() {
                 }
                 Schedules = Schedulesfilter(Schedule => FCRNS(Schedule, CRNs))
                 let newIdxOfSched = Schedules.indexOf(currentSched)
-                i = newIdxOfSched
+                i = newIdxOfSchedddd
                 total.innerText = Schedules.length
                 idxSpan.innerText = newIdxOfSched+1
                 clearSched()
