@@ -69,7 +69,12 @@ async function getArraysOfFilteredSections(
       var CourseSubject = CourseFilterObject.CourseName.slice(0, 4);
       var CourseCode = CourseFilterObject.CourseName.slice(4);
       Sections = Courses[Term][CourseSubject][CourseCode];
-      if (!Sections) throw new Error(`No Section for ${CourseSubject + CourseCode} in the ${codeToTerm(Term)[0]} term`)
+      if (!Sections)
+        throw new Error(
+          `No Section for ${CourseSubject + CourseCode} in the ${
+            codeToTerm(Term)[0]
+          } term`
+        );
     }
     let [ListOfFilteredSections, ListOfFilteredRecitations] = [[], []];
     let [
@@ -83,7 +88,7 @@ async function getArraysOfFilteredSections(
       RFilterConflictStartTime,
       RFilterConflictFinishTime
     ] = [[], [], []];
-    let NumberOfSections = NumberOfRecitations = NumberOfNulls = 0;
+    let NumberOfSections = (NumberOfRecitations = NumberOfNulls = 0);
     let [LatestSectionBeginTime, EarliestSectionEndTime] = [0, 2400];
     let [LatestRecitationBeginTime, EarliestRecitationEndTime] = [0, 2400];
     for (let Section of Sections) {
@@ -372,7 +377,7 @@ async function getPermutations(
   );
   SetSections = SetSections.concat(CustomSections);
   checkIfConflictingArray(SetSections, PStartTime, PEndTime);
-  var [MaxTime, MinTime, DayOccurences] = getMaxMinDO(SetSections)
+  var [MaxTime, MinTime, DayOccurences] = getMaxMinDO(SetSections);
   let n = AllSections.length;
   let ArrayOfPermutations = [];
   var size = 0;
@@ -382,22 +387,24 @@ async function getPermutations(
   var MostDayDif = 0;
   function getPermsRecursion(Perm, Min, Max, DO, index) {
     if (index == n) {
-      Perm = [...JSON.parse(JSON.stringify(Perm))] //deep copy
+      Perm = [...JSON.parse(JSON.stringify(Perm))]; //deep copy
       for (let Section of Perm) if (!Section.Color) Section.Color = getColor();
       ArrayOfPermutations.push(Perm);
       if (Max - Min < LeastTimeDif) {
         LeastTimeDif = Max - Min;
         PermWithLeastTimeDif = size;
-      } else if (Max - Min === LeastTimeDif){
-        let CurrentDO = getMaxMinDO(ArrayOfPermutations[PermWithLeastDays])[2]
-        if (getDayDif(DO) > getDayDif(CurrentDO)) PermWithLeastTimeDif = size
+      } else if (Max - Min === LeastTimeDif) {
+        let CurrentDO = getMaxMinDO(ArrayOfPermutations[PermWithLeastDays])[2];
+        if (getDayDif(DO) > getDayDif(CurrentDO)) PermWithLeastTimeDif = size;
       }
       if (getDayDif(DO) > MostDayDif) {
         MostDayDif = getDayDif(DO);
         PermWithLeastDays = size;
-      } else if (getDayDif(DO) === MostDayDif){
-        let [CurrentMax, CurrentMin] = getMaxMinDO(ArrayOfPermutations[PermWithLeastDays])
-        if (CurrentMax - CurrentMin > Max - Min) PermWithLeastDays = size
+      } else if (getDayDif(DO) === MostDayDif) {
+        let [CurrentMax, CurrentMin] = getMaxMinDO(
+          ArrayOfPermutations[PermWithLeastDays]
+        );
+        if (CurrentMax - CurrentMin > Max - Min) PermWithLeastDays = size;
       }
       size++;
     } else {
@@ -429,6 +436,7 @@ async function getPermutations(
   getPermsRecursion(SetSections, MinTime, MaxTime, DayOccurences, 0);
 
   if (ArrayOfPermutations.length == 0)
+  //TODO: Add cases to errors
     throw new Error(
       "No Permutations with the given sections available, try different courses"
     );
@@ -436,17 +444,14 @@ async function getPermutations(
   if (PermWithLeastDays == PermWithLeastTimeDif) {
     swap(ArrayOfPermutations, 0, PermWithLeastDays);
   } else {
-    let IndexToBeSwapped = (PermWithLeastDays === 0) ? PermWithLeastTimeDif:1
+    let IndexToBeSwapped = PermWithLeastDays === 0 ? PermWithLeastTimeDif : 1;
     swap(ArrayOfPermutations, 0, PermWithLeastTimeDif);
     swap(ArrayOfPermutations, IndexToBeSwapped, PermWithLeastDays);
   }
+
   return ArrayOfPermutations;
 }
 module.exports.getPermutations = getPermutations;
-
-
-
-
 
 function printStuff(Perms) {
   for (let Perm of Perms) {
@@ -461,7 +466,8 @@ function printStuff(Perms) {
             ", " +
             intToTime(x.ET1) +
             ") " +
-            x.Schedule1 + x.CRN
+            x.Schedule1 +
+            x.CRN
         ).join("\n")
     );
   }
@@ -505,4 +511,5 @@ async function test() {
     null
   );
   console.log("\n\n\n\n\n\nPermutations are", Perms.length);
-  printStuff(Perms);}
+  printStuff(Perms);
+}

@@ -21,8 +21,11 @@ const checkSectionWithFilters = (
   PStartTime,
   PEndTime,
   Elective
-) => (!SeatsFilter || Section.SeatsA > 0) &&
-  (isRecitation(Section) || ProfessorFilter.includes(Section.IName + " " + Section.ISName) || Elective) &&
+) =>
+  (!SeatsFilter || Section.SeatsA > 0) &&
+  (isRecitation(Section) ||
+    ProfessorFilter.includes(Section.IName + " " + Section.ISName) ||
+    Elective) &&
   (!PStartTime || Section.BT1 >= PStartTime) &&
   (!PEndTime || Section.ET1 <= PEndTime) &&
   (!PEndTime || !hasLab(Section) || Section.ET2 <= PEndTime);
@@ -62,7 +65,7 @@ function swap(Arr, index1, index2) {
 }
 module.exports.swap = swap;
 
-function getMinTime(Section, MinTime, Recitation = {BT1: 2400}) {
+function getMinTime(Section, MinTime, Recitation = { BT1: 2400 }) {
   let min = Math.min(Section.BT1, Recitation.BT1);
   if (min < MinTime) MinTime = min;
   if (hasLab(Section) && Section.BT2 < MinTime) MinTime = Section.BT2;
@@ -70,7 +73,7 @@ function getMinTime(Section, MinTime, Recitation = {BT1: 2400}) {
 }
 module.exports.getMinTime = getMinTime;
 
-function getMaxTime(Section, MaxTime, Recitation = {ET1: 0}) {
+function getMaxTime(Section, MaxTime, Recitation = { ET1: 0 }) {
   let max = Math.max(Section.ET1, Recitation.ET1);
   if (max > MaxTime) MaxTime = max;
   if (hasLab(Section) && Section.ET2 > MaxTime) MaxTime = Section.ET2;
@@ -97,16 +100,16 @@ const colorsConst = [
 let colors = [...colorsConst];
 
 function getColor() {
-  if (colors.length){
-    return colors.splice(Math.floor(Math.random() * colors.length), 1)[0];}
-  else {
+  if (colors.length) {
+    return colors.splice(Math.floor(Math.random() * colors.length), 1)[0];
+  } else {
     colors = [...colorsConst];
     return colors.splice(Math.floor(Math.random() * colors.length), 1)[0];
   }
 }
 module.exports.getColor = getColor;
 
-function getMaxMinDO(ArrayOfSections){
+function getMaxMinDO(ArrayOfSections) {
   let MaxTime = 0;
   let MinTime = 2400;
   let DayOccurences = [0, 0, 0, 0, 0, 0];
@@ -115,9 +118,9 @@ function getMaxMinDO(ArrayOfSections){
     MaxTime = getMaxTime(Section, MaxTime);
     DayOccurences = getDayOccurences(Section, DayOccurences);
   }
-  return [MaxTime, MinTime, DayOccurences]
+  return [MaxTime, MinTime, DayOccurences];
 }
-module.exports.getMaxMinDO = getMaxMinDO
+module.exports.getMaxMinDO = getMaxMinDO;
 
 function getDayDif(DO) {
   let min = DO[0],
@@ -271,7 +274,7 @@ module.exports.getDayOccurences = getDayOccurences;
 
 async function readCourses(Term) {
   let path = `./public/bobsFolder/${codeToTerm(Term)[1]}/Courses.json`;
-  if (!fs.existsSync(path)) await getCoursesAndCRNs(Term)
+  if (!fs.existsSync(path)) await getCoursesAndCRNs(Term);
   return JSON.parse(fs.readFileSync(path));
 }
 module.exports.readCourses = readCourses;
@@ -284,7 +287,9 @@ async function readCRNs(Term) {
 module.exports.readCRNs = readCRNs;
 
 async function readElectives(Term) {
-  let path = `./public/bobsFolder/${codeToTerm(Term)[[1]]}/${codeToTerm(Term)[0]}/Electives.json`;
+  let path = `./public/bobsFolder/${codeToTerm(Term)[[1]]}/${
+    codeToTerm(Term)[0]
+  }/Electives.json`;
   if (!fs.existsSync(path)) await getElectives(Term);
   return JSON.parse(fs.readFileSync(path));
 }
@@ -312,10 +317,10 @@ async function searchByCRNs(Term, CRNsToBeConverted) {
 module.exports.searchByCRNs = searchByCRNs;
 
 async function getProfessors(Term, CourseSubject, CourseCode) {
-  try{
+  try {
     var Sections = (await readCourses(Term))[Term][CourseSubject][CourseCode];
   } catch {
-    throw new Error(`Could not find a course with Subject ${CourseSubject}!`)
+    throw new Error(`Could not find a course with Subject ${CourseSubject}!`);
   }
   if (!Sections)
     throw new Error(
@@ -387,8 +392,14 @@ async function getCoursesAndCRNs(Term) {
       }
     });
   }
-  fs.writeFileSync(`./public/bobsFolder/${codeToTerm(Term)[1]}/Courses.json`, JSON.stringify(Courses));
-  fs.writeFileSync(`./public/bobsFolder/${codeToTerm(Term)[1]}/CRNs.json`, JSON.stringify(CRNs));
+  fs.writeFileSync(
+    `./public/bobsFolder/${codeToTerm(Term)[1]}/Courses.json`,
+    JSON.stringify(Courses)
+  );
+  fs.writeFileSync(
+    `./public/bobsFolder/${codeToTerm(Term)[1]}/CRNs.json`,
+    JSON.stringify(CRNs)
+  );
 }
 module.exports.getCoursesAndCRNs = getCoursesAndCRNs;
 
@@ -415,8 +426,12 @@ async function getElectives(Term) {
     QT: []
   };
   let CRNs = await readCRNs(Term);
-  Term = codeToTerm(Term)
-  const $ = cheerio.load(fs.readFileSync(`./public/bobsFolder/${Term[1]}/${Term[0]}/GeneralEducation.html`));
+  Term = codeToTerm(Term);
+  const $ = cheerio.load(
+    fs.readFileSync(
+      `./public/bobsFolder/${Term[1]}/${Term[0]}/GeneralEducation.html`
+    )
+  );
   $("body > table > tbody > tr").each((index, element) => {
     if (index > 0) {
       Electives[D[$($(element).find("td")[4]).text().trim()]].push(
@@ -424,7 +439,10 @@ async function getElectives(Term) {
       );
     }
   });
-  fs.writeFileSync(`./public/bobsFolder/${Term[1]}/${Term[0]}/Electives.json`, JSON.stringify(Electives));
+  fs.writeFileSync(
+    `./public/bobsFolder/${Term[1]}/${Term[0]}/Electives.json`,
+    JSON.stringify(Electives)
+  );
 }
 module.exports.getElectives = getElectives;
 
@@ -478,8 +496,8 @@ class Course {
     this.Schedule2 = Schedule2.replaceAll(".", "");
     this.IName = IName;
     this.ISName = ISName;
-    this.LCRN = LCRN.split(", or ").map(x => x.slice(0,5));
-    if (this.LCRN.length == 1 && this.LCRN[0] == "") this.LCRN = []
+    this.LCRN = LCRN.split(", or ").map((x) => x.slice(0, 5));
+    if (this.LCRN.length == 1 && this.LCRN[0] == "") this.LCRN = [];
     this.LinkedSections = [];
     this.Color = null;
   }
