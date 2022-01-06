@@ -380,7 +380,6 @@ async function getPermutations(
   }
   let n = AllSections.length;
   let ArrayOfPermutations = [];
-  let SectionsOfSchedules = {}
   var size = 0;
   var PermWithLeastTimeDif = null;
   var LeastTimeDif = 2400;
@@ -389,11 +388,7 @@ async function getPermutations(
   function getPermsRecursion(Perm, Min, Max, DO, index) {
     if (index == n) {
       Perm = [...JSON.parse(JSON.stringify(Perm))] //deep copy
-      for (let Section of Perm){
-        if (!Section.Color) Section.Color = getColor();
-        if (SectionsOfSchedules[Section.CRN]) SectionsOfSchedules[Section.CRN].push(Perm)
-        else SectionsOfSchedules[Section.CRN] = [Perm]
-      }
+      for (let Section of Perm) if (!Section.Color) Section.Color = getColor();
       ArrayOfPermutations.push(Perm);
       if (Max - Min < LeastTimeDif) {
         LeastTimeDif = Max - Min;
@@ -443,7 +438,7 @@ async function getPermutations(
     swap(ArrayOfPermutations, 0, PermWithLeastTimeDif);
     swap(ArrayOfPermutations, 1, PermWithLeastDays);
   }
-  return [ArrayOfPermutations, SectionsOfSchedules];
+  return ArrayOfPermutations;
 }
 module.exports.getPermutations = getPermutations;
 
@@ -507,5 +502,5 @@ async function test() {
     900,
     null
   );
-  console.log("\n\n\n\n\n\nPermutations are", Perms[0].length);
-  printStuff(Perms[0]);}
+  console.log("\n\n\n\n\n\nPermutations are", Perms.length);
+  printStuff(Perms);}
