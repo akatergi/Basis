@@ -305,10 +305,11 @@ function updateBoxes() {
 
             if(lockedCRNs.includes(CRN)){
                 lockedCRNs.splice(lockedCRNs.indexOf(CRN),1)
-                Schedules = Schedules.filter( sched => {
-                    for(let course of sched) if(course.CRN===CRN) return true
-                    return false
-                })
+                const FCRNS = (Schedule, CRNs) => {
+                  for (let CRN of CRNs) if (Schedule.filter(x => x.CRN === CRN).length == 0) return false
+                  return true
+                }
+                Schedules = Schedulesfilter(Schedule => FCRNS(Schedule, CRNs))
                 let newIdxOfSched = Schedules.indexOf(currentSched)
                 i = newIdxOfSched
                 total.innerText = Schedules.length
