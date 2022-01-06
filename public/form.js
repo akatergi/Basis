@@ -68,6 +68,13 @@ addCourse.addEventListener('click', e => {
             courseCount--;
         })
 
+        newInp.addEventListener("keydown", e => {
+            if(e.keyCode===13){
+                e.preventDefault()
+                addCourse.click()
+            }
+        })
+
         let newDiv = document.createElement("div")
         newDiv.append(newInp, clearButton)
         newDiv.classList.add("CRNInpGrp")
