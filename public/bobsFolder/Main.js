@@ -81,7 +81,7 @@ async function getArraysOfFilteredSections(
       RFilterConflictStartTime,
       RFilterConflictFinishTime
     ] = [[], [], []];
-    let NumberOfSections = (NumberOfRecitations = NumberOfNulls = 0);
+    let NumberOfSections = NumberOfRecitations = NumberOfNulls = 0;
     let [LatestSectionBeginTime, EarliestSectionEndTime] = [0, 2400];
     let [LatestRecitationBeginTime, EarliestRecitationEndTime] = [0, 2400];
     for (let Section of Sections) {
