@@ -385,6 +385,7 @@ async function getPermutations(
   var MostDayDif = 0;
   function getPermsRecursion(Perm, Min, Max, DO, index) {
     if (index == n) {
+      Perm = [...JSON.parse(JSON.stringify(Perm))] //deep copy
       for (let Section of Perm) if (!Section.Color) Section.Color = getColor();
       ArrayOfPermutations.push(Perm);
       if (Max - Min < LeastTimeDif) {
@@ -403,7 +404,7 @@ async function getPermutations(
             for (let Recitation of Section.LinkedSections) {
               if (check(Perm, Recitation))
                 getPermsRecursion(
-                  Perm.concat({...Section}, {...Recitation}),
+                  Perm.concat(Section, Recitation),
                   getMinTime(Section, Min, Recitation),
                   getMaxTime(Section, Max, Recitation),
                   getDayOccurences(Section, DO, Recitation),
@@ -412,7 +413,7 @@ async function getPermutations(
             }
           } else
             getPermsRecursion(
-              Perm.concat({...Section}),
+              Perm.concat(Section),
               getMinTime(Section, Min),
               getMaxTime(Section, Max),
               getDayOccurences(Section, DO),
