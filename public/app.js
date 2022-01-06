@@ -16,6 +16,17 @@ let custom = document.querySelector("#custom")
 
 //Functions
 
+function labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin) {
+    let span = document.createElement("span")
+    span.classList.add("blockTitle")
+    span.innerText = course.Subject + " " + course.Code
+    let small = document.createElement("small")
+    small.classList.add("blockSub")
+    small.innerText = `${startHour + ":" + (startMin < 10 ? `0${startMin}` : startMin) + "-" + endHour + ":" + (endMin < 10 ? `0${endMin}` : endMin)}`
+    courseBlock.append(span)
+    courseBlock.append(small)
+}
+
 function fixTimes(BT, ET) {
     let B = BT.toString()
     let E = ET.toString()
@@ -57,7 +68,7 @@ function genSched(i) {
                     let percentage = (60 - cM) / 60 * 100
                     courseBlock.style.height = `${percentage}%`
                     if (written === false && percentage >= 50) {
-                        courseBlock.innerHTML = `<span class='blockTitle'> ${course.Subject + " " + course.Code}</span> <small class='blockSub'> ${startHour + ":" + (startMin < 10 ? `0${startMin}` : startMin) + "-" + endHour + ":" + (endMin < 10 ? `0${endMin}` : endMin)} </small>`;
+                        labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin)
                         overrideWritten = true;
                     }
                     if (!content.classList.contains("contentTop")) {
@@ -97,7 +108,7 @@ function genSched(i) {
                     courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                     if (written === false) {
                         overrideWritten = true
-                        courseBlock.innerHTML = `<span class='blockTitle'> ${course.Subject + " " + course.Code}</span> <small class='blockSub'> ${startHour + ":" + (startMin < 10 ? `0${startMin}` : startMin) + "-" + endHour + ":" + (endMin < 10 ? `0${endMin}` : endMin)} </small>`
+                        labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin)
                     }
                     courseBlock.style.backgroundColor = course.Color
                     if (i === 0) courseBlock.style.borderRadius = "7px 7px 7px 7px"
@@ -131,7 +142,7 @@ function genSched(i) {
                         let percentage = (60 - cM) / 60 * 100
                         courseBlock.style.height = `${percentage}%`
                         if (written === false && percentage >= 50) {
-                            courseBlock.innerHTML = `<span class='blockTitle'> ${course.Subject + " " + course.Code}</span> <small class='blockSub'> ${startHour + ":" + (startMin < 10 ? `0${startMin}` : startMin) + "-" + endHour + ":" + (endMin < 10 ? `0${endMin}` : endMin)} </small>`;
+                            labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin)
                             overrideWritten = true;
                         }
                         content.append(courseBlock)
@@ -151,7 +162,7 @@ function genSched(i) {
                         content.append(courseBlock)
                         courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                         if (written === false) {
-                            courseBlock.innerHTML = `<span class='blockTitle'> ${course.Subject + " " + course.Code}</span> <small class='blockSub'> ${startHour + ":" + (startMin < 10 ? `0${startMin}` : startMin) + "-" + endHour + ":" + (endMin < 10 ? `0${endMin}` : endMin)} </small>`
+                            labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin)
                         }
                         courseBlock.style.backgroundColor = course.Color
                         courseBlock.style.borderRadius = "0px 0px 7px 7px"
@@ -163,6 +174,42 @@ function genSched(i) {
                 if (overrideWritten) written = true
             }
         }
+    }
+    custom.innerHTML=""
+    for (let j = 0; j < Schedules[i].length; j++) {
+        let course = Schedules[i][j]
+        let newInp = document.createElement("input")
+        newInp.value = course.Color
+        newInp.type = "color"
+        newInp.id = `color-${course.CRN}`
+        newInp.addEventListener("input", () => {
+            let commonCRN = document.querySelectorAll(`.occupied-${course.CRN}`)
+            commonCRN.forEach(courseBlock => {
+                let newColor = newInp.value
+                Schedules[i][j].Color = newColor
+                courseBlock.style.backgroundColor = newColor
+                ////////////////////////////////////////////////////////////
+                let p = courseBlock.parentElement
+                let p2 = p.parentElement
+                if (p.classList.contains("contentBott")) p2.style.borderBottom = `1px solid ${newColor}`;
+                else if (p.classList.contains("contentBoth")) {
+                    let children = p.childNodes
+                    let last = children[children.length - 1]
+                    if (last.classList.contains(`occupied-${course.CRN}`)) p2.style.borderBottom = `1px solid ${newColor}`
+                }
+                ////////////////////////////////////////////////////////////
+                updateBoxes()
+            })
+        })
+        let label = document.createElement("label")
+        label.for = `color-${course.CRN}`
+        label.innerText = `${course.Subject} ${course.Code} - ${course.CRN}`
+        label.classList.add("colorTitle")
+        let div = document.createElement("div")
+        div.classList.add("form-group-color", "mt-2", "mb-2")
+        div.append(newInp)
+        div.append(label)
+        custom.append(div)
     }
 }
 
@@ -191,7 +238,6 @@ function findByCRN(CRN) {
 function updateBoxes() {
     boxes.forEach(box => {
         let color = box.style.backgroundColor
-        console.log(box.style.backgroundColor)
         let crnClass = box.classList[box.classList.length - 1]
         box.addEventListener("mouseenter", () => {
             if (box.classList.contains("occupied")) {
@@ -273,25 +319,6 @@ prevSchedArrow.addEventListener("click", () => {
         updateBoxes()
     }
 })
-
-for(let j=0; j<Schedules[i].length; j++){
-    let course = Schedules[i][j]
-    console.log(course)
-    let newInp = document.createElement("input")
-    newInp.value = course.Color
-    newInp.type="color"
-    newInp.id = `color-${course.CRN}`
-    newInp.addEventListener("input", () => {
-        let commonCRN = document.querySelectorAll(`.occupied-${course.CRN}`)
-        commonCRN.forEach(course => {
-            let newColor = newInp.value
-            course.Color = newColor
-            course.style.backgroundColor = newColor
-            updateBoxes()
-        })
-    })
-    custom.append(newInp)
-}
 
 genSched(i)
 boxes = document.querySelectorAll(".course")

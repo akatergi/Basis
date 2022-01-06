@@ -1,13 +1,9 @@
-const lettersConst = ["A", "B", "C", "D", "E", "F", "G"]
-let letters = ["A", "B", "C", "D", "E", "F", "G"]
+`<span class='blockTitle'> ${course.Subject + " " + course.Code}</span> <small class='blockSub'> ${startHour + ":" + (startMin < 10 ? `0${startMin}` : startMin) + "-" + endHour + ":" + (endMin < 10 ? `0${endMin}` : endMin)} </small>`
 
-function x() {
-    if (letters.length) return letters.splice(Math.floor(Math.random() * letters.length), 1)[0]
-    else {
-        letters = lettersConst
-        return letters.splice(Math.floor(Math.random() * letters.length), 1)[0]
-    }
-}
-
-
-console.log("a    b c    d eee e   f".replace(" ",""))
+let span = document.createElement("span")
+span.classList.add("blockTitle")
+span.innerText = course.Subject + " " + course.Code
+let small = document.createElement("small")
+small.classList.add("blockSub")
+small.classList.innerText = `${startHour + ":" + (startMin < 10 ? `0${startMin}` : startMin) + "-" + endHour + ":" + (endMin < 10 ? `0${endMin}` : endMin)}`
+courseBlock.append(span, small)

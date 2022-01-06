@@ -112,6 +112,16 @@ div.contentBoth{
     justify-content: space-between;
 }
 
+.form-group-color{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.colorTitle{
+    font-weight:700;
+}
+
 .blockTitle{
     margin-top:0.3em;
     font-weight:700;
