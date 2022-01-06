@@ -1,3 +1,4 @@
+const { DocumentPosition } = require("domutils");
 var {
   Course,
   hasLab,
@@ -17,7 +18,8 @@ var {
   readCourses,
   searchByCRNs,
   readElectives,
-  codeToTerm
+  codeToTerm,
+  getMaxMinDO
 } = require("./Tools.js");
 
 /**This function filters all our sections and contains most of the error handling.
@@ -370,14 +372,7 @@ async function getPermutations(
   );
   SetSections = SetSections.concat(CustomSections);
   checkIfConflictingArray(SetSections, PStartTime, PEndTime);
-  var MaxTime = 0;
-  var MinTime = 2400;
-  var DayOccurences = [0, 0, 0, 0, 0, 0];
-  for (let Section of SetSections) {
-    MinTime = getMinTime(Section, MinTime);
-    MaxTime = getMaxTime(Section, MaxTime);
-    DayOccurences = getDayOccurences(Section, DayOccurences);
-  }
+  var [MaxTime, MinTime, DayOccurences] = getMaxMinDO(SetSections)
   let n = AllSections.length;
   let ArrayOfPermutations = [];
   var size = 0;
@@ -393,10 +388,16 @@ async function getPermutations(
       if (Max - Min < LeastTimeDif) {
         LeastTimeDif = Max - Min;
         PermWithLeastTimeDif = size;
+      } else if (Max - Min === LeastTimeDif){
+        let CurrentDO = getMaxMinDO(ArrayOfPermutations[PermWithLeastDays])[2]
+        if (getDayDif(DO) > getDayDif(CurrentDO)) PermWithLeastTimeDif = size
       }
       if (getDayDif(DO) > MostDayDif) {
         MostDayDif = getDayDif(DO);
         PermWithLeastDays = size;
+      } else if (getDayDif(DO) === MostDayDif){
+        let [CurrentMax, CurrentMin] = getMaxMinDO(ArrayOfPermutations[PermWithLeastDays])
+        if (CurrentMax - CurrentMin > Max - Min) PermWithLeastDays = size
       }
       size++;
     } else {
@@ -435,8 +436,9 @@ async function getPermutations(
   if (PermWithLeastDays == PermWithLeastTimeDif) {
     swap(ArrayOfPermutations, 0, PermWithLeastDays);
   } else {
+    let IndexToBeSwapped = (PermWithLeastDays === 0) ? PermWithLeastTimeDif:1
     swap(ArrayOfPermutations, 0, PermWithLeastTimeDif);
-    swap(ArrayOfPermutations, 1, PermWithLeastDays);
+    swap(ArrayOfPermutations, IndexToBeSwapped, PermWithLeastDays);
   }
   return ArrayOfPermutations;
 }
@@ -459,7 +461,7 @@ function printStuff(Perms) {
             ", " +
             intToTime(x.ET1) +
             ") " +
-            x.Schedule1
+            x.Schedule1 + x.CRN
         ).join("\n")
     );
   }

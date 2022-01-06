@@ -62,7 +62,7 @@ function swap(Arr, index1, index2) {
 }
 module.exports.swap = swap;
 
-function getMinTime(Section, MinTime, Recitation = { BT1: 2400 }) {
+function getMinTime(Section, MinTime, Recitation = {BT1: 2400}) {
   let min = Math.min(Section.BT1, Recitation.BT1);
   if (min < MinTime) MinTime = min;
   if (hasLab(Section) && Section.BT2 < MinTime) MinTime = Section.BT2;
@@ -70,7 +70,7 @@ function getMinTime(Section, MinTime, Recitation = { BT1: 2400 }) {
 }
 module.exports.getMinTime = getMinTime;
 
-function getMaxTime(Section, MaxTime, Recitation = { ET1: 0 }) {
+function getMaxTime(Section, MaxTime, Recitation = {ET1: 0}) {
   let max = Math.max(Section.ET1, Recitation.ET1);
   if (max > MaxTime) MaxTime = max;
   if (hasLab(Section) && Section.ET2 > MaxTime) MaxTime = Section.ET2;
@@ -105,6 +105,19 @@ function getColor() {
   }
 }
 module.exports.getColor = getColor;
+
+function getMaxMinDO(ArrayOfSections){
+  let MaxTime = 0;
+  let MinTime = 2400;
+  let DayOccurences = [0, 0, 0, 0, 0, 0];
+  for (let Section of ArrayOfSections) {
+    MinTime = getMinTime(Section, MinTime);
+    MaxTime = getMaxTime(Section, MaxTime);
+    DayOccurences = getDayOccurences(Section, DayOccurences);
+  }
+  return [MaxTime, MinTime, DayOccurences]
+}
+module.exports.getMaxMinDO = getMaxMinDO
 
 function getDayDif(DO) {
   let min = DO[0],
