@@ -97,7 +97,8 @@ async function getArraysOfFilteredSections(
             CourseFilterObject.SeatsFilter,
             CourseFilterObject.ProfessorFilter,
             PStartTime,
-            PEndTime
+            PEndTime,
+            CourseFilterObject.Elective
           )
         )
           ListOfFilteredRecitations.push(Section);
@@ -123,7 +124,8 @@ async function getArraysOfFilteredSections(
             CourseFilterObject.SeatsFilter,
             CourseFilterObject.ProfessorFilter,
             PStartTime,
-            PEndTime
+            PEndTime,
+            CourseFilterObject.Elective
           )
         )
           ListOfFilteredSections.push(Section);
@@ -487,24 +489,23 @@ async function test() {
   let TestTerm = "202220";
   let TestCRNs = [];
   let TestCustomCourses = [];
-  let TestCourses = await giveNamesGetObjects(TestTerm, ["PHYS210"]);
-  // TestCourses = TestCourses.concat([
-  //   {
-  //     CourseName: "H1",
-  //     SeatsFilter: true,
-  //     ProfessorFilter: [],
-  //     Elective: true
-  //   }
-  // ]);
+  let TestCourses = await giveNamesGetObjects(TestTerm, ["EECE340", "EECE380", "EECE321", "EECE321L", "EECE311"]);
+  TestCourses = TestCourses.concat([
+    {
+      CourseName: "H1",
+      SeatsFilter: true,
+      ProfessorFilter: [],
+      Elective: true
+    }
+  ]);
   let setSections = await searchByCRNs(TestTerm, TestCRNs);
   let Perms = await getPermutations(
     TestTerm,
     setSections,
     TestCustomCourses,
     TestCourses,
-    null,
+    900,
     null
   );
   console.log("\n\n\n\n\n\nPermutations are", Perms[0].length);
-  printStuff(Perms[0]);
-  console.log(Perms[1])}
+  printStuff(Perms[0]);}
