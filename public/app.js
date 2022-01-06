@@ -12,6 +12,8 @@ let nextSchedArrow = document.querySelector(".rightArrow")
 let index = document.querySelector("#index")
 let prevSchedArrow = document.querySelector(".leftArrow")
 let boxes;
+let custom = document.querySelector("#custom")
+
 //Functions
 
 function fixTimes(BT, ET) {
@@ -36,10 +38,8 @@ function fixTimes(BT, ET) {
     }
     return { startHour, startMin, endHour, endMin }
 }
-console.log(Schedules[0])
 function genSched(i) {
     for (let course of Schedules[i]) {
-        // console.log(course.Subject, course.Code, course.Color)
         let { startHour, startMin, endHour, endMin } = fixTimes(course.BT1, course.ET1)
         let cH = startHour
         let written = false
@@ -84,7 +84,6 @@ function genSched(i) {
                     let courseBlock = document.createElement("div")
                     courseBlock.classList.add("course")
                     courseBlock.style.height = `${100 - ((60 - cM) / 60 * 100)}%`
-                    console.log(`cM: ${cM}, endMin: ${endMin}, ${100 - ((60 - cM) / 60 * 100)}`)
                     if (!content.classList.contains("contentBott")) {
                         content.classList.add("contentTop")
                         content.append(courseBlock)
@@ -183,7 +182,7 @@ function clearSched() {
     })
 }
 
-function findByCRN(CRN) { //Make it so that it only checks current Sched
+function findByCRN(CRN) {
     for (let course of Schedules[i]) {
         if (course.CRN === CRN) return course
     }
@@ -192,6 +191,7 @@ function findByCRN(CRN) { //Make it so that it only checks current Sched
 function updateBoxes() {
     boxes.forEach(box => {
         let color = box.style.backgroundColor
+        console.log(box.style.backgroundColor)
         let crnClass = box.classList[box.classList.length - 1]
         box.addEventListener("mouseenter", () => {
             if (box.classList.contains("occupied")) {
@@ -263,9 +263,6 @@ nextSchedArrow.addEventListener("click", () => {
     }
 })
 
-let clearbtn = document.querySelector("#clearButton")
-clearbtn.addEventListener("click", clearSched)
-
 prevSchedArrow.addEventListener("click", () => {
     if (i > 0) {
         clearSched()
@@ -276,6 +273,25 @@ prevSchedArrow.addEventListener("click", () => {
         updateBoxes()
     }
 })
+
+for(let j=0; j<Schedules[i].length; j++){
+    let course = Schedules[i][j]
+    console.log(course)
+    let newInp = document.createElement("input")
+    newInp.value = course.Color
+    newInp.type="color"
+    newInp.id = `color-${course.CRN}`
+    newInp.addEventListener("input", () => {
+        let commonCRN = document.querySelectorAll(`.occupied-${course.CRN}`)
+        commonCRN.forEach(course => {
+            let newColor = newInp.value
+            course.Color = newColor
+            course.style.backgroundColor = newColor
+            updateBoxes()
+        })
+    })
+    custom.append(newInp)
+}
 
 genSched(i)
 boxes = document.querySelectorAll(".course")

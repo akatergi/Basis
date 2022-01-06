@@ -5,7 +5,7 @@ body{
 table{
     width:100%;
     table-layout: fixed;
-    /* height: 100vh; */
+    height: 100vh;
     /* border-spacing: 0px; */
 }
 
@@ -67,12 +67,13 @@ td{
 }
 
 tr.top{
-    height:2.9rem;
+    height:1.9rem;
 }
 
 table td > div {
     overflow: hidden;
-    height: 100px;
+    height: 5em;
+    /* height:100px; */
 }
 
 .col-8{
@@ -114,8 +115,20 @@ div.contentBoth{
 .blockTitle{
     margin-top:0.3em;
     font-weight:700;
+    font-size: 0.9rem;
     display:block;
     margin-bottom: 0;
+}
+
+.course{
+    display:flex;
+    flex-direction: column;
+    justify-content: top;
+}
+
+.blockSub{
+    transform: translateY(-0.3em);
+    font-size: 0.8rem;
 }
 
 #arrows{
@@ -123,4 +136,8 @@ div.contentBoth{
     justify-content: space-evenly;
     margin-top: 2em;
     margin-bottom: 2em;
+}
+
+#schedMain{
+    height:100vh;
 }

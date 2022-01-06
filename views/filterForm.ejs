@@ -66,9 +66,10 @@
 
                                 <% for(let prof of course.Professors) {%>
                                     <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="check-<%= prof.replace(/\s/g, '')%>-<%= course.CourseName %>"
+                                        <% let label= `check-${prof}-${course.CourseName}` %> 
+                                        <input type="checkbox" class="form-check-input" id="<%= label %>"
                                             value="<%= prof %>" name="courses[<%- i %>][ProfessorFilter][]" checked>
-                                        <label class="form-check-label" for="check-<%= prof.replace(/\s/g, '') %>">
+                                        <label class="form-check-label" for="<%= label %>">
                                             <i class="fas fa-user-tie"></i> <%= prof===". STAFF" ? prof="TBA" : prof %>
                                         </label>
                                     </div>
