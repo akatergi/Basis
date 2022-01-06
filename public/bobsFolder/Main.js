@@ -165,11 +165,11 @@ async function getArraysOfFilteredSections(
         throw new Error("All sections had Null Start/End Times");
       let Reasons = "";
       if (LFilterConflictSeats != 0)
-        Reasons += "Section/s with no available seats " + LFilterConflictSeats;
+        Reasons += LFilterConflictSeats.length +  " Section" + (LFilterConflictSeats.length > 1 ? "s" : "") + " with no available seats " + LFilterConflictSeats;
       if (LFilterConflictStartTime != 0)
         Reasons +=
-          (Reasons != "" ? "\n" : "") +
-          `Section${
+          (Reasons != "" ? "\n" : "") + LFilterConflictStartTime.length +
+          ` Section${
             LFilterConflictStartTime.length > 1
               ? "s that start"
               : " that starts"
@@ -186,8 +186,8 @@ async function getArraysOfFilteredSections(
             : "");
       if (LFilterConflictFinishTime != 0)
         Reasons +=
-          (Reasons != "" ? "\n" : "") +
-          `Section${
+          (Reasons != "" ? "\n" : "") + LFilterConflictFinishTime.length +
+          ` Section${
             LFilterConflictFinishTime.length > 1 ? "s that end" : " that ends"
           } after ` +
           intToTime(PEndTime) +
@@ -202,8 +202,8 @@ async function getArraysOfFilteredSections(
             : "");
       if (LFilterConflictFinishLabTime != 0)
         Reasons +=
-          (Reasons != "" ? "\n" : "") +
-          `Lab${
+          (Reasons != "" ? "\n" : "") + LFilterConflictFinishLabTime.length +
+          ` Lab${
             LFilterConflictFinishLabTime.length > 1
               ? "s that end"
               : " that ends"
@@ -229,11 +229,11 @@ async function getArraysOfFilteredSections(
         let Reasons = "";
         if (RFilterConflictSeats != 0)
           Reasons +=
-            "Recitation/s with no available seats " + RFilterConflictSeats;
+            RFilterConflictSeats + " Recitation" + (RFilterConflictSeats.length > 1 ? "s" : "") + " with no available seats " + RFilterConflictSeats;
         if (RFilterConflictStartTime != 0)
           Reasons +=
-            (Reasons != "" ? "\n" : "") +
-            `Recitation${
+            (Reasons != "" ? "\n" : "") + RFilterConflictStartTime.length +
+            ` Recitation${
               RFilterConflictStartTime.length > 1
                 ? "s that start"
                 : " that starts"
@@ -245,12 +245,12 @@ async function getArraysOfFilteredSections(
             ).join("\n") +
             (RFilterConflictFinishTime.length != NumberOfRecitations
               ? "\nSuggestion: Set preferred start time to " +
-                intToTime(LatestSectionBeginTime)
+                intToTime(LatestRecitationBeginTime)
               : "");
         if (RFilterConflictFinishTime != 0)
           Reasons +=
-            (Reasons != "" ? "\n" : "") +
-            `Recitation${
+            (Reasons != "" ? "\n" : "") + RFilterConflictFinishTime.length + 
+            ` Recitation${
               RFilterConflictFinishTime.length > 1 ? "s that end" : " that ends"
             } after ` +
             intToTime(PEndTime) +
@@ -260,7 +260,7 @@ async function getArraysOfFilteredSections(
             ).join("\n") +
             (RFilterConflictStartTime.length != NumberOfRecitations
               ? "\nSuggestion: Set preferred end time to " +
-                intToTime(EarliestSectionEndTime)
+                intToTime(EarliestRecitationEndTime)
               : "");
         throw new Error(
           `No available recitations for\n${
