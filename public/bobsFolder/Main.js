@@ -489,15 +489,15 @@ async function test() {
   let TestTerm = "202220";
   let TestCRNs = [];
   let TestCustomCourses = [];
-  let TestCourses = await giveNamesGetObjects(TestTerm, ["EECE340", "EECE380", "EECE321", "EECE321L", "EECE311"]);
-  TestCourses = TestCourses.concat([
-    {
-      CourseName: "H1",
-      SeatsFilter: true,
-      ProfessorFilter: [],
-      Elective: true
-    }
-  ]);
+  let TestCourses = await giveNamesGetObjects(TestTerm, ["PHYS210", "EECE340"]);
+  // TestCourses = TestCourses.concat([
+  //   {
+  //     CourseName: "H1",
+  //     SeatsFilter: true,
+  //     ProfessorFilter: [],
+  //     Elective: true
+  //   }
+  // ]);
   let setSections = await searchByCRNs(TestTerm, TestCRNs);
   let Perms = await getPermutations(
     TestTerm,
