@@ -102,7 +102,7 @@ app.post("/schedules", async (req, res) => {
     course.Elective = false
   }
   try{
-    var Schedules = (await getPermutations(Term, setSections, CustomSections, courses, PStartTime, PEndTime))[0]
+    var Schedules = await getPermutations(Term, setSections, CustomSections, courses, PStartTime, PEndTime)
   } catch(err) {
     req.flash("error", err.message)
     return res.redirect("/filter")
