@@ -52,6 +52,7 @@ function fixTimes(BT, ET) {
     }
     return { startHour, startMin, endHour, endMin }
 }
+
 function genSched(i) {
     for (let course of Schedules[i]) {
         let { startHour, startMin, endHour, endMin } = fixTimes(course.BT1, course.ET1)
@@ -178,7 +179,7 @@ function genSched(i) {
             }
         }
     }
-    custom.innerHTML=""
+    custom.innerHTML = ""
     for (let j = 0; j < Schedules[i].length; j++) {
         let course = Schedules[i][j]
         let newInp = document.createElement("input")
@@ -236,6 +237,11 @@ function findByCRN(CRN) {
     for (let course of Schedules[i]) {
         if (course.CRN === CRN) return course
     }
+}
+
+const checkCRNsInSched = (Schedule, CRNs) => {
+    for (let CRN of CRNs) if (Schedule.filter(x => x.CRN === CRN).length == 0) return false
+    return true
 }
 
 function updateBoxes() {
@@ -303,33 +309,46 @@ function updateBoxes() {
             const CRN = box.classList[box.classList.length - 1].slice(9)
             let currentSched = Schedules[i]
 
-            if(lockedCRNs.includes(CRN)){
-                lockedCRNs.splice(lockedCRNs.indexOf(CRN),1)
-                const FCRNS = (Schedule, CRNs) => {
-                  for (let CRN of CRNs) if (Schedule.filter(x => x.CRN === CRN).length == 0) return false
-                  return true
-                }
-                Schedules = Schedulesfilter(Schedule => FCRNS(Schedule, CRNs))
+            if (lockedCRNs.includes(CRN)) {
+                lockedCRNs.splice(lockedCRNs.indexOf(CRN), 1)
+                Schedules = mainSchedules.filter(Schedule => checkCRNsInSched(Schedule, lockedCRNs))
                 let newIdxOfSched = Schedules.indexOf(currentSched)
                 i = newIdxOfSched
                 total.innerText = Schedules.length
-                idxSpan.innerText = newIdxOfSched+1
+                idxSpan.innerText = newIdxOfSched + 1
                 clearSched()
                 genSched(i)
+
+                boxes = document.querySelectorAll(".course")
+                updateBoxes()
             }
-            
-            else{
+
+            else {
                 lockedCRNs.push(CRN)
-                Schedules = Schedules.filter( sched => {
-                    for(let course of sched) if(course.CRN===CRN) return true
+                Schedules = Schedules.filter(sched => {
+                    for (let course of sched) if (course.CRN === CRN) return true
                     return false
                 })
                 let newIdxOfSched = Schedules.indexOf(currentSched)
                 i = newIdxOfSched
                 total.innerText = Schedules.length
-                idxSpan.innerText = newIdxOfSched+1
+                idxSpan.innerText = newIdxOfSched + 1
                 clearSched()
                 genSched(i)
+
+                boxes = document.querySelectorAll(".course")
+                updateBoxes()
+
+                let allSpans = document.querySelectorAll(`.blockTitle`)
+                console.log(allSpans)
+                allSpans.forEach(span => {
+                    if (span.parentNode.classList.contains(`occupied-${CRN}`)) {
+                        let icon = document.createElement("i")
+                        icon.classList.add("fas")
+                        icon.classList.add("fa-lock")
+                        span.append(icon)
+                    }
+                })
             }
         })
     })
