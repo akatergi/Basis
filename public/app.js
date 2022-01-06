@@ -13,6 +13,7 @@ let index = document.querySelector("#index")
 let prevSchedArrow = document.querySelector(".leftArrow")
 let boxes;
 let custom = document.querySelector("#custom")
+let lockedCRNs = []
 
 //Functions
 
@@ -293,6 +294,21 @@ function updateBoxes() {
                 cardName.innerText = course.Title
                 if (course.IName === "." && course.ISName === "STAFF") instructor.innerText = 'TBA'
                 else instructor.innerText = `${course.IName} ${course.ISName}`
+            }
+        })
+
+        box.addEventListener("dblclick", () => {
+            const CRN = box.classList[box.classList.length - 1].slice(9)
+
+            if(lockedCRNs.includes(CRN)){
+                lockedCRNs.splice(lockedCRNs.indexOf(CRN),1)
+            }
+            
+            else{
+                lockedCRNs.push(CRN)
+                for(let sched of Schedules){
+                    
+                }
             }
         })
     })

@@ -30,3 +30,12 @@ body{
 .courseInp{
     margin:0px 0px 0px 0px;
 }
+
+.bg-darkBlue{
+    background-color: #1d3557;
+}
+
+.btn-primary2{
+    background-color: #04ABF4;
+    color:white;
+}
