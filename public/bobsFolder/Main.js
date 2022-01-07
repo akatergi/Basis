@@ -165,10 +165,16 @@ async function getArraysOfFilteredSections(
         throw new Error("All sections had Null Start/End Times");
       let Reasons = "";
       if (LFilterConflictSeats != 0)
-        Reasons += LFilterConflictSeats.length +  " Section" + (LFilterConflictSeats.length > 1 ? "s" : "") + " with no available seats " + LFilterConflictSeats;
+        Reasons +=
+          LFilterConflictSeats.length +
+          " Section" +
+          (LFilterConflictSeats.length > 1 ? "s" : "") +
+          " with no available seats " +
+          LFilterConflictSeats;
       if (LFilterConflictStartTime != 0)
         Reasons +=
-          (Reasons != "" ? "\n" : "") + LFilterConflictStartTime.length +
+          (Reasons != "" ? "\n" : "") +
+          LFilterConflictStartTime.length +
           ` Section${
             LFilterConflictStartTime.length > 1
               ? "s that start"
@@ -186,7 +192,8 @@ async function getArraysOfFilteredSections(
             : "");
       if (LFilterConflictFinishTime != 0)
         Reasons +=
-          (Reasons != "" ? "\n" : "") + LFilterConflictFinishTime.length +
+          (Reasons != "" ? "\n" : "") +
+          LFilterConflictFinishTime.length +
           ` Section${
             LFilterConflictFinishTime.length > 1 ? "s that end" : " that ends"
           } after ` +
@@ -202,7 +209,8 @@ async function getArraysOfFilteredSections(
             : "");
       if (LFilterConflictFinishLabTime != 0)
         Reasons +=
-          (Reasons != "" ? "\n" : "") + LFilterConflictFinishLabTime.length +
+          (Reasons != "" ? "\n" : "") +
+          LFilterConflictFinishLabTime.length +
           ` Lab${
             LFilterConflictFinishLabTime.length > 1
               ? "s that end"
@@ -229,10 +237,15 @@ async function getArraysOfFilteredSections(
         let Reasons = "";
         if (RFilterConflictSeats != 0)
           Reasons +=
-            RFilterConflictSeats + " Recitation" + (RFilterConflictSeats.length > 1 ? "s" : "") + " with no available seats " + RFilterConflictSeats;
+            RFilterConflictSeats +
+            " Recitation" +
+            (RFilterConflictSeats.length > 1 ? "s" : "") +
+            " with no available seats " +
+            RFilterConflictSeats;
         if (RFilterConflictStartTime != 0)
           Reasons +=
-            (Reasons != "" ? "\n" : "") + RFilterConflictStartTime.length +
+            (Reasons != "" ? "\n" : "") +
+            RFilterConflictStartTime.length +
             ` Recitation${
               RFilterConflictStartTime.length > 1
                 ? "s that start"
@@ -249,7 +262,8 @@ async function getArraysOfFilteredSections(
               : "");
         if (RFilterConflictFinishTime != 0)
           Reasons +=
-            (Reasons != "" ? "\n" : "") + RFilterConflictFinishTime.length + 
+            (Reasons != "" ? "\n" : "") +
+            RFilterConflictFinishTime.length +
             ` Recitation${
               RFilterConflictFinishTime.length > 1 ? "s that end" : " that ends"
             } after ` +
@@ -436,7 +450,7 @@ async function getPermutations(
   getPermsRecursion(SetSections, MinTime, MaxTime, DayOccurences, 0);
 
   if (ArrayOfPermutations.length == 0)
-  //TODO: Add cases to errors
+    //TODO: Add cases to errors
     throw new Error(
       "No Permutations with the given sections available, try different courses"
     );
@@ -512,7 +526,7 @@ async function test() {
       Elective: true
     }
   ];
-  
+
   let setSections = await searchByCRNs(TestTerm, TestCRNs);
   let Perms = await getPermutations(
     TestTerm,
