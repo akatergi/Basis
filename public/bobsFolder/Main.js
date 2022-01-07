@@ -421,6 +421,7 @@ async function getPermutations(
         if (CurrentMax - CurrentMin > Max - Min) PermWithLeastDays = size;
       }
       size++;
+      if (size > 3000) throw new Error("Too many permutations, add more filters please")
     } else {
       for (let Section of AllSections[index]) {
         if (check(Perm, Section)) {
