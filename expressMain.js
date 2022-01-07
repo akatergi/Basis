@@ -7,12 +7,14 @@ app.use(express.json());
 const { getPermutations } = require("./public/bobsFolder/Main")
 const session = require("express-session")
 const flash = require("connect-flash")
+
 app.engine("ejs", ejsMate)
 
 app.use(express.urlencoded({ extended: true }))
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '/views'))
 app.use(express.static(path.join(__dirname, 'public')))
+
 app.use(session({
   secret: `s_'mfWntka+d]&>F>[cS(/j]r"[8cWUQs<P~`,
   resave: false,
