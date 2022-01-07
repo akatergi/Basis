@@ -7,6 +7,7 @@ app.use(express.json());
 const { getPermutations } = require("./public/bobsFolder/Main")
 const session = require("express-session")
 const flash = require("connect-flash")
+const e = require("connect-flash")
 
 app.engine("ejs", ejsMate)
 
@@ -43,6 +44,7 @@ app.get("/new", (req, res) => {
 
 app.post("/filter", async (req, res) => {
   let { Term, setCRNs, sections, electives} = req.body
+  if(!electives) electives = []
   let electivesArr = []
   for(let elective of electives){
     electivesArr.push({CourseName:elective, SeatsFilter: true, ProfessorFilter:[], Elective:true})
