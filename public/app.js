@@ -53,6 +53,13 @@ function fixTimes(BT, ET) {
     return { startHour, startMin, endHour, endMin }
 }
 
+function makeIcon(){
+    let icon = document.createElement("i")
+    icon.classList.add("fas")
+    icon.classList.add("fa-lock")
+    return icon
+}
+
 function genSched(i) {
     for (let course of Schedules[i]) {
         let { startHour, startMin, endHour, endMin } = fixTimes(course.BT1, course.ET1)
@@ -61,6 +68,9 @@ function genSched(i) {
         let cM = startMin
         let i = 0
         let overrideWritten = false
+        let shouldLock = lockedCRNs.includes(course.CRN)
+        let lock=false
+        let overrideLock = false
         while (cH <= endHour) {
             if (cH < endHour) {
                 for (let day of course.Schedule1) {
@@ -75,6 +85,10 @@ function genSched(i) {
                         labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin)
                         overrideWritten = true;
                     }
+                    if(shouldLock && lock===false && percentage >=70){
+                        courseBlock.append(makeIcon())
+                        overrideLock = true
+                    }
                     if (!content.classList.contains("contentTop")) {
                         content.classList.add("contentBott")
                     }
@@ -82,10 +96,6 @@ function genSched(i) {
                         content.classList.remove("contentTop")
                         content.classList.add("contentBoth")
                     }
-                    content.append(courseBlock)
-                    courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
-                    courseBlock.style.backgroundColor = course.Color
-                    if (i === 0) courseBlock.style.borderRadius = "7px 7px 0px 0px"
                     content.append(courseBlock)
                     courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                     courseBlock.style.backgroundColor = course.Color
@@ -114,6 +124,10 @@ function genSched(i) {
                         overrideWritten = true
                         labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin)
                     }
+                    if(shouldLock && lock===false){
+                        courseBlock.append(makeIcon())
+                        overrideLock = true
+                    }
                     courseBlock.style.backgroundColor = course.Color
                     if (i === 0) courseBlock.style.borderRadius = "7px 7px 7px 7px"
                     else courseBlock.style.borderRadius = "0px 0px 7px 7px"
@@ -123,6 +137,7 @@ function genSched(i) {
             i++;
             cM = 0;
             if (overrideWritten) written = true
+            if (overrideLock) lock = true
         }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,6 +149,8 @@ function genSched(i) {
             let cM = startMin
             let i = 0
             let overrideWritten = false
+            let lock=false
+            let overrideLock = false
             while (cH <= endHour) {
                 if (cH < endHour) {
                     for (let day of course.Schedule2) {
@@ -146,8 +163,12 @@ function genSched(i) {
                         let percentage = (60 - cM) / 60 * 100
                         courseBlock.style.height = `${percentage}%`
                         if (written === false && percentage >= 50) {
-                            labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin)
+                            labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin);
                             overrideWritten = true;
+                        }
+                        if(shouldLock && lock===false && percentage >=70){
+                            courseBlock.append(makeIcon())
+                            overrideLock = true
                         }
                         content.append(courseBlock)
                         courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
@@ -166,7 +187,12 @@ function genSched(i) {
                         content.append(courseBlock)
                         courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                         if (written === false) {
-                            labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin)
+                            labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin);
+                            overrideWritten = true;
+                        }
+                        if(shouldLock && lock===false){
+                            courseBlock.append(makeIcon())
+                            overrideLock = true
                         }
                         courseBlock.style.backgroundColor = course.Color
                         courseBlock.style.borderRadius = "0px 0px 7px 7px"
@@ -176,6 +202,7 @@ function genSched(i) {
                 i++;
                 cM = 0;
                 if (overrideWritten) written = true
+                if (overrideLock) lock = true
             }
         }
     }
@@ -338,17 +365,6 @@ function updateBoxes() {
 
                 boxes = document.querySelectorAll(".course")
                 updateBoxes()
-
-                let allSpans = document.querySelectorAll(`.blockTitle`)
-                console.log(allSpans)
-                allSpans.forEach(span => {
-                    if (span.parentNode.classList.contains(`occupied-${CRN}`)) {
-                        let icon = document.createElement("i")
-                        icon.classList.add("fas")
-                        icon.classList.add("fa-lock")
-                        span.append(icon)
-                    }
-                })
             }
         })
     })

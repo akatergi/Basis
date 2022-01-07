@@ -20,6 +20,7 @@ addCRN.addEventListener('click', e => {
         let newInp = document.createElement("input")
         newInp.type = "number"
         newInp.id = `crnInput-${counter}`
+        newInp.classList.add(`crnInput`)
         newInp.name = "setCRNs[]"
         newInp.classList.add("form-control", "mt-2")
 
@@ -34,6 +35,30 @@ addCRN.addEventListener('click', e => {
             this.remove()
             crnCount--;
         })
+
+        newInp.addEventListener("keydown", e => {
+            if (e.keyCode === 13) {
+                e.preventDefault()
+                addCRN.click()
+                let newerInp = document.querySelector(`#crnInput-${counter - 1}`)
+                newerInp.focus()
+                newerInp.select()
+            }
+        })
+
+        newInp.addEventListener("keydown", e => {
+            if (e.keyCode === 8 && newInp.value.length === 0) {
+                clearButton.click()
+                let allInps = document.querySelectorAll(`.crnInput`)
+                if (allInps.length) {
+                    let lastInp = allInps[allInps.length - 1]
+                    lastInp.focus()
+                    lastInp.select()
+                }
+            }
+        }
+        )
+
         let newDiv = document.createElement("div")
         newDiv.append(newInp, clearButton)
         newDiv.classList.add("CRNInpGrp")
@@ -53,6 +78,7 @@ addCourse.addEventListener('click', e => {
         let newInp = document.createElement("input")
         newInp.type = "text"
         newInp.id = `courseInput-${counter2}`
+        newInp.classList.add("courseInput")
         newInp.name = "sections[]"
         newInp.classList.add("form-control", "mt-2")
 
@@ -69,11 +95,27 @@ addCourse.addEventListener('click', e => {
         })
 
         newInp.addEventListener("keydown", e => {
-            if(e.keyCode===13){
+            if (e.keyCode === 13) {
                 e.preventDefault()
                 addCourse.click()
+                let newerInp = document.querySelector(`#courseInput-${counter2 - 1}`)
+                newerInp.focus()
+                newerInp.select()
             }
         })
+
+        newInp.addEventListener("keydown", e => {
+            if (e.keyCode === 8 && newInp.value.length === 0) {
+                clearButton.click()
+                let allInps = document.querySelectorAll(`.courseInput`)
+                if (allInps.length) {
+                    let lastInp = allInps[allInps.length - 1]
+                    lastInp.focus()
+                    lastInp.select()
+                }
+            }
+        }
+        )
 
         let newDiv = document.createElement("div")
         newDiv.append(newInp, clearButton)
@@ -82,6 +124,7 @@ addCourse.addEventListener('click', e => {
 
         courseCount++
         counter2++
+        return newInp
     }
     else {
         alert("Cannot add more than 8 CRNs!")
