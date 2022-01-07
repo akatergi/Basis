@@ -85,10 +85,10 @@ app.get("/filter", async (req, res) => {
     return res.redirect("/new")
   }
 
-  // if (SetSections.length === 0 && courses.length === 0) {
-  //   req.flash("error", "Need at least one course to create schedule!")
-  //   return res.redirect("/new")
-  // }
+  if (SetSections.length === 0 && courses.length === 0 && electivesArr.length===0) {
+    req.flash("error", "Need at least one course to create schedule!")
+    return res.redirect("/new")
+  }
   res.render("filterForm", { Term, SetSections, courses, electivesArr })
 })
 

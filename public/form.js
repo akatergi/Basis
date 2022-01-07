@@ -133,17 +133,6 @@ addCourse.addEventListener('click', e => {
     }
 })
 
-{/* <select name="electives[]" id="">
-        <option value="H1">Humanities I</option>
-        <option value="H2">Humanities II</option>
-        <option value="SS1">Social Sciences I</option>
-        <option value="SS2">Social Sciences II</option>
-        <option value="NS">Natural Sciences</option>
-        <option value="Ar">Arabic Communication Skills</option>
-        <option value="En">English Communication Skills</option>
-        <option value="QT">Quantitative Thought</option>
-    </select> */}
-
 
 addElective.addEventListener("click", e => {
     e.preventDefault()
@@ -179,6 +168,6 @@ addElective.addEventListener("click", e => {
 
     let newDiv = document.createElement("div")
     newDiv.append(select, clearButton)
-    newDiv.classList.add("CRNInpGrp", "col-8")
+    newDiv.classList.add("CRNInpGrp")
     setElectives.append(newDiv)
 })
