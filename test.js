@@ -1,3 +1,4 @@
-let l = [1,2,3,4]
-l.remove(2)
-console.log(l)
+let D = { "age": 1, "name": "HI", gay: "false" }
+for (let item in D) {
+    console.log(item, D[item])
+}

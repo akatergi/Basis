@@ -2,6 +2,8 @@ const addCRN = document.querySelector("#addCRN")
 const setCRNs = document.querySelector("#setCRNs")
 const setCourses = document.querySelector("#courses")
 const addCourse = document.querySelector("#addCourse")
+const setElectives = document.querySelector("#setElectives")
+const addElective = document.querySelector("#addElective")
 
 let crnCount = 0
 let counter = 0
@@ -131,3 +133,52 @@ addCourse.addEventListener('click', e => {
     }
 })
 
+{/* <select name="electives[]" id="">
+        <option value="H1">Humanities I</option>
+        <option value="H2">Humanities II</option>
+        <option value="SS1">Social Sciences I</option>
+        <option value="SS2">Social Sciences II</option>
+        <option value="NS">Natural Sciences</option>
+        <option value="Ar">Arabic Communication Skills</option>
+        <option value="En">English Communication Skills</option>
+        <option value="QT">Quantitative Thought</option>
+    </select> */}
+
+
+addElective.addEventListener("click", e => {
+    e.preventDefault()
+    let select = document.createElement("select")
+    select.classList.add("form-select", "mt-2")
+    select.name = 'electives[]'
+    let D = {
+        "Social Sciences I": "SS1",
+        "Social Sciences II": "SS2",
+        "Humanities I": "H1",
+        "Humanities II": "H2",
+        "Natural Sciences": "NS",
+        "Arabic Communication Skills": "Ar",
+        "English Communication Skills": "En",
+        "Quantitative Thought": "QT"
+      };
+    for(let key in D){
+        let option = document.createElement("option")
+        option.value = D[key]
+        option.innerText = key
+        select.append(option)        
+    }
+
+    let clearButton = document.createElement("a")
+    clearButton.append(getIcon())
+    clearButton.classList.add("clearButton")
+
+    clearButton.addEventListener("click", function (e) {
+        e.preventDefault()
+        select.remove()
+        this.remove()
+    })
+
+    let newDiv = document.createElement("div")
+    newDiv.append(select, clearButton)
+    newDiv.classList.add("CRNInpGrp", "col-8")
+    setElectives.append(newDiv)
+})

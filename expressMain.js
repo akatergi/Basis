@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const path = require("path")
 const ejsMate = require("ejs-mate")
-const { getProfessors, searchByCRNs, timeToInt } = require("./public/bobsFolder/Tools")
+const { getProfessors, searchByCRNs, timeToInt, checkIfConflictingArray } = require("./public/bobsFolder/Tools")
 app.use(express.json());
 const { getPermutations } = require("./public/bobsFolder/Main")
 const session = require("express-session")
@@ -19,15 +19,15 @@ app.use(session({
   secret: `s_'mfWntka+d]&>F>[cS(/j]r"[8cWUQs<P~`,
   resave: false,
   saveUninitialized: false,
-  cookie:{
+  cookie: {
     httpOnly: true,
-    expires: Date.now() + 1000*60*60*24*7,
-    maxAge: Date.now() + 1000*60*60*24*7
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: Date.now() + 1000 * 60 * 60 * 24 * 7
   }
 }))
 
 app.use(flash())
-app.use((req,res,next)=>{
+app.use((req, res, next) => {
   res.locals.messages = req.flash("error")
   next()
 })
@@ -41,13 +41,18 @@ app.get("/new", (req, res) => {
   res.render("scheduleForm")
 })
 
-app.post("/filter", async (req,res) => {
-  let { Term, setCRNs, sections } = req.body
-
+app.post("/filter", async (req, res) => {
+  let { Term, setCRNs, sections, electives} = req.body
+  let electivesArr = []
+  for(let elective of electives){
+    electivesArr.push({CourseName:elective, SeatsFilter: true, ProfessorFilter:[], Elective:true})
+  }
+  
   if (!setCRNs) setCRNs = []
   try {
-  var SetSections = await searchByCRNs(Term, setCRNs)
-  } catch(e){
+    var SetSections = await searchByCRNs(Term, setCRNs)
+    checkIfConflictingArray(SetSections,0,2400)
+  } catch (e) {
     req.flash("error", e.message)
     return res.redirect("/new")
   }
@@ -58,7 +63,7 @@ app.post("/filter", async (req,res) => {
     let sec = sections[i]
     try {
       var profs = await getProfessors(Term, sec.slice(0, 4), sec.slice(4));
-    } catch(e) {
+    } catch (e) {
       req.flash("error", e.message)
       return res.redirect("/new")
     }
@@ -67,25 +72,26 @@ app.post("/filter", async (req,res) => {
   req.session.SetSections = SetSections;
   req.session.courses = courses;
   req.session.Term = Term
+  req.session.electivesArr = electivesArr
   res.redirect("/filter")
 })
 
 app.get("/filter", async (req, res) => {
-  let { Term, SetSections, courses } = req.session
-  if(!Term || !SetSections || !courses){
+  let { Term, SetSections, courses, electivesArr } = req.session
+  if (!Term || !SetSections || !courses) {
     req.flash("error", "Missing parameters!")
     return res.redirect("/new")
   }
-  
-  if(SetSections.length===0 && courses.length===0){
-    req.flash("error", "Need at least one course to create schedule!")
-    return res.redirect("/new")
-  }
-  res.render("filterForm", { Term, SetSections, courses })
+
+  // if (SetSections.length === 0 && courses.length === 0) {
+  //   req.flash("error", "Need at least one course to create schedule!")
+  //   return res.redirect("/new")
+  // }
+  res.render("filterForm", { Term, SetSections, courses, electivesArr })
 })
 
 app.post("/schedules", async (req, res) => {
-  let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses } = req.body
+  let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses, electivesArr } = req.body
   Term = "202220"
   let PStartTime, PEndTime;
   if (sHour === "") PStartTime = null
@@ -95,17 +101,20 @@ app.post("/schedules", async (req, res) => {
 
   let CustomSections = []
   setSections = JSON.parse(setSections)
-
+  
   if (!courses) courses = []
+
   for (let course of courses) {
     if (course.SeatsFilter === "true") course.SeatsFilter = true;
     else course.SeatsFilter = false;
-    if(!course.ProfessorFilter) course.ProfessorFilter=[]
+    if (!course.ProfessorFilter) course.ProfessorFilter = []
     course.Elective = false
   }
-  try{
+  courses = courses.concat(JSON.parse(electivesArr))
+
+  try {
     var Schedules = await getPermutations(Term, setSections, CustomSections, courses, PStartTime, PEndTime)
-  } catch(err) {
+  } catch (err) {
     req.flash("error", err.message)
     return res.redirect("/filter")
   }
@@ -114,7 +123,7 @@ app.post("/schedules", async (req, res) => {
 })
 
 app.get("/schedules", (req, res) => {
-  if (!req.session.Schedules){
+  if (!req.session.Schedules) {
     req.flash("error", "Something went wrong")
     return res.redirect("/filter")
   }
