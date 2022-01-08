@@ -411,6 +411,7 @@ async function getPermutations(
         LeastTimeDif = Max - Min;
         PermWithLeastTimeDif = size;
       } else if (Max - Min === LeastTimeDif) {
+        //TODO: fix day difference (bich schedule)
         let CurrentDO = getMaxMinDO(ArrayOfPermutations[PermWithLeastDays])[2];
         if (getDayDif(DO) > getDayDif(CurrentDO)) PermWithLeastTimeDif = size;
       }
