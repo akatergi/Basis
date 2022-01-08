@@ -39,12 +39,7 @@
                         <div class="card-body">
                             <h2 class="card-title">Courses</h2>
                             <small class="card-text text-muted">Enter all courses you wish to take this semester. 
-                            <div id="courses" class="form-group">
-                                <!-- <input type="text" name="sections[]" class="form-control mb-2" placeholder="MATH201" value="MATH201">
-                                <input type="text" name="sections[]" class="form-control mb-2" placeholder="PHYS210" value="PHYS210"> 
-                                <input type="text" name="sections[]" class="form-control mb-2" placeholder="PHYS210" value="STAT230"> 
-                                <input type="text" name="sections[]" class="form-control mb-2" placeholder="PHYS210" value="EECE230">  -->
-                            </div>
+                            <div id="courses" class="form-group"> </div>
                             <button class="btn btn-outline-success btn-sm mt-2" id="addCourse">Add Course</button> <br>
                             <small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Note that any courses placed in the Set CRNs card, if any, should NOT be placed in this one.</small></small>
                         </div>
@@ -65,13 +60,19 @@
                         <div class="card-body">
                             <h2 class="card-title">Custom Courses <span class="optional">(optional)</span></h2>
                             <small class="card-text text-muted"> Create your own custom course blocks that can be displayed on your schedule! These can be things like breaks, gym time, tutoring, ... </small>
-                            <div id="setCustomCourses" class="form-group">
-                            </div>
-                            <button id="addCustomCourse" class="btn btn-outline-success btn-sm mt-2">Make Courses</button>
+                            <ul class="list-group" id="setCustomCourses">
+                                <!-- <li class="list-group-item">Cras justo odio</li> -->
+                              </ul>
+                              <%- include("partials/mainModal") %>
+                              <%- include("partials/editModal") %>
+                              <input type="hidden" name="test" value="9">
+                            <button id="addCustomCourse" type="button" class="btn btn-outline-success btn-sm mt-2"  data-bs-toggle="modal" data-bs-target="#mainModal">Make Course</button>
                         </div>
                     </div>
                 </div>
-        <button class="btn btn-primary2 btn-large mt-4">Next &gt </button>
+
+
+                <button class="btn btn-primary2 btn-large mt-4" id="next">Next &gt </button>
             </div>
         </div>
     </form>

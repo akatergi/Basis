@@ -1,0 +1,49 @@
+<div class="modal fade" id="mainModal" tabindex="-1" aria-labelledby="mainModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="mainModalLabel">Make a Course!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" id='mainClose' aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-group mb-3">
+                <label for="customTitle" class='form-label modalLabel'>Course Title</label>
+                <input type="text" class="form-control" id="customTitle">
+            </div>
+
+            <label for="sHour" class="form-label modalLabel">Start Time</label>
+            <div class="CRNInpGrp mb-3">
+                <input type="number" name="sHour" class="form-control" placeholder="09" id="sHour"> <span class="colon">:</span> <input type="number" name="sMinute" id="sMinute" class="form-control me-3" placeholder="30">
+                <select class="form-select" id="sTime" name="sTime">
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                </select>
+            </div>
+
+            <label for="eHour" class="form-label modalLabel">End Time</label>
+            <div class="CRNInpGrp mb-3">
+                <input type="number" name="eHour" class="form-control" placeholder="05" id="eHour"> <span class="colon">:</span> <input type="number" id="eMinute" name="eMinute" class="form-control me-3" placeholder="00">
+                <select class="form-select" id="eTime" name="eTime">
+                    <option value="AM">AM</option>
+                    <option value="PM" selected>PM</option>
+                </select>
+            </div>
+
+            <label class="form-label modalLabel">Schedule</label>
+                <div id="dayChecks">
+                <% let days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"] %>
+                <% for(let day of days) {%>
+                    <div class="form-check">
+                        <label for="check-<%= day %>" class="dayLabel"><%= day %> </label>
+                        <input type="checkbox" class="form-check-input" id="check-<%= day %>" value="<%= day %>" name="<%= day %>">
+                    </div>
+                <% } %> 
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="createCourse">Create Course</button>
+          </div>
+      </div>
+    </div>
+  </div>

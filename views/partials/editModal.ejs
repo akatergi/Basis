@@ -1,0 +1,56 @@
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit a Course!</h5>
+                <button type="button" class="btn-close" id='editClose' data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group mb-3">
+                    <label for="editTitle" class='form-label modalLabel'>Course Title</label>
+                    <input type="text" class="form-control" id="editTitle">
+                </div>
+
+                <label for="sHour" class="form-label modalLabel">Start Time</label>
+                <div class="CRNInpGrp mb-3">
+                    <input type="number" name="editsHour" class="form-control" placeholder="09" id="editsHour"> <span
+                        class="colon">:</span> <input type="number" name="editsMinute" id="editsMinute"
+                        class="form-control me-3" placeholder="30">
+                    <select class="form-select" id="editsTime" name="sTime">
+                        <option value="AM" id='editsAM'>AM</option>
+                        <option value="PM" id='editsPM'>PM</option>
+                    </select>
+                </div>
+
+                <label for="editeHour" class="form-label modalLabel">End Time</label>
+                <div class="CRNInpGrp mb-3">
+                    <input type="number" name="eHour" class="form-control" placeholder="05" id="editeHour"> <span
+                        class="colon">:</span> <input type="number" id="editeMinute" name="eMinute"
+                        class="form-control me-3" placeholder="00">
+                    <select class="form-select" id="editeTime" name="eTime">
+                        <option value="AM" id='editeAM'>AM</option>
+                        <option value="PM" id='editePM' selected>PM</option>
+                    </select>
+                </div>
+
+                <label class="form-label modalLabel">Schedule</label>
+                <div id="dayChecks">
+                    <% let days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"] %>
+                        <% for(let day of days) {%>
+                            <div class="form-check">
+                                <label for="editcheck-<%= day %>" class="dayLabel">
+                                    <%= day %>
+                                </label>
+                                <input type="checkbox" class="form-check-input" id="editcheck-<%= day %>"
+                                    value="<%= day %>" name="<%= day %>">
+                            </div>
+                            <% } %>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="updateButton">Update Course</button>
+            </div>
+        </div>
+    </div>
+</div>
