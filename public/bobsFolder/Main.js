@@ -392,6 +392,7 @@ async function getPermutations(
   );
   SetSections = SetSections.concat(CustomSections);
   checkIfConflictingArray(SetSections, PStartTime, PEndTime);
+  printStuff(AllSections)
   var [MaxTime, MinTime, DayOccurences] = getMaxMinDO(SetSections);
   let n = AllSections.length;
   let ArrayOfPermutations = [];
