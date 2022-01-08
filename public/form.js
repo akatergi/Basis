@@ -332,11 +332,10 @@ createCourse.addEventListener("click", () => {
                     sM = editsMinute.value
                     eH = editeHour.value
                     eM = editeMinute.value
-                    BT1 = timeToInt(sHour.value + ":" + sMinute.value, sTime.value === "PM")
-                    ET1 = timeToInt(eHour.value + ":" + eMinute.value, eTime.value === "PM")
-
                     if (!sM) sM = "00"
                     if (!eM) eM = "00"
+                    BT1 = timeToInt(sH + ":" + sM, sT === "PM")
+                    ET1 = timeToInt(eH + ":" + eM, eT === "PM")
                     if (Subject === "") alert("Need to specify name!")
                     else if (sH.length === 0) alert("Must specify Start Hour!")
                     else if (eH.length === 0) alert("Must specify End Hour!")
