@@ -99,7 +99,12 @@ const colorsConst = [
 ];
 let colors = [...colorsConst];
 
-function getColor() {
+function resetColors(){
+  colors = [...colorsConst];
+}
+module.exports.resetColors = resetColors
+
+function getColor(clear) {
   if (colors.length) {
     return colors.splice(Math.floor(Math.random() * colors.length), 1)[0];
   } else {

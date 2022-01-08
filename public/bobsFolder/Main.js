@@ -19,7 +19,8 @@ var {
   searchByCRNs,
   readElectives,
   codeToTerm,
-  getMaxMinDO
+  getMaxMinDO,
+  resetColors
 } = require("./Tools.js");
 
 /**This function filters all our sections and contains most of the error handling.
@@ -402,7 +403,8 @@ async function getPermutations(
   function getPermsRecursion(Perm, Min, Max, DO, index) {
     if (index == n) {
       Perm = [...JSON.parse(JSON.stringify(Perm))]; //deep copy
-      for (let Section of Perm) if (!Section.Color) Section.Color = getColor();
+      resetColors()
+      for (let Section of Perm) Section.Color = getColor();
       ArrayOfPermutations.push(Perm);
       if (Max - Min < LeastTimeDif) {
         LeastTimeDif = Max - Min;
