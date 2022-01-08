@@ -43,7 +43,8 @@ app.get("/new", (req, res) => {
 })
 
 app.post("/filter", async (req, res) => {
-  let { Term, setCRNs, sections, electives} = req.body
+  let { Term, setCRNs, sections, electives, customCourses} = req.body
+  console.log(JSON.parse(customCourses))
   if(!electives) electives = []
   let electivesArr = []
   for(let elective of electives){
@@ -85,15 +86,15 @@ app.get("/filter", async (req, res) => {
     return res.redirect("/new")
   }
 
-  // if (SetSections.length === 0 && courses.length === 0) {
-  //   req.flash("error", "Need at least one course to create schedule!")
-  //   return res.redirect("/new")
-  // }
+  if (SetSections.length === 0 && courses.length === 0 && electivesArr.length===0) {
+    req.flash("error", "Need at least one course to create schedule!")
+    return res.redirect("/new")
+  }
   res.render("filterForm", { Term, SetSections, courses, electivesArr })
 })
 
 app.post("/schedules", async (req, res) => {
-  let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses, electivesArr } = req.body
+  let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses, electivesArr} = req.body
   Term = "202220"
   let PStartTime, PEndTime;
   if (sHour === "") PStartTime = null
