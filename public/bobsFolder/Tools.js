@@ -169,7 +169,6 @@ function check(ArrayOfSections, Section) {
     )
       return false;
     if (
-      !hasLab(CurrentSection) &&
       hasLab(Section) &&
       intersectingDays(CurrentSection.Schedule1, Section.Schedule2) &&
       overLap(CurrentSection.BT1, CurrentSection.ET1, Section.BT2, Section.ET2)
@@ -184,7 +183,6 @@ function check(ArrayOfSections, Section) {
       return false;
     if (
       hasLab(CurrentSection) &&
-      !hasLab(Section) &&
       intersectingDays(CurrentSection.Schedule2, Section.Schedule1) &&
       overLap(CurrentSection.BT2, CurrentSection.ET2, Section.BT1, Section.ET1)
     )
