@@ -115,6 +115,36 @@ function getColor(clear) {
 }
 module.exports.getColor = getColor;
 
+function printArrayOfProfessors(ArrayOfProfessors){
+  let n = ArrayOfProfessors.length
+  let output = ArrayOfProfessors[0]
+  if (n == 1) return output
+  for (let i in ArrayOfProfessors){
+    if (i == n - 1) output += ", and " + ArrayOfProfessors[n - 1]
+    else if (i != 0) output += ", " + ArrayOfProfessors[i]
+  }
+  return output
+}
+module.exports.printArrayOfProfessors = printArrayOfProfessors
+
+function areTwoListsDuplicate(L1,L2){
+  let isADuplicate = true
+  for (let i of L1){
+    for (let j of L2){
+      if (i == j) return false
+    }
+  }
+  return true
+}
+module.exports.areTwoListsDuplicate = areTwoListsDuplicate
+
+function compareTimeDifs(Perm1, Perm2){
+  let dif1 = getMaxMinDO(Perm1)[0] - getMaxMinDO(Perm1)[1]
+  let dif2 = getMaxMinDO(Perm2)[0] - getMaxMinDO(Perm2)[1]
+  return dif1 - dif2
+}
+module.exports.compareTimeDifs = compareTimeDifs
+
 function getMaxMinDO(ArrayOfSections) {
   let MaxTime = 0;
   let MinTime = 2400;
