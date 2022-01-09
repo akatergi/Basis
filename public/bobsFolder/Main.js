@@ -1,6 +1,12 @@
 const { DocumentPosition } = require("domutils");
 const { json } = require("express/lib/response");
-const { compare, sum, permutations, usolveDependencies, add } = require("mathjs");
+const {
+  compare,
+  sum,
+  permutations,
+  usolveDependencies,
+  add
+} = require("mathjs");
 var {
   Course,
   hasLab,
@@ -646,39 +652,58 @@ async function getPermutations(
             throw new Error(
               "No Permutations Available:\nSuggestion: Set Preferred EndTime to " +
                 intToTime(PermMax)
-            );}
-            if (validSeats) validSeatsPermutations.push(Permutation);
+            );
         }
-        if (validSeatsPermutations.length != 0){
-          printStuff(validSeatsPermutations)
-        let n = 1000
-        let AvailablePermsWithLeastProfs = []
-        for (let permutation of validSeatsPermutations){
-          let UnSelectedProfsObjects = []
-          for (let Section of permutation){
-            if (!ProfessorsForEachCourse[Section.Subject + Section.Code].includes(Section.IName + " " + Section.ISName)){
-              UnSelectedProfsObjects.push(Section.Subject + Section.Code + ":" + Section.IName + " " + Section.ISName)
+        if (validSeats) validSeatsPermutations.push(Permutation);
+      }
+      if (validSeatsPermutations.length != 0) {
+        printStuff(validSeatsPermutations);
+        let n = 1000;
+        let AvailablePermsWithLeastProfs = [];
+        for (let permutation of validSeatsPermutations) {
+          let UnSelectedProfsObjects = [];
+          for (let Section of permutation) {
+            if (
+              !ProfessorsForEachCourse[Section.Subject + Section.Code].includes(
+                Section.IName + " " + Section.ISName
+              )
+            ) {
+              UnSelectedProfsObjects.push(
+                Section.Subject +
+                  Section.Code +
+                  ":" +
+                  Section.IName +
+                  " " +
+                  Section.ISName
+              );
             }
-          if (UnSelectedProfsObjects.length < n){
-            n = UnSelectedProfsObjects.length
-            AvailablePermsWithLeastProfs = [UnSelectedProfsObjects]}
-          else if (UnSelectedProfsObjects.length == n) AvailablePermsWithLeastProfs.push(UnSelectedProfsObjects)
-          }}
-        var Reasons = ""
-        let first = true
-        let addedNames = []
-        for (let UnselectedProf of AvailablePermsWithLeastProfs){
-          UnselectedProf.sort((a,b) => a.name.localeCompare(b.name))
-          if (!addedNames.includes(JSON.stringify(UnselectedProf))){
-          if (first) first = false
-          else Reasons += "\n or \n"
-          addedNames.push(JSON.stringify(UnselectedProf))
-          for (let UnSelectedProfObject of UnselectedProf){
-            let Word = UnSelectedProfObject.split(":")
-            Reasons += "-for " + Word[0] + " choose " + Word[1] + "\n"
-          }}
+            if (UnSelectedProfsObjects.length < n) {
+              n = UnSelectedProfsObjects.length;
+              AvailablePermsWithLeastProfs = [UnSelectedProfsObjects];
+            } else if (UnSelectedProfsObjects.length == n)
+              AvailablePermsWithLeastProfs.push(UnSelectedProfsObjects);
+          }
         }
-        throw new Error("No Permutations Available:\nSuggestion: Select the following professors\n" + Reasons)} 
+        var Reasons = "";
+        let first = true;
+        let addedNames = [];
+        for (let UnselectedProf of AvailablePermsWithLeastProfs) {
+          UnselectedProf.sort((a, b) => a.name.localeCompare(b.name));
+          if (!addedNames.includes(JSON.stringify(UnselectedProf))) {
+            if (first) first = false;
+            else Reasons += "\n or \n";
+            addedNames.push(JSON.stringify(UnselectedProf));
+            for (let UnSelectedProfObject of UnselectedProf) {
+              let Word = UnSelectedProfObject.split(":");
+              Reasons += "-for " + Word[0] + " choose " + Word[1] + "\n";
+            }
+          }
+        }
+        throw new Error(
+          "No Permutations Available:\nSuggestion: Select the following professors\n" +
+            Reasons
+        );
+      }
       throw new Error("Permutations exist but fix filters");
     }
   }
