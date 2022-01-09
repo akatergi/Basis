@@ -338,7 +338,7 @@ async function convertCourseNamesToSections(
   PEndTime
 ) {
   let ArrayOfSections = [];
-  CourseFilterObjects.sort((x, y) => x.CourseName.localeCompare(y.CourseName));
+  
   let ArrayOfUnsortedSections = await getArraysOfFilteredSections(
     Term,
     CourseFilterObjects,
@@ -349,6 +349,7 @@ async function convertCourseNamesToSections(
     UnsortedSections.sort((x, y) => x.BT1 - y.BT1);
     ArrayOfSections.push(UnsortedSections);
   }
+  ArrayOfSections.sort((x, y) => x.length - y.length);
   return ArrayOfSections;
 }
 

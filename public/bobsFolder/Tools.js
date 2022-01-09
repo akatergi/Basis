@@ -1,6 +1,7 @@
 const request = require("request-promise");
 const cheerio = require("cheerio");
 const fs = require("fs");
+const math = require('mathjs')
 
 const overLap = (S1, F1, S2, F2) => S1 < F2 && S2 < F1;
 module.exports.overLap = overLap;
@@ -128,13 +129,7 @@ function getMaxMinDO(ArrayOfSections) {
 module.exports.getMaxMinDO = getMaxMinDO;
 
 function getDayDif(DO) {
-  let min = DO[0],
-    max = DO[0];
-  for (let i of DO) {
-    if (i < min) min = i;
-    if (i > max) max = i;
-  }
-  return max - min;
+  return math.std(DO);
 }
 module.exports.getDayDif = getDayDif;
 
