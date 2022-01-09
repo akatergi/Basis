@@ -127,17 +127,6 @@ function printArrayOfProfessors(ArrayOfProfessors){
 }
 module.exports.printArrayOfProfessors = printArrayOfProfessors
 
-function areTwoListsDuplicate(L1,L2){
-  let isADuplicate = true
-  for (let i of L1){
-    for (let j of L2){
-      if (i == j) return false
-    }
-  }
-  return true
-}
-module.exports.areTwoListsDuplicate = areTwoListsDuplicate
-
 function compareTimeDifs(Perm1, Perm2){
   let dif1 = getMaxMinDO(Perm1)[0] - getMaxMinDO(Perm1)[1]
   let dif2 = getMaxMinDO(Perm2)[0] - getMaxMinDO(Perm2)[1]
