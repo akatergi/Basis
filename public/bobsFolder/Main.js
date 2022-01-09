@@ -542,7 +542,7 @@ async function getPermutations(
       throw new Error(
         ` Will not calculate ${num2} schedules, remove a course or set a certain section`
       );
-    function getPermsRecursionUnfiltered(Perm, Min, Max, DO, index) {
+    function getPermsRecursionForAllSections(Perm, Min, Max, DO, index) {
       if (index == n) {
         ArrayOfPermutations.push(Perm);
         if (Max - Min < LeastTimeDif) {
@@ -570,7 +570,7 @@ async function getPermutations(
             if (isLinked(Section)) {
               for (let Recitation of Section.LinkedSections) {
                 if (check(Perm, Recitation))
-                  getPermsRecursionUnfiltered(
+                  getPermsRecursionForAllSections(
                     Perm.concat(Section, Recitation),
                     getMinTime(Section, Min, Recitation),
                     getMaxTime(Section, Max, Recitation),
@@ -579,7 +579,7 @@ async function getPermutations(
                   );
               }
             } else
-              getPermsRecursionUnfiltered(
+              getPermsRecursionForAllSections(
                 Perm.concat(Section),
                 getMinTime(Section, Min),
                 getMaxTime(Section, Max),
@@ -590,7 +590,7 @@ async function getPermutations(
         }
       }
     }
-    getPermsRecursionUnfiltered(
+    getPermsRecursionForAllSections(
       SetSections,
       MinTime,
       MaxTime,
@@ -603,11 +603,11 @@ async function getPermutations(
       );
     } else {
       let CoursesWithSeatsFilter = [];
-      let ProfessorsForEachCourse = {};
+      let FilteredProfessorsForEachCourse = {};
       for (let CourseFilterObject of CourseFilterObjects) {
         if (CourseFilterObject.SeatsFilter)
           CoursesWithSeatsFilter.push(CourseFilterObject.CourseName);
-        ProfessorsForEachCourse[CourseFilterObject.CourseName] =
+        FilteredProfessorsForEachCourse[CourseFilterObject.CourseName] =
           CourseFilterObject.ProfessorFilter;
       }
       ArrayOfPermutations = ArrayOfPermutations.map((x) => [
@@ -616,7 +616,7 @@ async function getPermutations(
       ]);
       ArrayOfPermutations.sort((x, y) => x[1] - y[1]);
       ArrayOfPermutations = ArrayOfPermutations.map((x) => x[0]);
-      let validSeatsPermutations = [];
+      let PermutationsWithSeatAvailability = [];
       for (let Permutation of ArrayOfPermutations) {
         let validSeats = (validProfs = true);
         for (let Section of Permutation) {
@@ -626,7 +626,7 @@ async function getPermutations(
           )
             validSeats = false;
           if (
-            !ProfessorsForEachCourse[Section.Subject + Section.Code].includes(
+            !FilteredProfessorsForEachCourse[Section.Subject + Section.Code].includes(
               Section.IName + " " + Section.ISName
             )
           )
@@ -634,7 +634,7 @@ async function getPermutations(
         }
         if (validSeats && validProfs) {
           let [PermMax, PermMin] = getMaxMinDO(Permutation);
-          Reasons = "";
+          ProfessorsToChange = "";
           if (PermMin < PStartTime && PermMax > PEndTime)
             throw new Error(
               "No Permutations Available:\nSuggestion: Set Preferred StartTime to " +
@@ -654,21 +654,20 @@ async function getPermutations(
                 intToTime(PermMax)
             );
         }
-        if (validSeats) validSeatsPermutations.push(Permutation);
+        if (validSeats) PermutationsWithSeatAvailability.push(Permutation);
       }
-      if (validSeatsPermutations.length != 0) {
-        printStuff(validSeatsPermutations);
-        let n = 1000;
-        let AvailablePermsWithLeastProfs = [];
-        for (let permutation of validSeatsPermutations) {
-          let UnSelectedProfsObjects = [];
-          for (let Section of permutation) {
+      if (PermutationsWithSeatAvailability.length != 0) {
+        let MinNumberOfProfessorsToChange = 1000;
+        let ArrayOfListOfAvailableUnselectedProfessorsPerCourse = [];
+        for (let Permutation of PermutationsWithSeatAvailability) {
+          let UnselectedProfessorsPerCourse = [];
+          for (let Section of Permutation) {
             if (
-              !ProfessorsForEachCourse[Section.Subject + Section.Code].includes(
+              !FilteredProfessorsForEachCourse[Section.Subject + Section.Code].includes(
                 Section.IName + " " + Section.ISName
               )
             ) {
-              UnSelectedProfsObjects.push(
+              UnselectedProfessorsPerCourse.push(
                 Section.Subject +
                   Section.Code +
                   ":" +
@@ -677,34 +676,34 @@ async function getPermutations(
                   Section.ISName
               );
             }
-            if (UnSelectedProfsObjects.length < n) {
-              n = UnSelectedProfsObjects.length;
-              AvailablePermsWithLeastProfs = [UnSelectedProfsObjects];
-            } else if (UnSelectedProfsObjects.length == n)
-              AvailablePermsWithLeastProfs.push(UnSelectedProfsObjects);
+            if (UnselectedProfessorsPerCourse.length < MinNumberOfProfessorsToChange) {
+              MinNumberOfProfessorsToChange = UnselectedProfessorsPerCourse.length;
+              ArrayOfListOfAvailableUnselectedProfessorsPerCourse = [UnselectedProfessorsPerCourse];
+            } else if (UnselectedProfessorsPerCourse.length == MinNumberOfProfessorsToChange)
+              ArrayOfListOfAvailableUnselectedProfessorsPerCourse.push(UnselectedProfessorsPerCourse);
           }
         }
-        var Reasons = "";
+        var ProfessorsToChange = "";
         let first = true;
-        let addedNames = [];
-        for (let UnselectedProf of AvailablePermsWithLeastProfs) {
-          UnselectedProf.sort((a, b) => a.name.localeCompare(b.name));
-          if (!addedNames.includes(JSON.stringify(UnselectedProf))) {
+        let AddedUnselectedProfessors = [];
+        for (let AvailableUnselectedProfessorsPerCourse of ArrayOfListOfAvailableUnselectedProfessorsPerCourse) {
+          AvailableUnselectedProfessorsPerCourse.sort((a, b) => a.name.localeCompare(b.name));
+          if (!AddedUnselectedProfessors.includes(JSON.stringify(AvailableUnselectedProfessorsPerCourse))) {
             if (first) first = false;
-            else Reasons += "\n or \n";
-            addedNames.push(JSON.stringify(UnselectedProf));
-            for (let UnSelectedProfObject of UnselectedProf) {
-              let Word = UnSelectedProfObject.split(":");
-              Reasons += "-for " + Word[0] + " choose " + Word[1] + "\n";
+            else ProfessorsToChange += "\n or \n";
+            AddedUnselectedProfessors.push(JSON.stringify(AvailableUnselectedProfessorsPerCourse));
+            for (let AvailableUnselectedProfessor of AvailableUnselectedProfessorsPerCourse) {
+              let Word = AvailableUnselectedProfessor.split(":");
+              ProfessorsToChange += "-for " + Word[0] + " choose " + Word[1] + "\n";
             }
           }
         }
         throw new Error(
           "No Permutations Available:\nSuggestion: Select the following professors\n" +
-            Reasons
+            ProfessorsToChange
         );
       }
-      throw new Error("Permutations exist but fix filters");
+      throw new Error("No Permutations Exist: Must Change Courses!");
     }
   }
 
