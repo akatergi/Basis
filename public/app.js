@@ -15,6 +15,7 @@ let boxes;
 const mainSchedules = [...Schedules]
 let custom = document.querySelector("#custom")
 let lockedCRNs = []
+let deletedCRNs = []
 let total = document.querySelector("#total")
 let idxSpan = document.querySelector("#index")
 //Functions
@@ -367,6 +368,26 @@ function updateBoxes() {
                 updateBoxes()
             }
         })
+
+        box.addEventListener("contextmenu", (e) => {
+          const CRN = box.classList[box.classList.length - 1].slice(9)
+          let currentSched = Schedules[i]
+          deletedCRNs.push(CRN)
+          Schedules = Schedules.filter(sched => {
+              for (let course of sched) if (course.CRN === CRN) return false
+              return true
+          })
+          let newIdxOfSched = 0
+          i = newIdxOfSched
+          total.innerText = Schedules.length
+          idxSpan.innerText = newIdxOfSched + 1
+          clearSched()
+          genSched(i)
+          boxes = document.querySelectorAll(".course")
+          updateBoxes()
+          e.preventDefault();
+        }
+      )
     })
 }
 

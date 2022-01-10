@@ -1,4 +1,12 @@
 const { DocumentPosition } = require("domutils");
+const { json } = require("express/lib/response");
+const {
+  compare,
+  sum,
+  permutations,
+  usolveDependencies,
+  add
+} = require("mathjs");
 var {
   Course,
   hasLab,
@@ -20,7 +28,9 @@ var {
   readElectives,
   codeToTerm,
   getMaxMinDO,
-  resetColors
+  resetColors,
+  printArrayOfProfessors,
+  compareTimeDifs
 } = require("./Tools.js");
 
 /**This function filters all our sections and contains most of the error handling.
@@ -61,7 +71,8 @@ async function getArraysOfFilteredSections(
 ) {
   const Courses = await readCourses(Term);
   const Electives = await readElectives(Term);
-  let CoursesToReturn = [];
+  let AllAcceptedSections = [];
+  let AllSections = [];
   for (let CourseFilterObject of CourseFilterObjects) {
     let Sections;
     let Elective = CourseFilterObject.Elective;
@@ -78,18 +89,23 @@ async function getArraysOfFilteredSections(
         );
     }
     let [ListOfFilteredSections, ListOfFilteredRecitations] = [[], []];
+    let [ListOfAllSections, ListOfAllRecitations] = [[], []];
     let [
-      LFilterConflictSeats,
-      LFilterConflictStartTime,
-      LFilterConflictFinishTime,
-      LFilterConflictFinishLabTime
+      SectionsWithNoSeats,
+      SectionWithConflictingStartTime,
+      SectionWithConflictingFinishTime,
+      SectionWithConflictingFinishLabTime
     ] = [[], [], [], []];
     let [
-      RFilterConflictSeats,
-      RFilterConflictStartTime,
-      RFilterConflictFinishTime
+      RecitationsWithNoSeats,
+      RecitationsWithConflictingStartTime,
+      RecitationsWithConflictingEndTime
     ] = [[], [], []];
-    let NumberOfSections = (NumberOfRecitations = NumberOfNulls = 0);
+    let NumberOfSections =
+      (NumberOfRecitations =
+      NumberOfNulls =
+      NumberOfSectionsWithProf =
+        0);
     let [LatestSectionBeginTime, EarliestSectionEndTime] = [0, 2400];
     let [LatestRecitationBeginTime, EarliestRecitationEndTime] = [0, 2400];
     for (let Section of Sections) {
@@ -99,6 +115,7 @@ async function getArraysOfFilteredSections(
         continue;
       }
       if (isRecitation(Section)) {
+        ListOfAllRecitations.push(Section);
         if (
           checkSectionWithFilters(
             Section,
@@ -112,20 +129,21 @@ async function getArraysOfFilteredSections(
           ListOfFilteredRecitations.push(Section);
         else if (!Elective) {
           if (!(!CourseFilterObject.SeatsFilter || Section.SeatsA > 0))
-            RFilterConflictSeats.push(Section);
+            RecitationsWithNoSeats.push(Section);
           if (!(!PStartTime || Section.BT1 >= PStartTime)) {
             if (LatestRecitationBeginTime < Section.BT1)
               LatestRecitationBeginTime = Section.BT1;
-            RFilterConflictStartTime.push(Section);
+            RecitationsWithConflictingStartTime.push(Section);
           }
           if (!(!PEndTime || Section.ET1 <= PEndTime)) {
             if (EarliestRecitationEndTime > Section.ET2)
               EarliestRecitationEndTime = Section.ET1;
-            RFilterConflictFinishTime.push(Section);
+            RecitationsWithConflictingEndTime.push(Section);
           }
         }
         NumberOfRecitations++;
       } else {
+        ListOfAllSections.push(Section);
         if (
           checkSectionWithFilters(
             Section,
@@ -138,92 +156,111 @@ async function getArraysOfFilteredSections(
         )
           ListOfFilteredSections.push(Section);
         else if (!Elective) {
-          if (!(!CourseFilterObject.SeatsFilter || Section.SeatsA > 0))
-            LFilterConflictSeats.push(Section);
-          if (!(!PStartTime || Section.BT1 >= PStartTime)) {
-            if (LatestSectionBeginTime < Section.BT1)
-              LatestSectionBeginTime = Section.BT1;
-            LFilterConflictStartTime.push(Section);
-          }
-          if (!(!PEndTime || Section.ET1 <= PEndTime)) {
-            if (EarliestSectionEndTime > Section.ET1)
-              EarliestSectionEndTime = Section.ET1;
-            LFilterConflictFinishTime.push(Section);
-          }
-          if (!(!PEndTime || !hasLab(Section) || Section.ET2 <= PEndTime)) {
-            if (EarliestSectionEndTime > Section.ET1)
-              EarliestSectionEndTime = Section.ET2;
-            LFilterConflictFinishLabTime.push(Section);
+          if (
+            CourseFilterObject.ProfessorFilter.includes(
+              Section.IName + " " + Section.ISName
+            )
+          ) {
+            if (!(!CourseFilterObject.SeatsFilter || Section.SeatsA > 0))
+              SectionsWithNoSeats.push(Section);
+            if (!(!PStartTime || Section.BT1 >= PStartTime)) {
+              if (LatestSectionBeginTime < Section.BT1)
+                LatestSectionBeginTime = Section.BT1;
+              SectionWithConflictingStartTime.push(Section);
+            }
+            if (!(!PEndTime || Section.ET1 <= PEndTime)) {
+              if (EarliestSectionEndTime > Section.ET1)
+                EarliestSectionEndTime = Section.ET1;
+              SectionWithConflictingFinishTime.push(Section);
+            }
+            if (!(!PEndTime || !hasLab(Section) || Section.ET2 <= PEndTime)) {
+              if (EarliestSectionEndTime > Section.ET1)
+                EarliestSectionEndTime = Section.ET2;
+              SectionWithConflictingFinishLabTime.push(Section);
+            }
+            NumberOfSectionsWithProf++;
           }
         }
         NumberOfSections++;
       }
     }
-    if (ListOfFilteredSections.length != 0 && NumberOfRecitations == 0)
-      CoursesToReturn.push(ListOfFilteredSections);
+    if (ListOfFilteredSections.length != 0 && NumberOfRecitations == 0) {
+      AllAcceptedSections.push(ListOfFilteredSections);
+      AllSections.push(ListOfAllSections);
+    }
     if (ListOfFilteredSections.length == 0 && !Elective) {
       if (NumberOfNulls == Sections.length)
         throw new Error("All sections had Null Start/End Times");
       let Reasons = "";
-      if (LFilterConflictSeats != 0)
-        Reasons +=
-          LFilterConflictSeats.length +
-          " Section" +
-          (LFilterConflictSeats.length > 1 ? "s" : "") +
-          " with no available seats " +
-          LFilterConflictSeats;
-      if (LFilterConflictStartTime != 0)
+      if (SectionsWithNoSeats.length == NumberOfSectionsWithProf) {
+        if (SectionsWithNoSeats.length == 1) {
+          throw new Error(
+            `The one ${CourseSubject + CourseCode} Section with ` +
+              printArrayOfProfessors(CourseFilterObject.ProfessorFilter) +
+              " has no available seats"
+          );
+        } else {
+          throw new Error(
+            `All ${CourseSubject + CourseCode} Sections with ` +
+              printArrayOfProfessors(CourseFilterObject.ProfessorFilter) +
+              " have no available seats"
+          );
+        }
+      }
+      if (SectionWithConflictingStartTime != 0)
         Reasons +=
           (Reasons != "" ? "\n" : "") +
-          LFilterConflictStartTime.length +
+          SectionWithConflictingStartTime.length +
           ` Section${
-            LFilterConflictStartTime.length > 1
+            SectionWithConflictingStartTime.length > 1
               ? "s that start"
               : " that starts"
           } before ` +
           intToTime(PStartTime) +
           ":\n" +
-          LFilterConflictStartTime.map(
+          SectionWithConflictingStartTime.map(
             (Section) => `Section ${Section.Section} (${Section.CRN})`
           ).join("\n") +
-          (LFilterConflictFinishTime.length != NumberOfSections &&
-          LFilterConflictFinishLabTime.length != NumberOfSections
+          (SectionWithConflictingFinishTime.length != NumberOfSections &&
+          SectionWithConflictingFinishLabTime.length != NumberOfSections
             ? "\nSuggestion: Set preferred start time to " +
               intToTime(LatestSectionBeginTime)
             : "");
-      if (LFilterConflictFinishTime != 0)
+      if (SectionWithConflictingFinishTime != 0)
         Reasons +=
           (Reasons != "" ? "\n" : "") +
-          LFilterConflictFinishTime.length +
+          SectionWithConflictingFinishTime.length +
           ` Section${
-            LFilterConflictFinishTime.length > 1 ? "s that end" : " that ends"
-          } after ` +
-          intToTime(PEndTime) +
-          ":\n" +
-          LFilterConflictFinishTime.map(
-            (Section) => `Section ${Section.Section} (${Section.CRN})`
-          ).join("\n") +
-          (LFilterConflictStartTime.length != NumberOfSections &&
-          LFilterConflictFinishLabTime.length != NumberOfSections
-            ? "\nSuggestion: Set preferred end time to " +
-              intToTime(EarliestSectionEndTime)
-            : "");
-      if (LFilterConflictFinishLabTime != 0)
-        Reasons +=
-          (Reasons != "" ? "\n" : "") +
-          LFilterConflictFinishLabTime.length +
-          ` Lab${
-            LFilterConflictFinishLabTime.length > 1
+            SectionWithConflictingFinishTime.length > 1
               ? "s that end"
               : " that ends"
           } after ` +
           intToTime(PEndTime) +
           ":\n" +
-          LFilterConflictFinishLabTime.map(
+          SectionWithConflictingFinishTime.map(
             (Section) => `Section ${Section.Section} (${Section.CRN})`
           ).join("\n") +
-          (LFilterConflictStartTime.length != NumberOfSections &&
-          LFilterConflictFinishTime.length != NumberOfSections
+          (SectionWithConflictingStartTime.length != NumberOfSections &&
+          SectionWithConflictingFinishLabTime.length != NumberOfSections
+            ? "\nSuggestion: Set preferred end time to " +
+              intToTime(EarliestSectionEndTime)
+            : "");
+      if (SectionWithConflictingFinishLabTime != 0)
+        Reasons +=
+          (Reasons != "" ? "\n" : "") +
+          SectionWithConflictingFinishLabTime.length +
+          ` Lab${
+            SectionWithConflictingFinishLabTime.length > 1
+              ? "s that end"
+              : " that ends"
+          } after ` +
+          intToTime(PEndTime) +
+          ":\n" +
+          SectionWithConflictingFinishLabTime.map(
+            (Section) => `Section ${Section.Section} (${Section.CRN})`
+          ).join("\n") +
+          (SectionWithConflictingStartTime.length != NumberOfSections &&
+          SectionWithConflictingFinishTime.length != NumberOfSections
             ? "\nSuggestion: Set preferred end time to " +
               intToTime(EarliestSectionEndTime)
             : "");
@@ -236,44 +273,46 @@ async function getArraysOfFilteredSections(
     if (NumberOfRecitations != 0) {
       if (ListOfFilteredRecitations.length == 0 && !Elective) {
         let Reasons = "";
-        if (RFilterConflictSeats != 0)
-          Reasons +=
-            RFilterConflictSeats +
-            " Recitation" +
-            (RFilterConflictSeats.length > 1 ? "s" : "") +
-            " with no available seats " +
-            RFilterConflictSeats;
-        if (RFilterConflictStartTime != 0)
+        if (RecitationsWithNoSeats.length == NumberOfRecitations) {
+          throw new Error(
+            `All ${
+              CourseSubject + CourseCode
+            } Recitations have no available seats`
+          );
+        }
+        if (RecitationsWithConflictingStartTime != 0)
           Reasons +=
             (Reasons != "" ? "\n" : "") +
-            RFilterConflictStartTime.length +
+            RecitationsWithConflictingStartTime.length +
             ` Recitation${
-              RFilterConflictStartTime.length > 1
+              RecitationsWithConflictingStartTime.length > 1
                 ? "s that start"
                 : " that starts"
             } before ` +
             intToTime(PStartTime) +
             ":\n" +
-            RFilterConflictStartTime.map(
+            RecitationsWithConflictingStartTime.map(
               (Section) => `Section ${Section.Section} (${Section.CRN})`
             ).join("\n") +
-            (RFilterConflictFinishTime.length != NumberOfRecitations
+            (RecitationsWithConflictingEndTime.length != NumberOfRecitations
               ? "\nSuggestion: Set preferred start time to " +
                 intToTime(LatestRecitationBeginTime)
               : "");
-        if (RFilterConflictFinishTime != 0)
+        if (RecitationsWithConflictingEndTime != 0)
           Reasons +=
             (Reasons != "" ? "\n" : "") +
-            RFilterConflictFinishTime.length +
+            RecitationsWithConflictingEndTime.length +
             ` Recitation${
-              RFilterConflictFinishTime.length > 1 ? "s that end" : " that ends"
+              RecitationsWithConflictingEndTime.length > 1
+                ? "s that end"
+                : " that ends"
             } after ` +
             intToTime(PEndTime) +
             ":\n" +
-            RFilterConflictFinishTime.map(
+            RecitationsWithConflictingEndTime.map(
               (Section) => `Section ${Section.Section} (${Section.CRN})`
             ).join("\n") +
-            (RFilterConflictStartTime.length != NumberOfRecitations
+            (RecitationsWithConflictingStartTime.length != NumberOfRecitations
               ? "\nSuggestion: Set preferred end time to " +
                 intToTime(EarliestRecitationEndTime)
               : "");
@@ -290,6 +329,9 @@ async function getArraysOfFilteredSections(
         }
         if (S.LinkedSections) FinalListOfFilteredSections.push(S);
       }
+      FinalListOfFilteredSections = JSON.parse(
+        JSON.stringify(FinalListOfFilteredSections)
+      );
       if (!FinalListOfFilteredSections && !Elective) {
         throw new Error(`Available sections and available recitations but no section/linkedCRN combination available for\n
             ${CourseSubject + CourseCode} that applies with given filter!\n
@@ -302,12 +344,23 @@ async function getArraysOfFilteredSections(
               (Section) => `Section ${Section.Section} (${Section.CRN})`
             ).join("\n")}`);
       }
+      for (let S of ListOfAllSections) {
+        for (let R of ListOfAllRecitations) {
+          if (
+            R.LCRN.includes(S.CRN) &&
+            !S.LinkedSections.map((x) => x.CRN).includes(R.CRN)
+          )
+            S.LinkedSections.push(R);
+        }
+      }
 
-      if ((!Elective && FinalListOfFilteredSections.length != 0) || Elective)
-        CoursesToReturn.push(FinalListOfFilteredSections);
+      if ((!Elective && FinalListOfFilteredSections.length != 0) || Elective) {
+        AllAcceptedSections.push(FinalListOfFilteredSections);
+        AllSections.push(ListOfAllSections);
+      }
     }
   }
-  return CoursesToReturn;
+  return [AllAcceptedSections, AllSections];
 }
 
 /**This functions main purpose is so sort our filtered sections after conversion and before permuting,
@@ -338,18 +391,24 @@ async function convertCourseNamesToSections(
   PEndTime
 ) {
   let ArrayOfSections = [];
-  CourseFilterObjects.sort((x, y) => x.CourseName.localeCompare(y.CourseName));
+  let ArrayOfAllSections = [];
   let ArrayOfUnsortedSections = await getArraysOfFilteredSections(
     Term,
     CourseFilterObjects,
     PStartTime,
     PEndTime
   );
-  for (let UnsortedSections of ArrayOfUnsortedSections) {
+  for (let UnsortedSections of ArrayOfUnsortedSections[0]) {
     UnsortedSections.sort((x, y) => x.BT1 - y.BT1);
     ArrayOfSections.push(UnsortedSections);
   }
-  return ArrayOfSections;
+  for (let UnsortedSections of ArrayOfUnsortedSections[1]) {
+    UnsortedSections.sort((x, y) => x.BT1 - y.BT1);
+    ArrayOfAllSections.push(UnsortedSections);
+  }
+  ArrayOfSections.sort((x, y) => x.length - y.length);
+  ArrayOfAllSections.sort((x, y) => x.length - y.length);
+  return [ArrayOfSections, ArrayOfAllSections];
 }
 
 /**This is the main function to be exported to the backend.
@@ -384,17 +443,32 @@ async function getPermutations(
   PStartTime = null,
   PEndTime = null
 ) {
-  let AllSections = await convertCourseNamesToSections(
+  let ConvertedSections = await convertCourseNamesToSections(
     Term,
     CourseFilterObjects,
     PStartTime,
     PEndTime
   );
+  let AllFilteredSections = ConvertedSections[0];
+  let AllSections = ConvertedSections[1];
+  let num = 1;
+  for (let ArraySection of AllFilteredSections) {
+    var sum = 0;
+    for (let Section of ArraySection) {
+      sum +=
+        Section.LinkedSections.length == 0 ? 1 : Section.LinkedSections.length;
+    }
+    num *= sum;
+  }
+  if (num > 15000)
+    throw new Error(
+      ` Will not calculate ${num} schedules, use filters to lower amount of perms to get below 15000 schedules`
+    );
   SetSections = SetSections.concat(CustomSections);
   checkIfConflictingArray(SetSections, PStartTime, PEndTime);
-  printStuff(AllSections)
   var [MaxTime, MinTime, DayOccurences] = getMaxMinDO(SetSections);
-  let n = AllSections.length;
+  printStuff(AllFilteredSections);
+  let n = AllFilteredSections.length;
   let ArrayOfPermutations = [];
   var size = 0;
   var PermWithLeastTimeDif = null;
@@ -404,7 +478,7 @@ async function getPermutations(
   function getPermsRecursion(Perm, Min, Max, DO, index) {
     if (index == n) {
       Perm = [...JSON.parse(JSON.stringify(Perm))]; //deep copy
-      resetColors()
+      resetColors();
       for (let Section of Perm) Section.Color = getColor();
       ArrayOfPermutations.push(Perm);
       if (Max - Min < LeastTimeDif) {
@@ -424,9 +498,8 @@ async function getPermutations(
         if (CurrentMax - CurrentMin > Max - Min) PermWithLeastDays = size;
       }
       size++;
-      if (size > 5000) throw new Error("Too many permutations, add more filters please")
     } else {
-      for (let Section of AllSections[index]) {
+      for (let Section of AllFilteredSections[index]) {
         if (check(Perm, Section)) {
           if (isLinked(Section)) {
             for (let Recitation of Section.LinkedSections) {
@@ -453,11 +526,186 @@ async function getPermutations(
   }
   getPermsRecursion(SetSections, MinTime, MaxTime, DayOccurences, 0);
 
-  if (ArrayOfPermutations.length == 0)
-    //TODO: Add cases to errors
-    throw new Error(
-      "No Permutations with the given sections available, try different courses"
+  if (ArrayOfPermutations.length == 0) {
+    let num2 = 1;
+    for (let ArraySection of AllFilteredSections) {
+      var sum2 = 0;
+      for (let Section of ArraySection) {
+        sum2 +=
+          Section.LinkedSections.length == 0
+            ? 1
+            : Section.LinkedSections.length;
+      }
+      num2 *= sum2;
+    }
+    if (num2 > 30000)
+      throw new Error(
+        ` Will not calculate ${num2} schedules, remove a course or set a certain section`
+      );
+    function getPermsRecursionForAllSections(Perm, Min, Max, DO, index) {
+      if (index == n) {
+        ArrayOfPermutations.push(Perm);
+        if (Max - Min < LeastTimeDif) {
+          LeastTimeDif = Max - Min;
+          PermWithLeastTimeDif = size;
+        } else if (Max - Min === LeastTimeDif) {
+          let CurrentDO = getMaxMinDO(
+            ArrayOfPermutations[PermWithLeastDays]
+          )[2];
+          if (getDayDif(DO) > getDayDif(CurrentDO)) PermWithLeastTimeDif = size;
+        }
+        if (getDayDif(DO) > MostDayDif) {
+          MostDayDif = getDayDif(DO);
+          PermWithLeastDays = size;
+        } else if (getDayDif(DO) === MostDayDif) {
+          let [CurrentMax, CurrentMin] = getMaxMinDO(
+            ArrayOfPermutations[PermWithLeastDays]
+          );
+          if (CurrentMax - CurrentMin > Max - Min) PermWithLeastDays = size;
+        }
+        size++;
+      } else {
+        for (let Section of AllSections[index]) {
+          if (check(Perm, Section)) {
+            if (isLinked(Section)) {
+              for (let Recitation of Section.LinkedSections) {
+                if (check(Perm, Recitation))
+                  getPermsRecursionForAllSections(
+                    Perm.concat(Section, Recitation),
+                    getMinTime(Section, Min, Recitation),
+                    getMaxTime(Section, Max, Recitation),
+                    getDayOccurences(Section, DO, Recitation),
+                    index + 1
+                  );
+              }
+            } else
+              getPermsRecursionForAllSections(
+                Perm.concat(Section),
+                getMinTime(Section, Min),
+                getMaxTime(Section, Max),
+                getDayOccurences(Section, DO),
+                index + 1
+              );
+          }
+        }
+      }
+    }
+    getPermsRecursionForAllSections(
+      SetSections,
+      MinTime,
+      MaxTime,
+      DayOccurences,
+      0
     );
+    if (ArrayOfPermutations.length == 0) {
+      throw new Error(
+        "No Permutations with the given sections available, try different courses"
+      );
+    } else {
+      let CoursesWithSeatsFilter = [];
+      let FilteredProfessorsForEachCourse = {};
+      for (let CourseFilterObject of CourseFilterObjects) {
+        if (CourseFilterObject.SeatsFilter)
+          CoursesWithSeatsFilter.push(CourseFilterObject.CourseName);
+        FilteredProfessorsForEachCourse[CourseFilterObject.CourseName] =
+          CourseFilterObject.ProfessorFilter;
+      }
+      ArrayOfPermutations = ArrayOfPermutations.map((x) => [
+        x,
+        getMaxMinDO(x)[0] - getMaxMinDO(x)[1]
+      ]);
+      ArrayOfPermutations.sort((x, y) => x[1] - y[1]);
+      ArrayOfPermutations = ArrayOfPermutations.map((x) => x[0]);
+      let PermutationsWithSeatAvailability = [];
+      for (let Permutation of ArrayOfPermutations) {
+        let validSeats = (validProfs = true);
+        for (let Section of Permutation) {
+          if (
+            CoursesWithSeatsFilter.includes(Section.Subject + Section.Code) &&
+            Section.SeatsA <= 0
+          )
+            validSeats = false;
+          if (
+            !FilteredProfessorsForEachCourse[Section.Subject + Section.Code].includes(
+              Section.IName + " " + Section.ISName
+            )
+          )
+            validProfs = false;
+        }
+        if (validSeats && validProfs) {
+          let [PermMax, PermMin] = getMaxMinDO(Permutation);
+          ProfessorsToChange = "";
+          if (PermMin < PStartTime && PermMax > PEndTime)
+            throw new Error(
+              "No Permutations Available:\nSuggestion: Set Preferred StartTime to " +
+                intToTime(PermMin) +
+                "\n" +
+                "Set Preferred EndTime to " +
+                intToTime(PermMax)
+            );
+          if (PermMin < PStartTime)
+            throw new Error(
+              "No Permutations Available:\nSuggestion: Set Preferred StartTime to " +
+                intToTime(PermMin)
+            );
+          if (PermMax > PEndTime)
+            throw new Error(
+              "No Permutations Available:\nSuggestion: Set Preferred EndTime to " +
+                intToTime(PermMax)
+            );
+        }
+        if (validSeats) PermutationsWithSeatAvailability.push(Permutation);
+      }
+      if (PermutationsWithSeatAvailability.length != 0) {
+        let MinNumberOfProfessorsToChange = 1000;
+        let ArrayOfListOfAvailableUnselectedProfessorsPerCourse = [];
+        for (let Permutation of PermutationsWithSeatAvailability) {
+          let UnselectedProfessorsPerCourse = [];
+          for (let Section of Permutation) {
+            if (
+              !FilteredProfessorsForEachCourse[Section.Subject + Section.Code].includes(
+                Section.IName + " " + Section.ISName
+              )
+            ) {
+              UnselectedProfessorsPerCourse.push(
+                Section.Subject +
+                  Section.Code +
+                  ":" +
+                  Section.IName +
+                  " " +
+                  Section.ISName
+              );
+            }
+            if (UnselectedProfessorsPerCourse.length < MinNumberOfProfessorsToChange) {
+              MinNumberOfProfessorsToChange = UnselectedProfessorsPerCourse.length;
+              ArrayOfListOfAvailableUnselectedProfessorsPerCourse = [UnselectedProfessorsPerCourse];
+            } else if (UnselectedProfessorsPerCourse.length == MinNumberOfProfessorsToChange)
+              ArrayOfListOfAvailableUnselectedProfessorsPerCourse.push(UnselectedProfessorsPerCourse);
+          }
+        }
+        var ProfessorsToChange = "";
+        let first = true;
+        let AddedUnselectedProfessors = [];
+        for (let AvailableUnselectedProfessorsPerCourse of ArrayOfListOfAvailableUnselectedProfessorsPerCourse) {
+          AvailableUnselectedProfessorsPerCourse.sort((a, b) => a.name.localeCompare(b.name));
+          if (!AddedUnselectedProfessors.includes(JSON.stringify(AvailableUnselectedProfessorsPerCourse))) {
+            if (first) first = false;
+            else ProfessorsToChange += "\n or \n";
+            AddedUnselectedProfessors.push(JSON.stringify(AvailableUnselectedProfessorsPerCourse));
+            for (let AvailableUnselectedProfessor of AvailableUnselectedProfessorsPerCourse) {
+              let Word = AvailableUnselectedProfessor.split(":");
+              ProfessorsToChange += "-for " + Word[0] + " choose " + Word[1] + "\n";
+            }
+          }
+        }
+        throw new Error(
+          "No Permutations Available:\nSuggestion: Select the following professors\n" +
+            ProfessorsToChange
+        );
+      }
+      throw new Error("No Permutations Exist: Must Change Courses!");
+    }
+  }
 
   if (PermWithLeastDays == PermWithLeastTimeDif) {
     swap(ArrayOfPermutations, 0, PermWithLeastDays);
@@ -489,57 +737,4 @@ function printStuff(Perms) {
         ).join("\n")
     );
   }
-}
-
-async function giveNamesGetObjects(Term, CourseNames) {
-  let A = [];
-  for (let CN of CourseNames) {
-    let S = CN.slice(0, 4);
-    let C = CN.slice(4);
-    A.push({
-      CourseName: CN,
-      SeatsFilter: false,
-      ProfessorFilter: await getProfessors(Term, S, C),
-      Elective: false
-    });
-  }
-  return A;
-}
-
-async function test() {
-  let TestTerm = "202220";
-  let TestCRNs = [];
-  let TestCustomCourses = [];
-  let TestCourses = [
-    {
-      CourseName: "EECE311",
-      SeatsFilter: false,
-      ProfessorFilter: await getProfessors(TestTerm, "EECE", "311"),
-      Elective: false
-    },
-    {
-      CourseName: "EECE321",
-      SeatsFilter: false,
-      ProfessorFilter: await getProfessors(TestTerm, "EECE", "321"),
-      Elective: false
-    },
-    {
-      CourseName: "H1",
-      SeatsFilter: true,
-      ProfessorFilter: [],
-      Elective: true
-    }
-  ];
-
-  let setSections = await searchByCRNs(TestTerm, TestCRNs);
-  let Perms = await getPermutations(
-    TestTerm,
-    setSections,
-    TestCustomCourses,
-    TestCourses,
-    900,
-    null
-  );
-  console.log("\n\n\n\n\n\nPermutations are", Perms.length);
-  printStuff(Perms);
 }
