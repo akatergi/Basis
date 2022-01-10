@@ -44,7 +44,7 @@ app.get("/new", (req, res) => {
 
 app.post("/filter", async (req, res) => {
   let { Term, setCRNs, sections, electives, customCourses} = req.body
-  console.log(JSON.parse(customCourses))
+  customCourses = JSON.parse(customCourses)
   if(!electives) electives = []
   let electivesArr = []
   for(let elective of electives){
@@ -76,25 +76,26 @@ app.post("/filter", async (req, res) => {
   req.session.courses = courses;
   req.session.Term = Term
   req.session.electivesArr = electivesArr
+  req.session.customCourses = customCourses
   res.redirect("/filter")
 })
 
 app.get("/filter", async (req, res) => {
-  let { Term, SetSections, courses, electivesArr } = req.session
+  let { Term, SetSections, courses, electivesArr, customCourses } = req.session
   if (!Term || !SetSections || !courses) {
     req.flash("error", "Missing parameters!")
     return res.redirect("/new")
   }
 
-  if (SetSections.length === 0 && courses.length === 0 && electivesArr.length===0) {
+  if (SetSections.length === 0 && courses.length === 0 && electivesArr.length===0 && customCourses.length===0) {
     req.flash("error", "Need at least one course to create schedule!")
     return res.redirect("/new")
   }
-  res.render("filterForm", { Term, SetSections, courses, electivesArr })
+  res.render("filterForm", { Term, SetSections, courses, electivesArr, customCourses })
 })
 
 app.post("/schedules", async (req, res) => {
-  let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses, electivesArr} = req.body
+  let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses, electivesArr, customCourses} = req.body
   Term = "202220"
   let PStartTime, PEndTime;
   if (sHour === "") PStartTime = null
@@ -102,8 +103,9 @@ app.post("/schedules", async (req, res) => {
   if (eHour === "") PEndTime = null
   else PEndTime = timeToInt(eHour + ":" + eMinute, etime === "PM")
 
-  let CustomSections = []
   setSections = JSON.parse(setSections)
+  customCourses = JSON.parse(customCourses)
+  let CustomSections = customCourses
   
   if (!courses) courses = []
 
