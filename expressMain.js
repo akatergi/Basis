@@ -39,27 +39,49 @@ app.listen(3000, () => console.log("Listening on port 3000"))
 app.get("/", (req, res) => res.redirect("/new"))
 
 app.get("/new", (req, res) => {
-  res.render("scheduleForm")
+  let { Term, setCRNs, sections, electives, customCourses } = req.session
+  console.log(Term, setCRNs, sections, electives, customCourses)
+  if(!Term) Term="202220"
+  if(!setCRNs) setCRNs=[]
+  if(!sections) sections = []
+  if (!electives) electives = []
+  if (!customCourses) customCourses = []
+  res.render("scheduleForm", {Term, setCRNs, sections, electives, customCourses})
 })
 
 app.post("/filter", async (req, res) => {
-  let { Term, setCRNs, sections, electives, customCourses} = req.body
-  customCourses = JSON.parse(customCourses)
-  if(!electives) electives = []
-  let electivesArr = []
-  for(let elective of electives){
-    electivesArr.push({CourseName:elective, SeatsFilter: true, ProfessorFilter:[], Elective:true})
+  let { Term, setCRNs, sections, electives, customCourses } = req.body
+
+  if (!electives) electives = []
+  if (!Term) {
+    req.flash("error", "Must enter Term")
+    return res.redirect("/new")
   }
-  
   if (!setCRNs) setCRNs = []
+  setCRNs = setCRNs.filter(e => e.length!==0)
+  customCourses = JSON.parse(customCourses)
+  req.session.customCourses = customCourses
+  if (!sections) sections = []
+  console.log("!!!!!!", setCRNs)
+  req.session.Term = Term
+  req.session.setCRNs = setCRNs
+  req.session.sections = sections
+  req.session.electives = electives
+  console.log(req.session)
+
+  let electivesArr = []
+  for (let elective of electives) {
+    electivesArr.push({ CourseName: elective, SeatsFilter: true, ProfessorFilter: [], Elective: true })
+  }
+
   try {
-    var SetSections = await searchByCRNs(Term, setCRNs)
-    checkIfConflictingArray(SetSections,0,2400)
+    var SetSections = await searchByCRNs(Term, [...setCRNs])
+    checkIfConflictingArray(SetSections, 0, 2400)
   } catch (e) {
     req.flash("error", e.message)
     return res.redirect("/new")
   }
-  if (!sections) sections = []
+
   let courses = []
   for (let i = 0; i < sections.length; i++) {
     sections[i] = sections[i].toUpperCase().replace(/\s/g, '')
@@ -74,9 +96,7 @@ app.post("/filter", async (req, res) => {
   }
   req.session.SetSections = SetSections;
   req.session.courses = courses;
-  req.session.Term = Term
   req.session.electivesArr = electivesArr
-  req.session.customCourses = customCourses
   res.redirect("/filter")
 })
 
@@ -87,7 +107,7 @@ app.get("/filter", async (req, res) => {
     return res.redirect("/new")
   }
 
-  if (SetSections.length === 0 && courses.length === 0 && electivesArr.length===0 && customCourses.length===0) {
+  if (SetSections.length === 0 && courses.length === 0 && electivesArr.length === 0 && customCourses.length === 0) {
     req.flash("error", "Need at least one course to create schedule!")
     return res.redirect("/new")
   }
@@ -95,7 +115,7 @@ app.get("/filter", async (req, res) => {
 })
 
 app.post("/schedules", async (req, res) => {
-  let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses, electivesArr, customCourses} = req.body
+  let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses, electivesArr, customCourses } = req.body
   Term = "202220"
   let PStartTime, PEndTime;
   if (sHour === "") PStartTime = null
@@ -106,7 +126,7 @@ app.post("/schedules", async (req, res) => {
   setSections = JSON.parse(setSections)
   customCourses = JSON.parse(customCourses)
   let CustomSections = customCourses
-  
+
   if (!courses) courses = []
 
   for (let course of courses) {

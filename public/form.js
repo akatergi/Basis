@@ -45,11 +45,11 @@ const editsPM = document.querySelector("#editsPM")
 const mainClose = document.querySelector("#mainClose")
 const editClose = document.querySelector("#editClose")
 
-let crnCount = 0
-let counter = 0
-let counter2 = 0
-let courseCount = 0
-let counter3 = 1
+// let crnCount = 0
+// let counter = 0
+// let counter2 = 0
+// let courseCount = 0
+// let counter3 = 1
 
 function getIcon() {
     let i = document.createElement("i")
@@ -97,7 +97,7 @@ addCRN.addEventListener('click', e => {
         let clearButton = document.createElement("a")
         clearButton.id = `clearButton-${counter}`
         clearButton.append(getIcon())
-        clearButton.classList.add("clearButton")
+        clearButton.classList.add("clearButton", "crnClear")
 
         clearButton.addEventListener("click", function (e) {
             e.preventDefault()
@@ -155,7 +155,7 @@ addCourse.addEventListener('click', e => {
         let clearButton = document.createElement("a")
         clearButton.id = `clearButton-${counter2}`
         clearButton.append(getIcon())
-        clearButton.classList.add("clearButton")
+        clearButton.classList.add("clearButton", "courseClear")
 
         clearButton.addEventListener("click", function (e) {
             e.preventDefault()
@@ -226,7 +226,7 @@ addElective.addEventListener("click", e => {
 
     let clearButton = document.createElement("a")
     clearButton.append(getIcon())
-    clearButton.classList.add("clearButton")
+    clearButton.classList.add("clearButton", "electiveClear")
 
     clearButton.addEventListener("click", function (e) {
         e.preventDefault()
@@ -290,7 +290,7 @@ createCourse.addEventListener("click", () => {
 
             let clearButton = document.createElement("a")
             clearButton.append(getIcon())
-            clearButton.classList.add("clearButton")
+            clearButton.classList.add("clearButton", "customClear")
 
 
 
@@ -386,3 +386,48 @@ createCourse.addEventListener("click", () => {
         }
     }
 })
+
+let crnClearButtons = document.querySelectorAll(".crnClear")
+
+if(crnClearButtons.length){
+    crnClearButtons.forEach(btn => {
+        btn.addEventListener('click', e => {
+            e.preventDefault()
+            let idx = btn.id.slice(13)
+            let associatedInp = document.querySelector(`#crnInput-${idx}`)
+            associatedInp.remove()
+            btn.remove()
+            crnCount--
+        })
+    })
+}
+
+let courseClearButtons = document.querySelectorAll(".courseClear")
+
+if(courseClearButtons.length){
+    courseClearButtons.forEach(btn => {
+        btn.addEventListener('click', e => {
+            e.preventDefault()
+            let idx = btn.id.slice(13)
+            let associatedInp = document.querySelector(`#courseInput-${idx}`)
+            associatedInp.remove()
+            btn.remove()
+            courseCount--
+        })
+    })
+}
+
+let electiveClearButtons = document.querySelectorAll(".electiveClear")
+
+if(electiveClearButtons.length){
+    electiveClearButtons.forEach(btn => {
+        btn.addEventListener('click', e => {
+            e.preventDefault()
+            let idx = btn.id.slice(13)
+            let associatedInp = document.querySelector(`#select-${idx}`)
+            associatedInp.remove()
+            btn.remove()
+            // crnCount--
+        })
+    })
+}
