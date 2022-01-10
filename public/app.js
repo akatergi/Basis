@@ -7,6 +7,7 @@ let letterDays = {
     "W": "wednesday",
     "R": "thursday",
     "F": "friday",
+    "S": "saturday"
 }
 let nextSchedArrow = document.querySelector(".rightArrow")
 let index = document.querySelector("#index")
@@ -104,7 +105,8 @@ function genSched(i) {
                 }
             }
             if (cH === endHour) {
-                endMin === 0 ? cM = 60 : cM = endMin
+                // endMin === 0 ? cM = 60 : cM = endMin
+                cM = endMin
                 for (let day of course.Schedule1) {
                     let content = document.querySelector(`.r${cH} .${letterDays[day]} .content`)
                     let courseBlock = document.createElement("div")
@@ -322,13 +324,14 @@ function updateBoxes() {
                 let cardTitle = document.querySelector("#cardTitle")
                 let cardName = document.querySelector("#cardName")
                 let instructor = document.querySelector("#instructor")
-                section.innerText = course.Section
+                section.innerText = course.Section ? course.Section : "N/A"
                 crn.innerText = course.CRN
-                credits.innerText = course.CH
-                seats.innerText = `${course.SeatsA}/${course.SeatsA + course.SeatsT}`
+                credits.innerText = course.CH ? course.CH : "N/A"
+                seats.innerText = `${course.SeatsA ? course.SeatsA : "N/A"}/${(course.SeatsA + course.SeatsT) ? (course.SeatsA + course.SeatsT) : "N/A"}`
                 cardTitle.innerText = `${course.Subject} ${course.Code}`
                 cardName.innerText = course.Title
                 if (course.IName === "." && course.ISName === "STAFF") instructor.innerText = 'TBA'
+                else if(!course.IName || !course.ISName) instructor.innerText = "N/A"
                 else instructor.innerText = `${course.IName} ${course.ISName}`
             }
         })

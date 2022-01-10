@@ -261,9 +261,9 @@ createCourse.addEventListener("click", () => {
     if (Subject === "") alert("Need to specify name!")
     else if (sH.length === 0) alert("Must specify Start Hour!")
     else if (eH.length === 0) alert("Must specify End Hour!")
-    else if (parseInt(sH) < 1 || parseInt(sH) > 12) alert("Start hour must be between 1 and 12")
+    else if (parseInt(sH) > 12 || parseInt(sH) < 1 || sT === "AM" && parseInt(sH) < 7 && parseInt(sH)!==12) alert("Start hour must be between 7 AM and 11 PM")
     else if (parseInt(sM) < 0 || parseInt(sM) > 59) alert("Start minute must be between 0 and 60")
-    else if (parseInt(eH) < 1 || parseInt(eH) > 12) alert("End hour must be between 1 and 12")
+    else if (parseInt(eH) > 12 || parseInt(eH) < 1 || eT === "AM" && parseInt(eH) < 7 && parseInt(eH)!==12) alert("End hour must be between 1 and 12")
     else if (parseInt(eM) < 0 || parseInt(eM) > 59) alert("End minute must be between 0 and 60")
 
     else {
@@ -330,19 +330,22 @@ createCourse.addEventListener("click", () => {
                     Subject = editTitle.value
                     sH = editsHour.value
                     sM = editsMinute.value
+                    sT = editsTime.value
                     eH = editeHour.value
                     eM = editeMinute.value
+                    eT = editeTime.value
                     if (!sM) sM = "00"
                     if (!eM) eM = "00"
+                    else if (parseInt(sH) > 12 || parseInt(sH) < 1 || sT === "AM" && parseInt(sH) < 7 && parseInt(sH)!==12) alert("Start hour must be between 7 AM and 11 PM")
+                    else if (parseInt(sM) < 0 || parseInt(sM) > 59) alert("Start minute must be between 0 and 60")
+                    else if (parseInt(eH) > 12 || parseInt(eH) < 1 || eT === "AM" && parseInt(eH) < 7 && parseInt(eH)!==12) alert("End hour must be between 1 and 12")
+                    else if (parseInt(eM) < 0 || parseInt(eM) > 59) alert("End minute must be between 0 and 60")
                     BT1 = timeToInt(sH + ":" + sM, sT === "PM")
+                    console.log(sH, sM, sT, BT1)
                     ET1 = timeToInt(eH + ":" + eM, eT === "PM")
                     if (Subject === "") alert("Need to specify name!")
                     else if (sH.length === 0) alert("Must specify Start Hour!")
                     else if (eH.length === 0) alert("Must specify End Hour!")
-                    else if (parseInt(sH) < 1 || parseInt(sH) > 12) alert("Start hour must be between 1 and 12")
-                    else if (parseInt(sM) < 0 || parseInt(sM) > 59) alert("Start minute must be between 0 and 60")
-                    else if (parseInt(eH) < 1 || parseInt(eH) > 12) alert("End hour must be between 1 and 12")
-                    else if (parseInt(eM) < 0 || parseInt(eM) > 59) alert("End minute must be between 0 and 60")
 
                     else {
 
@@ -357,7 +360,7 @@ createCourse.addEventListener("click", () => {
                         }
                         if (Schedule1.length === 0) alert("Course must be on at least one day!")
                         else {
-                            customCourseObj = { Subject, Code: "", CRN: `CUST${counter3}`, BT1, ET1, Schedule1, LCRN: [], Schedule2: "" }
+                            customCourseObj = { Subject, Code: "", CRN, BT1, ET1, Schedule1, LCRN: [], Schedule2: "" }
                             customCourses[idx] = customCourseObj
                             li.innerText = `Title: ${Subject}, Time: ${intToTime(BT1)} - ${intToTime(ET1)}, Schedule:${Schedule1}`
                             editClose.click()
