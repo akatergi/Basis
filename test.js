@@ -1,3 +1,1 @@
-let i=0;
-for(i;i<10;i++){}
-console.log(i)
+console.log("DeditButton-0".slice(12))

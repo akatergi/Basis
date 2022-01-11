@@ -91,7 +91,15 @@
                             <h2 class="card-title">Custom Courses <span class="optional">(optional)</span></h2>
                             <small class="card-text text-muted"> Create your own custom course blocks that can be displayed on your schedule! These can be things like breaks, gym time, tutoring, ... </small>
                             <ul class="list-group" id="setCustomCourses">
-                                <!-- <li class="list-group-item">Cras justo odio</li> -->
+                                <% for(let ci=0; ci<customCourses.length; ci++) {%> 
+                                    <div class="CRNInpGrp">
+                                        <li class="list-group-item form-control mt-2" id="li-<%= ci %>">
+                                            Title: <%= customCourses[ci].Subject %>, Time: <%= intToTime(customCourses[ci].BT1) %> - <%= intToTime(customCourses[ci].ET1) %>, Schedule: <%= customCourses[ci].Schedule1 %>    
+                                        </li>
+                                        <a data-bs-toggle="modal" data-bs-target="#editModal" class="editButton" id="DeditButton-<%= ci %>"><i class="fas fa-edit"></i></a>
+                                        <a class="clearButton customClear" id="DclearButton-<%= ci %>"><i class="fas fa-trash"></i></a>
+                                    </div>
+                                <% } %> 
                             </ul>
                             <%- include("partials/mainModal") %>
                             <%- include("partials/editModal") %>
@@ -111,7 +119,7 @@
     let courseCount = counter2;
     let counter3 = <%- customCourses.length %>;
     let customCount = counter3
-    console.log(counter, counter2, counter3)
+    let customCourses = <%- JSON.stringify(customCourses) %>
 </script>
 
 <script src="form.js"></script>
