@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="./app.css">
-<% layout("layouts/boilerplate") %>
+<% layout("boilerplate") %>
 <div class="container-fluid">
     <div class="row">
         <div class="col-2">
@@ -65,8 +65,14 @@
                 <div class="card-header">
                     Customize Schedule
                 </div>
-                <div class="card-body" id="custom">
-                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item I">Time: <button id="changeTime" class="btn btn-success">12 Hour Format</button> </li>
+                    <li class="list-group-item">
+                        Colors:
+                        <div class="card-body" id="custom">
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

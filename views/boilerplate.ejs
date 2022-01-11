@@ -43,7 +43,11 @@
             <div class="row">
                 <div class="alert alert-danger d-flex align-items-center alert-dismissible fade show mt-2" role="alert">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <%= messages %>
+                    <% let msg = messages[0] %> 
+                    <% msg = msg.split("\n") %>
+                    <% for(let line of msg) {%>
+                        <%= line %> <br>
+                    <% } %> 
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>

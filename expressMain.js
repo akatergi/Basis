@@ -62,7 +62,7 @@ app.post("/filter", async (req, res) => {
   customCourses = JSON.parse(customCourses)
   req.session.customCourses = customCourses
   if (!sections) sections = []
-  console.log("!!!!!!", setCRNs)
+  sections = sections.filter(e => e.length!==0)
   req.session.Term = Term
   req.session.setCRNs = setCRNs
   req.session.sections = sections
@@ -101,7 +101,7 @@ app.post("/filter", async (req, res) => {
 })
 
 app.get("/filter", async (req, res) => {
-  let { Term, SetSections, courses, electivesArr, customCourses } = req.session
+  let { Term, SetSections, courses, electivesArr, customCourses, sHour, sMinute, stime, eHour, eMinute, etime } = req.session
   if (!Term || !SetSections || !courses) {
     req.flash("error", "Missing parameters!")
     return res.redirect("/new")
@@ -111,15 +111,24 @@ app.get("/filter", async (req, res) => {
     req.flash("error", "Need at least one course to create schedule!")
     return res.redirect("/new")
   }
-  res.render("filterForm", { Term, SetSections, courses, electivesArr, customCourses })
+  res.render("filterForm", { Term, SetSections, courses, electivesArr, customCourses, sHour, sMinute, stime, eHour, eMinute, etime })
 })
 
 app.post("/schedules", async (req, res) => {
   let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses, electivesArr, customCourses } = req.body
+  if(sMinute.length===0) sMinute="00"
+  if(eMinute.length===0) eMinute="00"
+  req.session.sHour = sHour
+  req.session.sMinute = sMinute
+  req.session.stime = stime
+  req.session.eHour = eHour
+  req.session.eMinute = eMinute
+  req.session.etime = etime
   Term = "202220"
   let PStartTime, PEndTime;
   if (sHour === "") PStartTime = null
   else PStartTime = timeToInt(sHour + ":" + sMinute, stime === "PM")
+  
   if (eHour === "") PEndTime = null
   else PEndTime = timeToInt(eHour + ":" + eMinute, etime === "PM")
 
@@ -136,7 +145,7 @@ app.post("/schedules", async (req, res) => {
     course.Elective = false
   }
   courses = courses.concat(JSON.parse(electivesArr))
-
+  console.log(PStartTime, PEndTime)
   try {
     var Schedules = await getPermutations(Term, setSections, CustomSections, courses, PStartTime, PEndTime)
   } catch (err) {

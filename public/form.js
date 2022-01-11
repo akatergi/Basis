@@ -122,7 +122,6 @@ addCRN.addEventListener('click', e => {
                 e.preventDefault()
                 addCRN.click()
                 let newerInp = document.querySelector(`#crnInput-${counter - 1}`)
-                newerInp.focus()
                 newerInp.select()
             }
         })
@@ -133,8 +132,9 @@ addCRN.addEventListener('click', e => {
                 let allInps = document.querySelectorAll(`.crnInput`)
                 if (allInps.length) {
                     let lastInp = allInps[allInps.length - 1]
-                    lastInp.focus()
+                    let val = lastInp.value
                     lastInp.select()
+                    lastInp.value = val * 10;
                 }
             }
         }
@@ -181,7 +181,6 @@ addCourse.addEventListener('click', e => {
                 e.preventDefault()
                 addCourse.click()
                 let newerInp = document.querySelector(`#courseInput-${counter2 - 1}`)
-                newerInp.focus()
                 newerInp.select()
             }
         })
@@ -192,8 +191,9 @@ addCourse.addEventListener('click', e => {
                 let allInps = document.querySelectorAll(`.courseInput`)
                 if (allInps.length) {
                     let lastInp = allInps[allInps.length - 1]
-                    lastInp.focus()
+                    let val = lastInp.value
                     lastInp.select()
+                    lastInp.value = val + " "
                 }
             }
         }
@@ -357,7 +357,7 @@ createCourse.addEventListener("click", () => {
                     if (Subject === "") alert("Need to specify name!")
                     else if (sH.length === 0) alert("Must specify Start Hour!")
                     else if (eH.length === 0) alert("Must specify End Hour!")
-                    else if(BT1>ET1) alert("End time must be less than start time!")
+                    else if (BT1 > ET1) alert("End time must be less than start time!")
 
                     else {
 
@@ -467,7 +467,6 @@ editButtons.forEach(editButton => {
     editButton.addEventListener("click", () => {
         let idx = parseInt(editButton.id.slice(12))
         let customCourseObj = customCourses[idx]
-        console.log(idx, customCourseObj, editButton.id)
         let { Subject, BT1, ET1, CRN, Schedule1 } = customCourseObj
         let P = String(BT1)
         let sM = P.slice(P.length - 2)
@@ -517,7 +516,6 @@ editButtons.forEach(editButton => {
             else if (parseInt(eH) > 12 || parseInt(eH) < 1 || eT === "AM" && parseInt(eH) < 7 && parseInt(eH) !== 12) alert("End hour must be between 1 and 12")
             else if (parseInt(eM) < 0 || parseInt(eM) > 59) alert("End minute must be between 0 and 60")
             BT1 = timeToInt(sH + ":" + sM, sT === "PM")
-            console.log(sH, sM, sT, BT1)
             ET1 = timeToInt(eH + ":" + eM, eT === "PM")
             if (Subject === "") alert("Need to specify name!")
             else if (sH.length === 0) alert("Must specify Start Hour!")
@@ -546,3 +544,28 @@ editButtons.forEach(editButton => {
         })
     })
 })
+
+let order = [customTitle, sHour, sMinute, eHour, eMinute]
+
+for (let j = 0; j < order.length - 1; j++) {
+    let inp = order[j]
+    inp.addEventListener("keydown", e => {
+        e.preventDefault()
+        if (e.keyCode === 13) order[j + 1].select()
+    })
+}
+
+eMinute.addEventListener("keydown", e => {
+    e.preventDefault()
+    checkMonday.select()
+})
+
+let checks = [checkMonday, checkTuesday, checkWednesday, checkThursday, checkFriday, checkSaturday]
+
+for(let j=0; j<checks.length;j++){
+    let check = checks[j]
+    check.addEventListener("keydown", e => {
+        e.preventDefault()
+        if (e.keyCode === 13) check.checked = !check.checked
+        if(e.keyCode===9&&check!==checkSaturday) checks[j+1].select()
+})}

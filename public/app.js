@@ -19,6 +19,11 @@ let lockedCRNs = []
 let deletedCRNs = []
 let total = document.querySelector("#total")
 let idxSpan = document.querySelector("#index")
+let t = false
+let timeTDs = document.querySelectorAll(".time")
+console.log(timeTDs)
+timeTDs = Array.from(timeTDs).slice(6)
+console.log(timeTDs)
 //Functions
 
 function labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin) {
@@ -55,7 +60,7 @@ function fixTimes(BT, ET) {
     return { startHour, startMin, endHour, endMin }
 }
 
-function makeIcon(){
+function makeIcon() {
     let icon = document.createElement("i")
     icon.classList.add("fas")
     icon.classList.add("fa-lock")
@@ -71,7 +76,7 @@ function genSched(i) {
         let i = 0
         let overrideWritten = false
         let shouldLock = lockedCRNs.includes(course.CRN)
-        let lock=false
+        let lock = false
         let overrideLock = false
         while (cH <= endHour) {
             if (cH < endHour) {
@@ -87,7 +92,7 @@ function genSched(i) {
                         labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin)
                         overrideWritten = true;
                     }
-                    if(shouldLock && lock===false && percentage >=70){
+                    if (shouldLock && lock === false && percentage >= 70) {
                         courseBlock.append(makeIcon())
                         overrideLock = true
                     }
@@ -127,7 +132,7 @@ function genSched(i) {
                         overrideWritten = true
                         labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin)
                     }
-                    if(shouldLock && lock===false){
+                    if (shouldLock && lock === false) {
                         courseBlock.append(makeIcon())
                         overrideLock = true
                     }
@@ -152,7 +157,7 @@ function genSched(i) {
             let cM = startMin
             let i = 0
             let overrideWritten = false
-            let lock=false
+            let lock = false
             let overrideLock = false
             while (cH <= endHour) {
                 if (cH < endHour) {
@@ -169,7 +174,7 @@ function genSched(i) {
                             labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin);
                             overrideWritten = true;
                         }
-                        if(shouldLock && lock===false && percentage >=70){
+                        if (shouldLock && lock === false && percentage >= 70) {
                             courseBlock.append(makeIcon())
                             overrideLock = true
                         }
@@ -193,7 +198,7 @@ function genSched(i) {
                             labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin);
                             overrideWritten = true;
                         }
-                        if(shouldLock && lock===false){
+                        if (shouldLock && lock === false) {
                             courseBlock.append(makeIcon())
                             overrideLock = true
                         }
@@ -260,6 +265,50 @@ function clearSched() {
         content.classList.remove("contentTop")
         content.classList.remove("contentBott")
         content.classList.remove("contentBoth")
+    })
+}
+
+function updateTime12() {
+    timeTDs.forEach(td => {
+        let hour = td.innerText.slice(0, 2)
+        td.innerText = `${hour - 12}:00`
+    })
+    let blockSubs = document.querySelectorAll(".blockSub")
+    blockSubs.forEach(t => {
+        let [BT, ET] = t.innerText.split("-")
+        BT = BT.split(":")
+        ET = ET.split(":")
+        let BTh = BT[0]
+        let BTm = BT[1]
+        let ETh = ET[0]
+        let ETm = ET[1]
+        BTh > 12 ? BTh -= 12 : BTh
+        ETh > 12 ? ETh -= 12 : ETh
+        t.innerText = `${BTh}:${BTm}-${ETh}:${ETm}`
+    })
+}
+
+function updateTime24() {
+    timeTDs.forEach(td => {
+        let hour = td.innerText.slice(0, td.innerText.length - 3)
+        td.innerText = `${parseInt(hour) + 12}:00`
+    })
+    let blockSubs = document.querySelectorAll(".blockSub")
+    blockSubs.forEach(t => {
+        let [BT, ET] = t.innerText.split("-")
+        BT = BT.split(":")
+        ET = ET.split(":")
+        let BTh = parseInt(BT[0])
+        let BTm = parseInt(BT[1])
+        let ETh = parseInt(ET[0])
+        let ETm = parseInt(ET[1])
+        console.log(t, parseInt(t.parentElement.parentElement.parentElement.parentElement.classList[0].slice(1)) > 12)
+        if (parseInt(t.parentElement.parentElement.parentElement.parentElement.classList[0].slice(1)) > 12) {
+            BTh += 12;
+            ETh += 12
+        }
+        else if (parseInt(t.parentElement.parentElement.parentElement.parentElement.classList[0].slice(1)) + Math.abs(ETh - BTh) > 12) ETh += 12
+        t.innerText = `${BTh}:${BTm / 10 >= 1 ? BTm : "0" + BTm}-${ETh}:${ETm}`
     })
 }
 
@@ -331,7 +380,7 @@ function updateBoxes() {
                 cardTitle.innerText = `${course.Subject} ${course.Code}`
                 cardName.innerText = course.Title
                 if (course.IName === "." && course.ISName === "STAFF") instructor.innerText = 'TBA'
-                else if(!course.IName || !course.ISName) instructor.innerText = "N/A"
+                else if (!course.IName || !course.ISName) instructor.innerText = "N/A"
                 else instructor.innerText = `${course.IName} ${course.ISName}`
             }
         })
@@ -373,24 +422,24 @@ function updateBoxes() {
         })
 
         box.addEventListener("contextmenu", (e) => {
-          const CRN = box.classList[box.classList.length - 1].slice(9)
-          let currentSched = Schedules[i]
-          deletedCRNs.push(CRN)
-          Schedules = Schedules.filter(sched => {
-              for (let course of sched) if (course.CRN === CRN) return false
-              return true
-          })
-          let newIdxOfSched = 0
-          i = newIdxOfSched
-          total.innerText = Schedules.length
-          idxSpan.innerText = newIdxOfSched + 1
-          clearSched()
-          genSched(i)
-          boxes = document.querySelectorAll(".course")
-          updateBoxes()
-          e.preventDefault();
+            const CRN = box.classList[box.classList.length - 1].slice(9)
+            let currentSched = Schedules[i]
+            deletedCRNs.push(CRN)
+            Schedules = Schedules.filter(sched => {
+                for (let course of sched) if (course.CRN === CRN) return false
+                return true
+            })
+            let newIdxOfSched = 0
+            i = newIdxOfSched
+            total.innerText = Schedules.length
+            idxSpan.innerText = newIdxOfSched + 1
+            clearSched()
+            genSched(i)
+            boxes = document.querySelectorAll(".course")
+            updateBoxes()
+            e.preventDefault();
         }
-      )
+        )
     })
 }
 
@@ -416,6 +465,23 @@ prevSchedArrow.addEventListener("click", () => {
     }
 })
 
+let changeTime = document.querySelector("#changeTime")
+changeTime.addEventListener("click", () => {
+    t = !t
+    if (t) {
+        updateTime12()
+        changeTime.innerText = "12 Hour Format"
+        changeTime.classList.remove("btn-danger")
+        changeTime.classList.add("btn-success")
+    }
+    else {
+        updateTime24()
+        changeTime.innerText = "24 Hour Format"
+        changeTime.classList.add("btn-danger")
+        changeTime.classList.remove("btn-success")
+    }
+
+})
 genSched(i)
 boxes = document.querySelectorAll(".course")
 updateBoxes()

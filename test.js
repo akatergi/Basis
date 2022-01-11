@@ -1,1 +1,2 @@
-console.log("DeditButton-0".slice(12))
+let [a,b] = [1,2]
+console.log(a,b)
