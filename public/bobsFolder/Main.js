@@ -628,7 +628,7 @@ async function getPermutations(
           if (
             !FilteredProfessorsForEachCourse[Section.Subject + Section.Code].includes(
               Section.IName + " " + Section.ISName
-            )
+            ) && !isRecitation(Section)
           )
             validProfs = false;
         }
@@ -653,7 +653,7 @@ async function getPermutations(
               "No Permutations Available:\nSuggestion: Set Preferred EndTime to " +
                 intToTime(PermMax)
             );
-        }
+        } 
         if (validSeats) PermutationsWithSeatAvailability.push(Permutation);
       }
       if (PermutationsWithSeatAvailability.length != 0) {
@@ -687,7 +687,7 @@ async function getPermutations(
         let first = true;
         let AddedUnselectedProfessors = [];
         for (let AvailableUnselectedProfessorsPerCourse of ArrayOfListOfAvailableUnselectedProfessorsPerCourse) {
-          AvailableUnselectedProfessorsPerCourse.sort((a, b) => a.name.localeCompare(b.name));
+          AvailableUnselectedProfessorsPerCourse.sort((a, b) => a.localeCompare(b));
           if (!AddedUnselectedProfessors.includes(JSON.stringify(AvailableUnselectedProfessorsPerCourse))) {
             if (first) first = false;
             else ProfessorsToChange += "\n or \n";
