@@ -589,4 +589,5 @@ document.querySelector("#reset").addEventListener("click", () => {
     for (let set of sets) {
         set.innerHTML = ""
     }
+    customCourses=[]
 })
