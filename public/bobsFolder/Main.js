@@ -625,7 +625,7 @@ async function getPermutations(
       for (let Permutation of ArrayOfPermutations) {
         let validSeats = (validProfs = true);
         for (let Section of Permutation) {
-          if (SetSections.includes(Section)) continue
+          if (SetSections.includes(Section)) continue;
           if (
             CoursesWithSeatsFilter.includes(Section.Subject + Section.Code) &&
             Section.SeatsA <= 0
@@ -669,11 +669,12 @@ async function getPermutations(
         for (let Permutation of PermutationsWithSeatAvailability) {
           let UnselectedProfessorsPerCourse = [];
           for (let Section of Permutation) {
-            if (SetSections.includes(Section)) continue
+            if (SetSections.includes(Section)) continue;
             if (
               !FilteredProfessorsForEachCourse[
                 Section.Subject + Section.Code
-              ].includes(Section.IName + " " + Section.ISName) && !isRecitation(Section)
+              ].includes(Section.IName + " " + Section.ISName) &&
+              !isRecitation(Section)
             ) {
               UnselectedProfessorsPerCourse.push(
                 Section.Subject +
@@ -719,7 +720,9 @@ async function getPermutations(
             AddedUnselectedProfessors.push(
               JSON.stringify(AvailableUnselectedProfessorsPerCourse)
             );
-            ProfessorsToChange += AvailableUnselectedProfessorsPerCourse.map(x => x.split(":").join(": ")).join(", ")
+            ProfessorsToChange += AvailableUnselectedProfessorsPerCourse.map(
+              (x) => x.split(":").join(": ")
+            ).join(", ");
           }
         }
         throw new Error(
@@ -742,23 +745,3 @@ async function getPermutations(
   return ArrayOfPermutations;
 }
 module.exports.getPermutations = getPermutations;
-
-function printStuff(Perms) {
-  for (let Perm of Perms) {
-    console.log(
-      "----------------------------------\n" +
-        Perm.map(
-          (x) =>
-            x.Subject +
-            x.Code +
-            " (" +
-            intToTime(x.BT1) +
-            ", " +
-            intToTime(x.ET1) +
-            ") " +
-            x.Schedule1 +
-            x.CRN
-        ).join("\n")
-    );
-  }
-}
