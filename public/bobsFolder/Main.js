@@ -220,7 +220,7 @@ async function getArraysOfFilteredSections(
           ":\n" +
           SectionWithConflictingStartTime.map(
             (Section) => `Section ${Section.Section} (${Section.CRN})`
-          ).join("\n") +
+          ).join(" - ") +
           (SectionWithConflictingFinishTime.length != NumberOfSections &&
           SectionWithConflictingFinishLabTime.length != NumberOfSections
             ? "\nSuggestion: Set preferred start time to " +
@@ -239,7 +239,7 @@ async function getArraysOfFilteredSections(
           ":\n" +
           SectionWithConflictingFinishTime.map(
             (Section) => `Section ${Section.Section} (${Section.CRN})`
-          ).join("\n") +
+          ).join(" - ") +
           (SectionWithConflictingStartTime.length != NumberOfSections &&
           SectionWithConflictingFinishLabTime.length != NumberOfSections
             ? "\nSuggestion: Set preferred end time to " +
@@ -258,7 +258,7 @@ async function getArraysOfFilteredSections(
           ":\n" +
           SectionWithConflictingFinishLabTime.map(
             (Section) => `Section ${Section.Section} (${Section.CRN})`
-          ).join("\n") +
+          ).join(" - ") +
           (SectionWithConflictingStartTime.length != NumberOfSections &&
           SectionWithConflictingFinishTime.length != NumberOfSections
             ? "\nSuggestion: Set preferred end time to " +
@@ -293,7 +293,7 @@ async function getArraysOfFilteredSections(
             ":\n" +
             RecitationsWithConflictingStartTime.map(
               (Section) => `Section ${Section.Section} (${Section.CRN})`
-            ).join("\n") +
+            ).join(" - ") +
             (RecitationsWithConflictingEndTime.length != NumberOfRecitations
               ? "\nSuggestion: Set preferred start time to " +
                 intToTime(LatestRecitationBeginTime)
@@ -311,7 +311,7 @@ async function getArraysOfFilteredSections(
             ":\n" +
             RecitationsWithConflictingEndTime.map(
               (Section) => `Section ${Section.Section} (${Section.CRN})`
-            ).join("\n") +
+            ).join(" - ") +
             (RecitationsWithConflictingStartTime.length != NumberOfRecitations
               ? "\nSuggestion: Set preferred end time to " +
                 intToTime(EarliestRecitationEndTime)
@@ -338,11 +338,11 @@ async function getArraysOfFilteredSections(
             Available Sections:\n
             + ${ListOfFilteredSections.map(
               (Section) => `Section ${Section.Section} (${Section.CRN})`
-            ).join("\n")}
+            ).join(" - ")}
             + "\nAvailable Recitations:\n"
             + ${ListOfFilteredRecitations.map(
               (Section) => `Section ${Section.Section} (${Section.CRN})`
-            ).join("\n")}`);
+            ).join(" - ")}`);
       }
       for (let S of ListOfAllSections) {
         for (let R of ListOfAllRecitations) {
