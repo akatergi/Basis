@@ -265,7 +265,7 @@ async function getArraysOfFilteredSections(
               intToTime(EarliestSectionEndTime)
             : "");
       throw new Error(
-        `No available section for ${
+        `No available section for\n${
           CourseSubject + CourseCode
         } that applies with given filter!\n` + Reasons
       );
@@ -443,14 +443,20 @@ async function getPermutations(
   PStartTime = null,
   PEndTime = null
 ) {
-  let ConvertedSections = await convertCourseNamesToSections(
-    Term,
-    CourseFilterObjects,
-    PStartTime,
-    PEndTime
-  );
-  let AllFilteredSections = ConvertedSections[0];
-  let AllSections = ConvertedSections[1];
+  var ConvertedSections = [];
+  var AllFilteredSections = [];
+  var AllSections = [];
+  if (CourseFilterObjects.length != 0) {
+    ConvertedSections = await convertCourseNamesToSections(
+      Term,
+      CourseFilterObjects,
+      PStartTime,
+      PEndTime
+    );
+    AllFilteredSections = ConvertedSections[0];
+    AllSections = ConvertedSections[1];
+  } else {
+  }
   let num = 1;
   for (let ArraySection of AllFilteredSections) {
     var sum = 0;
@@ -626,9 +632,10 @@ async function getPermutations(
           )
             validSeats = false;
           if (
-            !FilteredProfessorsForEachCourse[Section.Subject + Section.Code].includes(
-              Section.IName + " " + Section.ISName
-            ) && !isRecitation(Section)
+            !FilteredProfessorsForEachCourse[
+              Section.Subject + Section.Code
+            ].includes(Section.IName + " " + Section.ISName) &&
+            !isRecitation(Section)
           )
             validProfs = false;
         }
@@ -653,7 +660,7 @@ async function getPermutations(
               "No Permutations Available:\nSuggestion: Set Preferred EndTime to " +
                 intToTime(PermMax)
             );
-        } 
+        }
         if (validSeats) PermutationsWithSeatAvailability.push(Permutation);
       }
       if (PermutationsWithSeatAvailability.length != 0) {
@@ -663,9 +670,9 @@ async function getPermutations(
           let UnselectedProfessorsPerCourse = [];
           for (let Section of Permutation) {
             if (
-              !FilteredProfessorsForEachCourse[Section.Subject + Section.Code].includes(
-                Section.IName + " " + Section.ISName
-              )
+              !FilteredProfessorsForEachCourse[
+                Section.Subject + Section.Code
+              ].includes(Section.IName + " " + Section.ISName)
             ) {
               UnselectedProfessorsPerCourse.push(
                 Section.Subject +
@@ -676,25 +683,45 @@ async function getPermutations(
                   Section.ISName
               );
             }
-            if (UnselectedProfessorsPerCourse.length < MinNumberOfProfessorsToChange) {
-              MinNumberOfProfessorsToChange = UnselectedProfessorsPerCourse.length;
-              ArrayOfListOfAvailableUnselectedProfessorsPerCourse = [UnselectedProfessorsPerCourse];
-            } else if (UnselectedProfessorsPerCourse.length == MinNumberOfProfessorsToChange)
-              ArrayOfListOfAvailableUnselectedProfessorsPerCourse.push(UnselectedProfessorsPerCourse);
+            if (
+              UnselectedProfessorsPerCourse.length <
+              MinNumberOfProfessorsToChange
+            ) {
+              MinNumberOfProfessorsToChange =
+                UnselectedProfessorsPerCourse.length;
+              ArrayOfListOfAvailableUnselectedProfessorsPerCourse = [
+                UnselectedProfessorsPerCourse
+              ];
+            } else if (
+              UnselectedProfessorsPerCourse.length ==
+              MinNumberOfProfessorsToChange
+            )
+              ArrayOfListOfAvailableUnselectedProfessorsPerCourse.push(
+                UnselectedProfessorsPerCourse
+              );
           }
         }
         var ProfessorsToChange = "";
         let first = true;
         let AddedUnselectedProfessors = [];
         for (let AvailableUnselectedProfessorsPerCourse of ArrayOfListOfAvailableUnselectedProfessorsPerCourse) {
-          AvailableUnselectedProfessorsPerCourse.sort((a, b) => a.localeCompare(b));
-          if (!AddedUnselectedProfessors.includes(JSON.stringify(AvailableUnselectedProfessorsPerCourse))) {
+          AvailableUnselectedProfessorsPerCourse.sort((a, b) =>
+            a.localeCompare(b)
+          );
+          if (
+            !AddedUnselectedProfessors.includes(
+              JSON.stringify(AvailableUnselectedProfessorsPerCourse)
+            )
+          ) {
             if (first) first = false;
             else ProfessorsToChange += "\n or \n";
-            AddedUnselectedProfessors.push(JSON.stringify(AvailableUnselectedProfessorsPerCourse));
+            AddedUnselectedProfessors.push(
+              JSON.stringify(AvailableUnselectedProfessorsPerCourse)
+            );
             for (let AvailableUnselectedProfessor of AvailableUnselectedProfessorsPerCourse) {
               let Word = AvailableUnselectedProfessor.split(":");
-              ProfessorsToChange += "-for " + Word[0] + " choose " + Word[1] + "\n";
+              ProfessorsToChange +=
+                "-for " + Word[0] + " choose " + Word[1] + "\n";
             }
           }
         }
@@ -720,21 +747,21 @@ async function getPermutations(
 module.exports.getPermutations = getPermutations;
 
 function printStuff(Perms) {
-  // for (let Perm of Perms) {
-  //   console.log(
-  //     "----------------------------------\n" +
-  //       Perm.map(
-  //         (x) =>
-  //           x.Subject +
-  //           x.Code +
-  //           " (" +
-  //           intToTime(x.BT1) +
-  //           ", " +
-  //           intToTime(x.ET1) +
-  //           ") " +
-  //           x.Schedule1 +
-  //           x.CRN
-  //       ).join("\n")
-  //   );
-  // }
+  for (let Perm of Perms) {
+    console.log(
+      "----------------------------------\n" +
+        Perm.map(
+          (x) =>
+            x.Subject +
+            x.Code +
+            " (" +
+            intToTime(x.BT1) +
+            ", " +
+            intToTime(x.ET1) +
+            ") " +
+            x.Schedule1 +
+            x.CRN
+        ).join("\n")
+    );
+  }
 }
