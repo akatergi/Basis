@@ -33,26 +33,7 @@ const checkSectionWithFilters = (
 module.exports.checkSectionWithFilters = checkSectionWithFilters;
 
 function checkIfConflictingArray(Sections, PBT, PET) {
-  if (Sections[0].BT1 < PBT && PBT)
-    throw new Error(
-      `Section: ${
-        Sections[0].Subject + Sections[0].Code + " (" + Sections[0].CRN + ")"
-      } starts before ${intToTime(PBT)}`
-    );
-  if (Sections[0].ET1 > PET && PET)
-    throw new Error(
-      `Section: ${
-        Sections[0].Subject + Sections[0].Code + " (" + Sections[0].CRN + ")"
-      } starts after ${intToTime(PET)}`
-    );
-  if (hasLab(Sections[0]) && PET && PET < Sections[0].ET2)
-    throw new Error(
-      `Lab of Section: ${
-        Sections[0].Subject + Sections[0].Code + " (" + Sections[0].CRN + ")"
-      } starts before ${intToTime(PET)}`
-    );
-  for (let i = 1; i < Sections.length; i++) {
-    console.log(Sections, Sections.slice(0, i), Sections[i]);
+  for (let i = 0; i < Sections.length; i++) {
     if (Sections[i].BT1 < PBT && PBT)
       throw new Error(
         `Section: ${
@@ -71,7 +52,7 @@ function checkIfConflictingArray(Sections, PBT, PET) {
           Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
         } starts before ${intToTime(PET)}`
       );
-    if (!check(Sections.slice(0, i), Sections[i]))
+    if (i != 0 && !check(Sections.slice(0, i), Sections[i]))
       throw new Error("Given CRNs are conflicting");
   }
 }
