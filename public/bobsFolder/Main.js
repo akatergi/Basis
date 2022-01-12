@@ -265,7 +265,7 @@ async function getArraysOfFilteredSections(
               intToTime(EarliestSectionEndTime)
             : "");
       throw new Error(
-        `No available section for\n${
+        `No available section for ${
           CourseSubject + CourseCode
         } that applies with given filter!\n` + Reasons
       );
@@ -720,21 +720,21 @@ async function getPermutations(
 module.exports.getPermutations = getPermutations;
 
 function printStuff(Perms) {
-  for (let Perm of Perms) {
-    console.log(
-      "----------------------------------\n" +
-        Perm.map(
-          (x) =>
-            x.Subject +
-            x.Code +
-            " (" +
-            intToTime(x.BT1) +
-            ", " +
-            intToTime(x.ET1) +
-            ") " +
-            x.Schedule1 +
-            x.CRN
-        ).join("\n")
-    );
-  }
+  // for (let Perm of Perms) {
+  //   console.log(
+  //     "----------------------------------\n" +
+  //       Perm.map(
+  //         (x) =>
+  //           x.Subject +
+  //           x.Code +
+  //           " (" +
+  //           intToTime(x.BT1) +
+  //           ", " +
+  //           intToTime(x.ET1) +
+  //           ") " +
+  //           x.Schedule1 +
+  //           x.CRN
+  //       ).join("\n")
+  //   );
+  // }
 }

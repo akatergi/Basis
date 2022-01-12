@@ -10,3 +10,8 @@ body{
     background-color: #04ABF4;
     color:white;
 }
+
+.btn-primary2:hover{
+    background-color: #2d9fd0;
+    color:white;
+}

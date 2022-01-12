@@ -1,10 +1,10 @@
 <link rel="stylesheet" href="filterForm.css">
-<% layout("layouts/boilerplate") %>
+<% layout("boilerplate") %>
     <h1 class="display-3 text-center mt-3 mb-4" id="title">Filter Schedules</h1>
     <form action="/schedules" method="POST">
         <div class="container">
             <div class="row">
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                     <div class="card mb-4">
                         <div class="card-body">
                             <h2>Preferred Start Time <span class="optional">(optional)</span></h2>
@@ -12,16 +12,16 @@
                                 this time will be filtered out.
                             </small>
                             <div class="form-group fg mt-2">
-                                <input type="number" name="sHour" class="form-control" placeholder="09"> <span class="colon">:</span> <input type="number" name="sMinute" class="form-control me-3" placeholder="30">
+                                <input type="number" name="sHour" class="form-control" placeholder="09" value="<%= sHour?sHour:"" %>"> <span class="colon">:</span> <input type="number" name="sMinute" class="form-control me-3" placeholder="30" value="<%= sMinute?sMinute:"" %>">
                                 <select class="form-select" name="stime">
-                                    <option value="AM">AM</option>
-                                    <option value="PM">PM</option>
+                                    <option <%= stime&&stime==="AM"?"selected":"" %> value="AM">AM</option>
+                                    <option <%= stime&&stime==="PM"?"selected":"" %> value="PM">PM</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-md-6">
                     <div class="card mb-4">
                         <div class="card-body">
                             <h2>Preferred End Time <span class="optional">(optional)</span></h2>
@@ -29,10 +29,10 @@
                                 this time will be filtered out.
                             </small>
                             <div class="form-group fg mt-2">
-                                <input type="number" name="eHour" class="form-control" placeholder="05"> <span class="colon">:</span> <input type="number" name="eMinute" class="form-control me-3" placeholder="00">
+                                <input type="number" name="eHour" class="form-control" placeholder="05" value="<%= eHour?eHour:"" %>"> <span class="colon">:</span> <input type="number" name="eMinute" class="form-control me-3" placeholder="00" value="<%= eMinute?eMinute:"" %>">
                                 <select class="form-select" name="etime">
-                                    <option value="AM">AM</option>
-                                    <option value="PM" selected>PM</option>
+                                    <option value="AM" <%= etime&&etime==="AM"?"selected":"" %>>AM</option>
+                                    <option value="PM" <%= !etime||etime==="PM"?"selected":"" %>>PM</option>
                                 </select>
                             </div>
                         </div>
@@ -43,6 +43,7 @@
 
                 <input type="hidden" name="setSections" value="<%= JSON.stringify(SetSections) %> ">
                 <input type="hidden" name="electivesArr" value="<%= JSON.stringify(electivesArr) %> ">
+                <input type="hidden" name="customCourses" value="<%= JSON.stringify(customCourses) %> ">
 
                 <h1>Courses + Profs</h1>
                 <small class="card-text text-muted mb-3">For each of the below courses, select the filters you desire. Check on the "seat
@@ -51,7 +52,7 @@
                 </small>
                 <% let i=0 %>
                 <% for(let course of courses) {%>
-                    <div class="col">
+                    <div class="col-6 col-md">
                         <div class="card mb-3">
                             <div class="card-body">
                                 <h3>
