@@ -117,7 +117,7 @@ div.contentBoth{
 
 .colorTitle{
     font-weight:700;
-    font-size: 0.8rem;
+    font-size: 0.75em;
 }
 
 .blockTitle{
@@ -169,4 +169,38 @@ div.contentBoth{
 .I{
     display:flex;
     justify-content: space-between;
+}
+
+#info{
+    font-family: "Calibri";
+    margin-left:0.1em;
+}
+
+.infoLI{
+    margin-top:1em;
+    font-size:0.8em;
+}
+
+#infoalert{
+    padding:1em;
+}
+
+#removed{
+    display:flex;
+    flex-direction: column;
+}
+
+.removed-li{
+    color: #d12727;
+    font-weight: 500;
+    transition: all 170ms;
+}
+
+.liX{
+    margin-right: 0.3em;
+}
+
+.removed-li:hover{
+    cursor: pointer;
+    font-size: large;
 }

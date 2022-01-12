@@ -44,6 +44,7 @@ const editsAM = document.querySelector("#editsAM")
 const editsPM = document.querySelector("#editsPM")
 const mainClose = document.querySelector("#mainClose")
 const editClose = document.querySelector("#editClose")
+const form = document.querySelector("form")
 
 // let crnCount = 0
 // let counter = 0
@@ -95,8 +96,8 @@ function coursePlaceholder() {
 }
 
 addCRN.addEventListener('click', e => {
-    e.preventDefault();
-    if (crnCount < 8) {
+    if (totalCount < 9) {
+        e.preventDefault();
         let newInp = document.createElement("input")
         newInp.type = "number"
         newInp.id = `crnInput-${counter}`
@@ -114,7 +115,7 @@ addCRN.addEventListener('click', e => {
             e.preventDefault()
             newInp.remove()
             this.remove()
-            crnCount--;
+            totalCount--
         })
 
         newInp.addEventListener("keydown", e => {
@@ -145,17 +146,18 @@ addCRN.addEventListener('click', e => {
         newDiv.classList.add("CRNInpGrp")
         setCRNs.append(newDiv)
 
-        crnCount++
         counter++
+        totalCount++
     }
     else {
-        alert("Cannot add more than 8 CRNs!")
+        e.preventDefault()
+        alert("Can't place more than 9 courses in total on schedule!")
     }
 })
 
 addCourse.addEventListener('click', e => {
-    e.preventDefault();
-    if (courseCount < 8) {
+    if (totalCount < 9) {
+        e.preventDefault();
         let newInp = document.createElement("input")
         newInp.type = "text"
         newInp.id = `courseInput-${counter2}`
@@ -173,7 +175,7 @@ addCourse.addEventListener('click', e => {
             e.preventDefault()
             newInp.remove()
             this.remove()
-            courseCount--;
+            totalCount--
         })
 
         newInp.addEventListener("keydown", e => {
@@ -204,55 +206,62 @@ addCourse.addEventListener('click', e => {
         newDiv.classList.add("CRNInpGrp")
         setCourses.append(newDiv)
 
-        courseCount++
         counter2++
-        return newInp
+        totalCount++
     }
     else {
-        alert("Cannot add more than 8 CRNs!")
+        e.preventDefault()
+        alert("Can't place more than 9 courses in total on schedule!")
     }
 })
-
 
 addElective.addEventListener("click", e => {
-    e.preventDefault()
-    let select = document.createElement("select")
-    select.classList.add("form-select", "mt-2")
-    select.name = 'electives[]'
-    let D = {
-        "Social Sciences I": "SS1",
-        "Social Sciences II": "SS2",
-        "Humanities I": "H1",
-        "Humanities II": "H2",
-        "Natural Sciences": "NS",
-        "Arabic Communication Skills": "Ar",
-        "English Communication Skills": "En",
-        "Quantitative Thought": "QT"
-    };
-    for (let key in D) {
-        let option = document.createElement("option")
-        option.value = D[key]
-        option.innerText = key
-        select.append(option)
-    }
-
-    let clearButton = document.createElement("a")
-    clearButton.append(getIcon())
-    clearButton.classList.add("clearButton", "electiveClear")
-
-    clearButton.addEventListener("click", function (e) {
+    if (totalCount < 9) {
         e.preventDefault()
-        select.remove()
-        this.remove()
-    })
+        let select = document.createElement("select")
+        select.classList.add("form-select", "mt-2")
+        select.name = 'electives[]'
+        let D = {
+            "Social Sciences I": "SS1",
+            "Social Sciences II": "SS2",
+            "Humanities I": "H1",
+            "Humanities II": "H2",
+            "Natural Sciences": "NS",
+            "Arabic Communication Skills": "Ar",
+            "English Communication Skills": "En",
+            "Quantitative Thought": "QT"
+        };
+        for (let key in D) {
+            let option = document.createElement("option")
+            option.value = D[key]
+            option.innerText = key
+            select.append(option)
+        }
 
-    let newDiv = document.createElement("div")
-    newDiv.append(select, clearButton)
-    newDiv.classList.add("CRNInpGrp")
-    setElectives.append(newDiv)
+        let clearButton = document.createElement("a")
+        clearButton.append(getIcon())
+        clearButton.classList.add("clearButton", "electiveClear")
+
+        clearButton.addEventListener("click", function (e) {
+            e.preventDefault()
+            select.remove()
+            this.remove()
+            totalCount--
+        })
+
+        let newDiv = document.createElement("div")
+        newDiv.append(select, clearButton)
+        newDiv.classList.add("CRNInpGrp")
+        setElectives.append(newDiv)
+        totalCount++
+    }
+    else {
+        e.preventDefault()
+        alert("Can't place more than 9 courses in total on schedule!")
+    }
 })
 
-next.addEventListener("click", e => {
+form.addEventListener("submit", e => {
     let newInp = document.createElement("input")
     newInp.type = "hidden"
     newInp.name = "customCourses"
@@ -260,142 +269,149 @@ next.addEventListener("click", e => {
     setCustomCourses.append(newInp)
 })
 
-createCourse.addEventListener("click", () => {
-    let Subject = customTitle.value
-    let sH = sHour.value
-    let sM = sMinute.value
-    let eH = eHour.value
-    let eM = eMinute.value
-    let sT = sTime.value
-    let eT = eTime.value
-    if (!sM) sM = "00"
-    if (!eM) eM = "00"
-    if (Subject === "") alert("Need to specify name!")
-    else if (sH.length === 0) alert("Must specify Start Hour!")
-    else if (eH.length === 0) alert("Must specify End Hour!")
-    else if (parseInt(sH) > 12 || parseInt(sH) < 1 || sT === "AM" && parseInt(sH) < 7 && parseInt(sH) !== 12) alert("Start hour must be between 7 AM and 11 PM")
-    else if (parseInt(sM) < 0 || parseInt(sM) > 59) alert("Start minute must be between 0 and 60")
-    else if (parseInt(eH) > 12 || parseInt(eH) < 1 || eT === "AM" && parseInt(eH) < 7 && parseInt(eH) !== 12) alert("End hour must be between 1 and 12")
-    else if (parseInt(eM) < 0 || parseInt(eM) > 59) alert("End minute must be between 0 and 60")
+createCourse.addEventListener("click", e => {
+    if (totalCount < 9) {
+        let Subject = customTitle.value
+        let sH = sHour.value
+        let sM = sMinute.value
+        let eH = eHour.value
+        let eM = eMinute.value
+        let sT = sTime.value
+        let eT = eTime.value
+        if (!sM) sM = "00"
+        if (!eM) eM = "00"
+        if (Subject === "") alert("Need to specify name!")
+        else if (sH.length === 0) alert("Must specify Start Hour!")
+        else if (eH.length === 0) alert("Must specify End Hour!")
+        else if (parseInt(sH) > 12 || parseInt(sH) < 1 || sT === "AM" && parseInt(sH) < 7 && parseInt(sH) !== 12) alert("Start hour must be between 7 AM and 11 PM")
+        else if (parseInt(sM) < 0 || parseInt(sM) > 59) alert("Start minute must be between 0 and 60")
+        else if (parseInt(eH) > 12 || parseInt(eH) < 1 || eT === "AM" && parseInt(eH) < 7 && parseInt(eH) !== 12) alert("End hour must be between 1 and 12")
+        else if (parseInt(eM) < 0 || parseInt(eM) > 59) alert("End minute must be between 0 and 60")
 
-    else {
-        let BT1 = timeToInt(sH + ":" + sM, sT === "PM")
-        let ET1 = timeToInt(eH + ":" + eM, eT === "PM")
-        let days = [checkMonday, checkTuesday, checkWednesday, checkThursday, checkFriday, checkSaturday]
-        let Schedule1 = ""
-        let CRN = `CUST${counter3}`
-
-        for (let day of days) {
-            if (day.checked) {
-                if (day.value !== "Thursday") Schedule1 += day.value[0]
-                else Schedule1 += "R"
-            }
-        }
-        if (Schedule1.length === 0) alert("Course should be on at least one day!")
         else {
-            let customCourseObj = { Subject, Code: "", CRN, BT1, ET1, Schedule1, LCRN: [], Schedule2: "" }
-            customCourses.push(customCourseObj)
-            console.log(customCourses)
-            let li = document.createElement("li")
-            li.classList.add("list-group-item", "form-control", "mt-2")
-            li.innerText = `Title: ${Subject}, Time: ${intToTime(BT1)} - ${intToTime(ET1)}, Schedule:${Schedule1}`
+            let BT1 = timeToInt(sH + ":" + sM, sT === "PM")
+            let ET1 = timeToInt(eH + ":" + eM, eT === "PM")
+            let days = [checkMonday, checkTuesday, checkWednesday, checkThursday, checkFriday, checkSaturday]
+            let Schedule1 = ""
+            let CRN = `CUST${counter3}`
 
-            let clearButton = document.createElement("a")
-            clearButton.append(getIcon())
-            clearButton.classList.add("clearButton", "customClear")
+            for (let day of days) {
+                if (day.checked) {
+                    if (day.value !== "Thursday") Schedule1 += day.value[0]
+                    else Schedule1 += "R"
+                }
+            }
+            if (Schedule1.length === 0) alert("Course should be on at least one day!")
+            else {
+                let customCourseObj = { Subject, Code: "", CRN, BT1, ET1, Schedule1, LCRN: [], Schedule2: "" }
+                customCourses.push(customCourseObj)
+                console.log(customCourses)
+                let li = document.createElement("li")
+                li.classList.add("list-group-item", "form-control", "mt-2")
+                li.innerText = `Title: ${Subject}, Time: ${intToTime(BT1)} - ${intToTime(ET1)}, Schedule:${Schedule1}`
+
+                let clearButton = document.createElement("a")
+                clearButton.append(getIcon())
+                clearButton.classList.add("clearButton", "customClear")
+                totalCount++
 
 
+                let editButton = document.createElement("a")
+                editButton.append(getIcon2())
+                editButton.setAttribute("data-bs-toggle", "modal")
+                editButton.setAttribute("data-bs-target", "#editModal")
+                editButton.classList.add("editButton")
+                editButton.id = `edit-${CRN}`
 
-            let editButton = document.createElement("a")
-            editButton.append(getIcon2())
-            editButton.setAttribute("data-bs-toggle", "modal")
-            editButton.setAttribute("data-bs-target", "#editModal")
-            editButton.classList.add("editButton")
-            editButton.id = `edit-${CRN}`
+                editButton.addEventListener("click", () => {
+                    editTitle.value = Subject
+                    editsHour.value = sH
+                    editeHour.value = eH
+                    editeMinute.value = eM
+                    editsMinute.value = sM
+                    if (Schedule1.includes("M")) editcheckMonday.checked = true
+                    else editcheckMonday.checked = false
+                    if (Schedule1.includes("T")) editcheckTuesday.checked = true
+                    else editcheckTuesday.checked = false
+                    if (Schedule1.includes("W")) editcheckWednesday.checked = true
+                    else editcheckWednesday.checked = false
+                    if (Schedule1.includes("R")) editcheckThursday.checked = true
+                    else editcheckThursday.checked = false
+                    if (Schedule1.includes("F")) editcheckFriday.checked = true
+                    else editcheckFriday.checked = false
+                    if (Schedule1.includes("S")) editcheckSaturday.checked = true
+                    else editcheckSaturday.checked = false
 
-            editButton.addEventListener("click", () => {
-                editTitle.value = Subject
-                editsHour.value = sH
-                editeHour.value = eH
-                editeMinute.value = eM
-                editsMinute.value = sM
-                if (Schedule1.includes("M")) editcheckMonday.checked = true
-                else editcheckMonday.checked = false
-                if (Schedule1.includes("T")) editcheckTuesday.checked = true
-                else editcheckTuesday.checked = false
-                if (Schedule1.includes("W")) editcheckWednesday.checked = true
-                else editcheckWednesday.checked = false
-                if (Schedule1.includes("R")) editcheckThursday.checked = true
-                else editcheckThursday.checked = false
-                if (Schedule1.includes("F")) editcheckFriday.checked = true
-                else editcheckFriday.checked = false
-                if (Schedule1.includes("S")) editcheckSaturday.checked = true
-                else editcheckSaturday.checked = false
+                    if (sT === "PM") { editsPM.selected = true; editsAM.selected = false }
+                    else { editsPM.selected = false; editsAM.selected = true }
+                    if (eT === "PM") { editePM.selected = true; editeAM.selected = false }
+                    else { editePM.selected = false; editeAM.selected = true }
 
-                if (sT === "PM") { editsPM.selected = true; editsAM.selected = false }
-                else { editsPM.selected = false; editsAM.selected = true }
-                if (eT === "PM") { editePM.selected = true; editeAM.selected = false }
-                else { editePM.selected = false; editeAM.selected = true }
+                    updateButton.addEventListener("click", () => {
+                        let idx = customCourses.indexOf(customCourseObj)
+                        Subject = editTitle.value
+                        sH = editsHour.value
+                        sM = editsMinute.value
+                        sT = editsTime.value
+                        eH = editeHour.value
+                        eM = editeMinute.value
+                        eT = editeTime.value
+                        if (!sM) sM = "00"
+                        if (!eM) eM = "00"
+                        else if (parseInt(sH) > 12 || parseInt(sH) < 1 || sT === "AM" && parseInt(sH) < 7 && parseInt(sH) !== 12) alert("Start hour must be between 7 AM and 11 PM")
+                        else if (parseInt(sM) < 0 || parseInt(sM) > 59) alert("Start minute must be between 0 and 60")
+                        else if (parseInt(eH) > 12 || parseInt(eH) < 1 || eT === "AM" && parseInt(eH) < 7 && parseInt(eH) !== 12) alert("End hour must be between 1 and 12")
+                        else if (parseInt(eM) < 0 || parseInt(eM) > 59) alert("End minute must be between 0 and 60")
+                        BT1 = timeToInt(sH + ":" + sM, sT === "PM")
+                        ET1 = timeToInt(eH + ":" + eM, eT === "PM")
+                        if (Subject === "") alert("Need to specify name!")
+                        else if (sH.length === 0) alert("Must specify Start Hour!")
+                        else if (eH.length === 0) alert("Must specify End Hour!")
+                        else if (BT1 > ET1) alert("End time must be less than start time!")
 
-                updateButton.addEventListener("click", () => {
-                    let idx = customCourses.indexOf(customCourseObj)
-                    Subject = editTitle.value
-                    sH = editsHour.value
-                    sM = editsMinute.value
-                    sT = editsTime.value
-                    eH = editeHour.value
-                    eM = editeMinute.value
-                    eT = editeTime.value
-                    if (!sM) sM = "00"
-                    if (!eM) eM = "00"
-                    else if (parseInt(sH) > 12 || parseInt(sH) < 1 || sT === "AM" && parseInt(sH) < 7 && parseInt(sH) !== 12) alert("Start hour must be between 7 AM and 11 PM")
-                    else if (parseInt(sM) < 0 || parseInt(sM) > 59) alert("Start minute must be between 0 and 60")
-                    else if (parseInt(eH) > 12 || parseInt(eH) < 1 || eT === "AM" && parseInt(eH) < 7 && parseInt(eH) !== 12) alert("End hour must be between 1 and 12")
-                    else if (parseInt(eM) < 0 || parseInt(eM) > 59) alert("End minute must be between 0 and 60")
-                    BT1 = timeToInt(sH + ":" + sM, sT === "PM")
-                    ET1 = timeToInt(eH + ":" + eM, eT === "PM")
-                    if (Subject === "") alert("Need to specify name!")
-                    else if (sH.length === 0) alert("Must specify Start Hour!")
-                    else if (eH.length === 0) alert("Must specify End Hour!")
-                    else if (BT1 > ET1) alert("End time must be less than start time!")
+                        else {
 
-                    else {
+                            days = [editcheckMonday, editcheckTuesday, editcheckWednesday, editcheckThursday, editcheckFriday, editcheckSaturday]
+                            Schedule1 = ""
 
-                        days = [editcheckMonday, editcheckTuesday, editcheckWednesday, editcheckThursday, editcheckFriday, editcheckSaturday]
-                        Schedule1 = ""
-
-                        for (let day of days) {
-                            if (day.checked) {
-                                if (day.value !== "Thursday") Schedule1 += day.value[0]
-                                else Schedule1 += "R"
+                            for (let day of days) {
+                                if (day.checked) {
+                                    if (day.value !== "Thursday") Schedule1 += day.value[0]
+                                    else Schedule1 += "R"
+                                }
+                            }
+                            if (Schedule1.length === 0) alert("Course must be on at least one day!")
+                            else {
+                                customCourseObj = { Subject, Code: "", CRN, BT1, ET1, Schedule1, LCRN: [], Schedule2: "" }
+                                customCourses[idx] = customCourseObj
+                                li.innerText = `Title: ${Subject}, Time: ${intToTime(BT1)} - ${intToTime(ET1)}, Schedule:${Schedule1}`
+                                editClose.click()
                             }
                         }
-                        if (Schedule1.length === 0) alert("Course must be on at least one day!")
-                        else {
-                            customCourseObj = { Subject, Code: "", CRN, BT1, ET1, Schedule1, LCRN: [], Schedule2: "" }
-                            customCourses[idx] = customCourseObj
-                            li.innerText = `Title: ${Subject}, Time: ${intToTime(BT1)} - ${intToTime(ET1)}, Schedule:${Schedule1}`
-                            editClose.click()
-                        }
-                    }
+                    })
                 })
-            })
 
-            clearButton.addEventListener("click", function (e) {
-                e.preventDefault()
-                li.remove()
-                customCourses.splice(customCourses.indexOf(customCourseObj), 1)
-                this.remove()
-                editButton.remove()
-            })
+                clearButton.addEventListener("click", function (e) {
+                    e.preventDefault()
+                    li.remove()
+                    customCourses.splice(customCourses.indexOf(customCourseObj), 1)
+                    this.remove()
+                    editButton.remove()
+                    totalCount--
+                })
 
-            let newDiv = document.createElement("div")
-            newDiv.append(li, editButton, clearButton)
-            newDiv.classList.add("CRNInpGrp")
-            counter3++
-            setCustomCourses.append(newDiv)
-            mainClose.click()
+                let newDiv = document.createElement("div")
+                newDiv.append(li, editButton, clearButton)
+                newDiv.classList.add("CRNInpGrp")
+                counter3++
+                setCustomCourses.append(newDiv)
+                mainClose.click()
+            }
         }
+    }
+    else {
+        e.preventDefault()
+        alert("Can't place more than 9 courses in total on schedule!")
     }
 })
 
@@ -409,7 +425,7 @@ if (crnClearButtons.length) {
             let associatedInp = document.querySelector(`#crnInput-${idx}`)
             associatedInp.remove()
             btn.remove()
-            crnCount--
+            totalCount--
         })
     })
 }
@@ -424,7 +440,7 @@ if (courseClearButtons.length) {
             let associatedInp = document.querySelector(`#courseInput-${idx}`)
             associatedInp.remove()
             btn.remove()
-            courseCount--
+            totalCount--
         })
     })
 }
@@ -439,7 +455,7 @@ if (electiveClearButtons.length) {
             let associatedInp = document.querySelector(`#select-${idx}`)
             associatedInp.remove()
             btn.remove()
-            // crnCount--
+            totalCount--
         })
     })
 }
@@ -457,7 +473,7 @@ if (customDelButtons.length) {
             let associatedEdit = document.querySelector(`#DeditButton-${idx}`)
             associatedEdit.remove()
             customCourses.splice(idx, 1)
-            // crnCount--
+            totalCount--
         })
     })
 }
@@ -572,7 +588,7 @@ for (let j = 0; j < checks.length; j++) {
 document.querySelector("#reset").addEventListener("click", () => {
     console.log('click')
     let sets = [setCRNs, setCourses, setElectives, setCustomCourses]
-    for(let set of sets){
-        set.innerHTML=""
+    for (let set of sets) {
+        set.innerHTML = ""
     }
 })

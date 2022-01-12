@@ -124,12 +124,10 @@
 
 <script>
     let counter = <%- setCRNs.length %>;
-    let crnCount = counter;
     let counter2 = <%- sections.length %>;
-    let courseCount = counter2;
     let counter3 = <%- customCourses.length %>;
-    let customCount = counter3
-    let customCourses = <%- JSON.stringify(customCourses) %>
+    let customCourses = <%- JSON.stringify(customCourses) %>;
+    let totalCount = counter+counter2+counter3+<%- electives.length %>
 </script>
 
 <script src="form.js"></script>

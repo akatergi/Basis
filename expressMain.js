@@ -58,6 +58,7 @@ app.post("/filter", async (req, res) => {
   }
   if (!setCRNs) setCRNs = []
   setCRNs = setCRNs.filter(e => e.length!==0)
+  if(!customCourses) customCourses=[]
   customCourses = JSON.parse(customCourses)
   req.session.customCourses = customCourses
   if (!sections) sections = []
@@ -66,7 +67,6 @@ app.post("/filter", async (req, res) => {
   req.session.setCRNs = setCRNs
   req.session.sections = sections
   req.session.electives = electives
-  console.log(req.session)
 
   let electivesArr = []
   for (let elective of electives) {
@@ -144,7 +144,6 @@ app.post("/schedules", async (req, res) => {
     course.Elective = false
   }
   courses = courses.concat(JSON.parse(electivesArr))
-  console.log(PStartTime, PEndTime)
   try {
     var Schedules = await getPermutations(Term, setSections, CustomSections, courses, PStartTime, PEndTime)
   } catch (err) {
