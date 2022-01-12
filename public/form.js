@@ -550,22 +550,29 @@ let order = [customTitle, sHour, sMinute, eHour, eMinute]
 for (let j = 0; j < order.length - 1; j++) {
     let inp = order[j]
     inp.addEventListener("keydown", e => {
-        e.preventDefault()
-        if (e.keyCode === 13) order[j + 1].select()
+        if (e.keyCode === 13) { e.preventDefault(); order[j + 1].select() }
     })
 }
 
 eMinute.addEventListener("keydown", e => {
-    e.preventDefault()
-    checkMonday.select()
+    if (e.keyCode === 13) { e.preventDefault(); checkMonday.select() }
 })
 
 let checks = [checkMonday, checkTuesday, checkWednesday, checkThursday, checkFriday, checkSaturday]
 
-for(let j=0; j<checks.length;j++){
+for (let j = 0; j < checks.length; j++) {
     let check = checks[j]
     check.addEventListener("keydown", e => {
         e.preventDefault()
         if (e.keyCode === 13) check.checked = !check.checked
-        if(e.keyCode===9&&check!==checkSaturday) checks[j+1].select()
-})}
+        if (e.keyCode === 9 && check !== checkSaturday) checks[j + 1].select()
+    })
+}
+
+document.querySelector("#reset").addEventListener("click", () => {
+    console.log('click')
+    let sets = [setCRNs, setCourses, setElectives, setCustomCourses]
+    for(let set of sets){
+        set.innerHTML=""
+    }
+})

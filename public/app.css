@@ -11,20 +11,17 @@ table{
 
 .rightArrow, .leftArrow{
     cursor: pointer;
-    color:chocolate;
+    color: #04ABF4;
     text-align: center;
     width: 2rem;
     height: 2rem;
-    font-size: large;
+    font-size: 1.3rem;
     text-decoration: none;
-    background-color: lightgreen;
-    border: 2px solid yellow;
-    border-radius: 50%;
     transition: transform 200ms
 }
 
 .rightArrow:hover, .leftArrow:hover{
-    color: chocolate;
+    color: #04ABF4;
     transform: scale(1.5);
 }
 
@@ -155,4 +152,21 @@ div.contentBoth{
 
 #custom{
     padding:0px;
+}
+
+#changeTime{
+    border:none;
+    border-radius: 20px;
+    background-color: red;
+    color:white
+}
+
+#changeTime.time24{
+    background-color: green;
+    color:white
+}
+
+.I{
+    display:flex;
+    justify-content: space-between;
 }

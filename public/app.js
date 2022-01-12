@@ -471,15 +471,12 @@ changeTime.addEventListener("click", () => {
     if (t) {
         updateTime12()
         changeTime.innerText = "12 Hour Format"
-        changeTime.classList.remove("btn-danger")
-        changeTime.classList.add("btn-success")
     }
     else {
         updateTime24()
         changeTime.innerText = "24 Hour Format"
-        changeTime.classList.add("btn-danger")
-        changeTime.classList.remove("btn-success")
     }
+    changeTime.classList.toggle("time24")
 
 })
 genSched(i)

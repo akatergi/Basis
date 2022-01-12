@@ -75,3 +75,9 @@
 .btn-12{
     background-color: #2e9f2e;
 }
+
+.resetL{
+    transform: translateY(50%);
+    font-size:large;
+    font-weight: 500
+}

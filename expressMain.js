@@ -40,7 +40,6 @@ app.get("/", (req, res) => res.redirect("/new"))
 
 app.get("/new", (req, res) => {
   let { Term, setCRNs, sections, electives, customCourses } = req.session
-  console.log(Term, setCRNs, sections, electives, customCourses)
   if(!Term) Term="202220"
   if(!setCRNs) setCRNs=[]
   if(!sections) sections = []

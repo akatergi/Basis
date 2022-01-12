@@ -1,6 +1,16 @@
 <link rel="stylesheet" href="scheduleForm.css">
 <% layout("boilerplate") %>
-    <h1 class="display-3 text-center mt-3 mb-4" id="title">New Schedules</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <h1 class="display-3 text-center mt-3 mb-4" id="title">New Schedules</h1>
+        </div>
+        <div class="col-3">
+            <button class="btn btn-danger mt-3" id="reset"><i class="fas fa-recycle"></i></button>
+            <label for="reset" class='resetL'> Reset? </label>
+        </div>
+    </div>
+</div>
     <form action="/filter" method="POST">
         <div class="container">
             <div class="row">
