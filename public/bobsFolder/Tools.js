@@ -1,7 +1,7 @@
 const request = require("request-promise");
 const cheerio = require("cheerio");
 const fs = require("fs");
-const math = require('mathjs')
+const math = require("mathjs");
 
 const overLap = (S1, F1, S2, F2) => S1 < F2 && S2 < F1;
 module.exports.overLap = overLap;
@@ -33,7 +33,7 @@ const checkSectionWithFilters = (
 module.exports.checkSectionWithFilters = checkSectionWithFilters;
 
 function checkIfConflictingArray(Sections, PBT, PET) {
-  for (let i = 1; i < Sections.length; i++) {
+  for (let i = 0; i < Sections.length; i++) {
     if (Sections[i].BT1 < PBT && PBT)
       throw new Error(
         `Section: ${
@@ -52,7 +52,7 @@ function checkIfConflictingArray(Sections, PBT, PET) {
           Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
         } starts before ${intToTime(PET)}`
       );
-    if (!check(Sections.slice(0, i), Sections[i]))
+    if (i != 0 && !check(Sections.slice(0, i), Sections[i]))
       throw new Error("Given CRNs are conflicting");
   }
 }
@@ -100,10 +100,10 @@ const colorsConst = [
 ];
 let colors = [...colorsConst];
 
-function resetColors(){
+function resetColors() {
   colors = [...colorsConst];
 }
-module.exports.resetColors = resetColors
+module.exports.resetColors = resetColors;
 
 function getColor(clear) {
   if (colors.length) {
@@ -115,24 +115,24 @@ function getColor(clear) {
 }
 module.exports.getColor = getColor;
 
-function printArrayOfProfessors(ArrayOfProfessors){
-  let n = ArrayOfProfessors.length
-  let output = ArrayOfProfessors[0]
-  if (n == 1) return output
-  for (let i in ArrayOfProfessors){
-    if (i == n - 1) output += ", and " + ArrayOfProfessors[n - 1]
-    else if (i != 0) output += ", " + ArrayOfProfessors[i]
+function printArrayOfProfessors(ArrayOfProfessors) {
+  let n = ArrayOfProfessors.length;
+  let output = ArrayOfProfessors[0];
+  if (n == 1) return output;
+  for (let i in ArrayOfProfessors) {
+    if (i == n - 1) output += ", and " + ArrayOfProfessors[n - 1];
+    else if (i != 0) output += ", " + ArrayOfProfessors[i];
   }
-  return output
+  return output;
 }
-module.exports.printArrayOfProfessors = printArrayOfProfessors
+module.exports.printArrayOfProfessors = printArrayOfProfessors;
 
-function compareTimeDifs(Perm1, Perm2){
-  let dif1 = getMaxMinDO(Perm1)[0] - getMaxMinDO(Perm1)[1]
-  let dif2 = getMaxMinDO(Perm2)[0] - getMaxMinDO(Perm2)[1]
-  return dif1 - dif2
+function compareTimeDifs(Perm1, Perm2) {
+  let dif1 = getMaxMinDO(Perm1)[0] - getMaxMinDO(Perm1)[1];
+  let dif2 = getMaxMinDO(Perm2)[0] - getMaxMinDO(Perm2)[1];
+  return dif1 - dif2;
 }
-module.exports.compareTimeDifs = compareTimeDifs
+module.exports.compareTimeDifs = compareTimeDifs;
 
 function getMaxMinDO(ArrayOfSections) {
   let MaxTime = 0;
