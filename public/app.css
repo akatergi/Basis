@@ -2,6 +2,10 @@ body{
     background-color: #F0F0F0;
 }
 
+#resetDiv{
+    transform: translateY("100%");
+}
+
 table{
     width:100%;
     table-layout: fixed;
@@ -73,7 +77,7 @@ table td > div {
     /* height:100px; */
 }
 
-.col-8{
+#schedMain{
     overflow-x: hidden;
     overflow-y: auto;
 }

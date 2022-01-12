@@ -2,8 +2,8 @@
 <% layout("boilerplate") %>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-2">
-            <div class="card sticky-top mt-5">
+        <div class="col-12 col-lg-2">
+            <div class="card mt-5">
                 <div class="card-header">
                     <b id="cardTitle"> Title </b>
                     <br>
@@ -26,7 +26,7 @@
                 <div class="infoLI"><i class="fas fa-times-circle"></i> Right-click a section to filter it out, aka <b>only display schedules that do NOT contain this section</b></div>
             </div>
         </div>
-        <div class="col-8 mb-3" id='schedMain'>
+        <div class="col-12 col-md-10 col-lg-8 mb-3" id='schedMain'>
             <div id="arrows" class='sticky-top'>
                 <a class="leftArrow"> <i class="fas fa-arrow-circle-left"></i> </a>
                 <span id="currSched"> <span id="index">1</span> of <span id="total"><%= Schedules.length %> </span> </span>
@@ -68,13 +68,13 @@
                     <% } %>
             </table>
         </div>
-        <div class="col">
+        <div class="col-12 col-md-2">
             <div class="card mt-5">                 
                 <div class="card-header">
                     Customize Schedule
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item I">Time: <button id="changeTime">24 Hour Format</button> </li>
+                    <li class="list-group-item I">Time: <button id="changeTime" class="text-">24 Hour Format</button> </li>
                     <li class="list-group-item">
                         Colors:
                         <div class="card-body" id="custom">

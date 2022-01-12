@@ -388,7 +388,7 @@ function updateBoxes() {
                 section.innerText = course.Section ? course.Section : "N/A"
                 crn.innerText = course.CRN
                 credits.innerText = course.CH ? course.CH : "N/A"
-                seats.innerText = `${course.SeatsA ? course.SeatsA : "N/A"}/${(course.SeatsA + course.SeatsT) ? (course.SeatsA + course.SeatsT) : "N/A"}`
+                seats.innerText = `${course.SeatsA||course.SeatsA==0 ? course.SeatsA : "N/A"}/${(course.SeatsA + course.SeatsT) ? (course.SeatsA + course.SeatsT) : "N/A"}`
                 cardTitle.innerText = `${course.Subject} ${course.Code}`
                 cardName.innerText = course.Title
                 if (course.IName === "." && course.ISName === "STAFF") instructor.innerText = 'TBA'

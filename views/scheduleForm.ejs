@@ -3,18 +3,20 @@
 <div class="container">
     <div class="row">
         <div class="col-6 offset-3">
-            <h1 class="display-3 text-center mt-3 mb-4" id="title">New Schedules</h1>
+            <h1 class="display-3 display-lg-4 text-center mt-3 mb-4" id="title">New Schedules</h1>
         </div>
-        <div class="col-3">
-            <button class="btn btn-danger mt-3" id="reset"><i class="fas fa-recycle"></i></button>
-            <label for="reset" class='resetL'> Reset? </label>
+        <div class="col-3 d-flex flex-row-reverse">
+            <div id="resetDiv">
+                <button class="btn btn-danger btn-large mt-3" id="reset"><i class="fas fa-recycle"></i></button>
+                <label for="reset" class='resetL'> Reset? </label>
+            </div>
         </div>
     </div>
 </div>
     <form action="/filter" method="POST">
         <div class="container">
             <div class="row">
-                <div class="col-4">
+                <div class="col-md-4">
                     <div class="card mb-4">
                         <div class="card-body">
                             <h2 class="card-title">Select Term</h2>
@@ -32,7 +34,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-md-4 mb-4">
                     <div class="card">
                         <div class="card-body">
                             <h2 class="card-title">Set CRNS <span class="optional">(optional)</span></h2>
@@ -51,7 +53,7 @@
                     </div>
                 </div>
 
-                <div class="col-4">
+                <div class="col-md-4 mb-4">
                     <div class="card">
                         <div class="card-body">
                             <h2 class="card-title">Courses</h2>
@@ -69,11 +71,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-5">
+                <div class="col-md-5 mb-4">
                     <div class="card">
                         <div class="card-body">
                             <h2 class="card-title">Electives <span class="optional">(optional)</span></h2>
-                            <small class="card-text text-muted"> Add the number of electives you want, providing the type (Humanity, Social Science, ...) and we will find all possibilities for you! </small>
+                            <small class="card-text text-muted"> Add the electives you want, providing the type (Humanity, Social Science, ...) and we will find all possibilities for you! </small>
                             <div id="setElectives" class="form-group">
                                 <% for(let ei=0; ei<electives.length; ei++) {%>
                                     <div class="CRNInpGrp">
@@ -95,7 +97,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-7">
+                <div class="col-md-7 mb-4">
                     <div class="card">
                         <div class="card-body">
                             <h2 class="card-title">Custom Courses <span class="optional">(optional)</span></h2>
@@ -117,7 +119,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-primary2 btn-large mt-4" id="next">Next &gt </button>
+                <button class="btn btn-primary2 btn-large mt-4 mb-3" id="next">Next &gt </button>
             </div>
         </div>
     </form>
