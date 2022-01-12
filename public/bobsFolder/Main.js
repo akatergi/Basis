@@ -625,6 +625,7 @@ async function getPermutations(
       for (let Permutation of ArrayOfPermutations) {
         let validSeats = (validProfs = true);
         for (let Section of Permutation) {
+          if (SetSections.includes(Section)) continue
           if (
             CoursesWithSeatsFilter.includes(Section.Subject + Section.Code) &&
             Section.SeatsA <= 0
@@ -668,10 +669,11 @@ async function getPermutations(
         for (let Permutation of PermutationsWithSeatAvailability) {
           let UnselectedProfessorsPerCourse = [];
           for (let Section of Permutation) {
+            if (SetSections.includes(Section)) continue
             if (
               !FilteredProfessorsForEachCourse[
                 Section.Subject + Section.Code
-              ].includes(Section.IName + " " + Section.ISName)
+              ].includes(Section.IName + " " + Section.ISName) && !isRecitation(Section)
             ) {
               UnselectedProfessorsPerCourse.push(
                 Section.Subject +
@@ -717,11 +719,7 @@ async function getPermutations(
             AddedUnselectedProfessors.push(
               JSON.stringify(AvailableUnselectedProfessorsPerCourse)
             );
-            for (let AvailableUnselectedProfessor of AvailableUnselectedProfessorsPerCourse) {
-              let Word = AvailableUnselectedProfessor.split(":");
-              ProfessorsToChange +=
-                "-for " + Word[0] + " choose " + Word[1] + "\n";
-            }
+            ProfessorsToChange += AvailableUnselectedProfessorsPerCourse.map(x => x.split(":").join(": ")).join(", ")
           }
         }
         throw new Error(
