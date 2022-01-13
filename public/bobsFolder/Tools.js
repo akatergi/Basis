@@ -34,6 +34,14 @@ module.exports.checkSectionWithFilters = checkSectionWithFilters;
 
 function checkIfConflictingArray(Sections, PBT, PET) {
   for (let i = 0; i < Sections.length; i++) {
+    if (!Sections[i].BT1) throw new Error(`Section: ${
+      Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
+    } has no Start Time`
+  );
+  if (!Sections[i].ET1) throw new Error(`Section: ${
+    Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
+  } has no Begin Time`
+);
     if (Sections[i].BT1 < PBT && PBT)
       throw new Error(
         `Section: ${
