@@ -319,7 +319,7 @@ function updateTime24() {
             ETh += 12
         }
         else if (parseInt(t.parentElement.parentElement.parentElement.parentElement.classList[0].slice(1)) + Math.abs(ETh - BTh) > 12) ETh += 12
-        t.innerText = `${BTh}:${BTm / 10 >= 1 ? BTm : "0" + BTm}-${ETh}:${ETm}`
+        t.innerText = `${BTh}:${BTm / 10 >= 1 ? BTm : "0" + BTm}-${ETh}:${ETm / 10 >= 1 ? ETm : "0" + ETm}`
     })
 }
 
@@ -535,3 +535,35 @@ changeTime.addEventListener("click", () => {
 genSched(i)
 boxes = document.querySelectorAll(".course")
 updateBoxes()
+
+document.querySelector("body").addEventListener("keydown",e => {
+    if(e.keyCode===37) prevSchedArrow.click()
+    else if(e.keyCode===39) nextSchedArrow.click()
+})
+
+idxSpan.addEventListener("dblclick", e => {
+    let val = idxSpan.innerText
+    idxSpan.innerHTML=""
+    let newInpDiv = document.createElement("div")
+    let newInp = document.createElement("input")
+    newInpDiv.append(newInp)
+    idxSpan.append(newInpDiv)
+    newInp.classList.add('form-control')
+    newInp.value = val
+    newInp.focus()
+    newInp.addEventListener("change", e => {
+        let v = newInp.value
+        if(v<=Schedules.length){
+            clearSched()
+            i = v-1;
+            index.innerHTML=""
+            index.innerText = i + 1
+            genSched(i)
+            boxes = document.querySelectorAll(".course");
+            updateBoxes()
+        }
+        else{
+            alert("Improper form/ Outside range of schedules!")
+        }
+    })
+})

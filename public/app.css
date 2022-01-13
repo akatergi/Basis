@@ -82,6 +82,11 @@ table td > div {
     overflow-y: auto;
 }
 
+/* #currSched{
+    display:flex;
+    justify-content: space-between;
+} */
+
 .occupied:hover{
     cursor: pointer;
 }
