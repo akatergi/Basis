@@ -74,7 +74,7 @@ app.post("/filter", async (req, res) => {
 
   try {
     var SetSections = await searchByCRNs(Term, [...setCRNs])
-    checkIfConflictingArray(SetSections, 0, 2400)
+    checkIfConflictingArray(SetSections.concat(customCourses), 0, 2400)
   } catch (e) {
     req.flash("error", e.message)
     return res.redirect("/new")

@@ -52,8 +52,11 @@ function checkIfConflictingArray(Sections, PBT, PET) {
           Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
         } starts before ${intToTime(PET)}`
       );
-    if (i != 0 && !check(Sections.slice(0, i), Sections[i]))
+    if (i != 0 && !check(Sections.slice(0, i), Sections[i])) {
+      if (Sections[i].CRN.slice(0, 4) == "CUST")
+        throw new Error("Given Custom Courses are conflicting with Set CRNs");
       throw new Error("Given CRNs are conflicting");
+    }
   }
 }
 module.exports.checkIfConflictingArray = checkIfConflictingArray;
@@ -105,7 +108,7 @@ function resetColors() {
 }
 module.exports.resetColors = resetColors;
 
-function getColor(clear) {
+function getColor() {
   if (colors.length) {
     return colors.splice(Math.floor(Math.random() * colors.length), 1)[0];
   } else {
@@ -228,7 +231,6 @@ function intToTime(I) {
 module.exports.intToTime = intToTime;
 
 function timeToInt(Time, PM) {
-  // 09:30
   Time = Time.split(":");
   let Hours = Time[0],
     Mins = Time[1];
