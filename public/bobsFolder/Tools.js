@@ -108,7 +108,7 @@ function resetColors() {
 }
 module.exports.resetColors = resetColors;
 
-function getColor(clear) {
+function getColor() {
   if (colors.length) {
     return colors.splice(Math.floor(Math.random() * colors.length), 1)[0];
   } else {
@@ -231,7 +231,6 @@ function intToTime(I) {
 module.exports.intToTime = intToTime;
 
 function timeToInt(Time, PM) {
-  // 09:30
   Time = Time.split(":");
   let Hours = Time[0],
     Mins = Time[1];
