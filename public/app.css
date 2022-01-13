@@ -230,3 +230,8 @@ div.contentBoth{
 .copyCRNs:hover{
     transform: scale(1.2);
 }
+
+.sortButton{
+    width:33.33%;
+    font-size:x-small
+}

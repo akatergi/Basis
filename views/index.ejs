@@ -75,7 +75,21 @@
                     Customize Schedule
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item I">Time: <button id="changeTime" class="text-">24 Hour Format</button> </li>
+                    <li class="list-group-item I">Time: <button id="changeTime">24 Hour Format</button> </li>
+                    <li class="list-group-item">Sort By:<br>
+                        <div class="form-check">
+                         <input type="radio" id="default" name="sort" class="form-check-input"></input>
+                         <label for="default" class="form-check-label">Default</label>
+                        </div>
+                        <div class="form-check">
+                         <input type="radio" id="timeDiff" name="sort" class="form-check-input"></input>
+                         <label for="timeDiff" class="form-check-label">Time Difference</label>
+                        </div>
+                        <div class="form-check">
+                         <input type="radio" id="dayDiff" name="sort" class="form-check-input"></input>
+                         <label for="dayDiff" class="form-check-label">Day Difference</label>
+                        </div>
+                    </li>
                     <li class="list-group-item">
                         Colors:
                         <div class="card-body" id="custom">

@@ -589,6 +589,28 @@ document.querySelector("#reset").addEventListener("click", () => {
     for (let set of sets) {
         set.innerHTML = ""
     }
-    customCourses=[]
+    customCourses = []
     totalCount = 0
+})
+
+document.querySelectorAll(".courseInput").forEach(course => {
+    course.addEventListener("keydown", e => {
+        if (e.keyCode === 13) {
+            e.preventDefault()
+            addCourse.click()
+            let newerInp = document.querySelector(`#courseInput-${counter2 - 1}`)
+            newerInp.select()
+        }
+    })
+})
+
+document.querySelectorAll(".crnInput").forEach(course => {
+    course.addEventListener("keydown", e => {
+        if (e.keyCode === 13) {
+            e.preventDefault()
+            addCRN.click()
+            let newerInp = document.querySelector(`#crnInput-${counter - 1}`)
+            newerInp.select()
+        }
+    })
 })
