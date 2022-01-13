@@ -12,7 +12,7 @@
                                 this time will be filtered out.
                             </small>
                             <div class="form-group fg mt-2">
-                                <input type="number" name="sHour" class="form-control" placeholder="09" value="<%= sHour?sHour:"" %>"> <span class="colon">:</span> <input type="number" name="sMinute" class="form-control me-3" placeholder="30" value="<%= sMinute?sMinute:"" %>">
+                                <input type="number" name="sHour" class="form-control" placeholder="09" max=12 min=1 value="<%= sHour?sHour:"" %>"> <span class="colon">:</span> <input type="number" name="sMinute" class="form-control me-3" placeholder="30" max=59 min=0 step=5 value="<%= sMinute?sMinute:"" %>">
                                 <select class="form-select" name="stime">
                                     <option <%= stime&&stime==="AM"?"selected":"" %> value="AM">AM</option>
                                     <option <%= stime&&stime==="PM"?"selected":"" %> value="PM">PM</option>
@@ -29,7 +29,7 @@
                                 this time will be filtered out.
                             </small>
                             <div class="form-group fg mt-2">
-                                <input type="number" name="eHour" class="form-control" placeholder="05" value="<%= eHour?eHour:"" %>"> <span class="colon">:</span> <input type="number" name="eMinute" class="form-control me-3" placeholder="00" value="<%= eMinute?eMinute:"" %>">
+                                <input type="number" name="eHour" class="form-control" placeholder="05" max=12 min=1 value="<%= eHour?eHour:"" %>"> <span class="colon">:</span> <input type="number" name="eMinute" class="form-control me-3" placeholder="00" max=59 min=0 step=5 value="<%= eMinute?eMinute:"" %>">
                                 <select class="form-select" name="etime">
                                     <option value="AM" <%= etime&&etime==="AM"?"selected":"" %>>AM</option>
                                     <option value="PM" <%= !etime||etime==="PM"?"selected":"" %>>PM</option>
