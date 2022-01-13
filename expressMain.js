@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const path = require("path")
 const ejsMate = require("ejs-mate")
-const { getProfessors, searchByCRNs, timeToInt, intToTime, checkIfConflictingArray } = require("./public/bobsFolder/Tools")
+const { getProfessors, searchByCRNs, timeToInt, intToTime, checkIfConflictingArray, getDayDif, compareTimeDifs} = require("./public/bobsFolder/Tools")
 app.use(express.json());
 const { getPermutations } = require("./public/bobsFolder/Main")
 const session = require("express-session")
@@ -160,6 +160,8 @@ app.get("/schedules", (req, res) => {
   }
   else {
     let Schedules = req.session.Schedules
+    let SchedulesTimeDiff = Schedules.sort((x,y) => compareTimeDifs(x,y))
+    let SchedulesDayDiff = Schedules.sort((x,y) => getDayDif(x) - getDayDif(y)) 
     res.render("index.ejs", { Schedules })
   }
 })
