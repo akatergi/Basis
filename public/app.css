@@ -191,7 +191,11 @@ div.contentBoth{
 }
 
 #infoalert{
-    padding:1em;
+    padding-top:1em;
+    padding-left:0.65em;
+    padding-right:0.65em;
+    /* padding-top:1em; */
+    margin-bottom: 0;
 }
 
 #removed{
@@ -212,4 +216,17 @@ div.contentBoth{
 .removed-li:hover{
     cursor: pointer;
     font-size: large;
+}
+
+.copyCRNs{
+    border:2px solid lightblue;
+    border-radius: 1rem;
+    background-color: #ceebf5;
+    margin-top:0.5em;
+    color: darkblue;
+    transition: all 200ms;
+}
+
+.copyCRNs:hover{
+    transform: scale(1.2);
 }

@@ -590,4 +590,5 @@ document.querySelector("#reset").addEventListener("click", () => {
         set.innerHTML = ""
     }
     customCourses=[]
+    totalCount = 0
 })

@@ -388,7 +388,7 @@ function updateBoxes() {
                 section.innerText = course.Section ? course.Section : "N/A"
                 crn.innerText = course.CRN
                 credits.innerText = course.CH ? course.CH : "N/A"
-                seats.innerText = `${course.SeatsA||course.SeatsA==0 ? course.SeatsA : "N/A"}/${(course.SeatsA + course.SeatsT) ? (course.SeatsA + course.SeatsT) : "N/A"}`
+                seats.innerText = `${course.SeatsA || course.SeatsA == 0 ? course.SeatsA : "N/A"}/${(course.SeatsA + course.SeatsT) ? (course.SeatsA + course.SeatsT) : "N/A"}`
                 cardTitle.innerText = `${course.Subject} ${course.Code}`
                 cardName.innerText = course.Title
                 if (course.IName === "." && course.ISName === "STAFF") instructor.innerText = 'TBA'
@@ -536,14 +536,14 @@ genSched(i)
 boxes = document.querySelectorAll(".course")
 updateBoxes()
 
-document.querySelector("body").addEventListener("keydown",e => {
-    if(e.keyCode===37) prevSchedArrow.click()
-    else if(e.keyCode===39) nextSchedArrow.click()
+document.querySelector("body").addEventListener("keydown", e => {
+    if (e.keyCode === 37) prevSchedArrow.click()
+    else if (e.keyCode === 39) nextSchedArrow.click()
 })
 
 idxSpan.addEventListener("dblclick", e => {
     let val = idxSpan.innerText
-    idxSpan.innerHTML=""
+    idxSpan.innerHTML = ""
     let newInpDiv = document.createElement("div")
     let newInp = document.createElement("input")
     newInpDiv.append(newInp)
@@ -553,17 +553,38 @@ idxSpan.addEventListener("dblclick", e => {
     newInp.focus()
     newInp.addEventListener("change", e => {
         let v = newInp.value
-        if(v<=Schedules.length){
+        if (v <= Schedules.length) {
             clearSched()
-            i = v-1;
-            index.innerHTML=""
+            i = v - 1;
+            index.innerHTML = ""
             index.innerText = i + 1
             genSched(i)
             boxes = document.querySelectorAll(".course");
             updateBoxes()
         }
-        else{
+        else {
             alert("Improper form/ Outside range of schedules!")
         }
     })
+})
+
+let copy = document.querySelector(".copyCRNs")
+copy.addEventListener('click', e => {
+    let newInp = document.createElement("input")
+    newInp.value = Schedules[i].map(x => x.CRN).join("\t")
+    document.body.append(newInp)
+    newInp.select()
+    document.execCommand("copy")
+    newInp.remove()
+    copy.innerHTML = 'Copied to clipboard! <i class="fas fa-check-circle"></i>'
+    copy.style.border = "1px solid green"
+    copy.style.backgroundColor = "lightgreen"
+    copy.style.color = "darkgreen"
+
+    setTimeout(() => {
+        copy.innerHTML = `Copy CRNs <i class="fas fa-clipboard-list"></i>`
+        copy.style.border = "2px solid lightblue"
+        copy.style.backgroundColor = "#ceebf5"
+        copy.style.color = "darkblue"
+    },1000)
 })
