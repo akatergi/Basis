@@ -52,8 +52,11 @@ function checkIfConflictingArray(Sections, PBT, PET) {
           Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
         } starts before ${intToTime(PET)}`
       );
-    if (i != 0 && !check(Sections.slice(0, i), Sections[i]))
+    if (i != 0 && !check(Sections.slice(0, i), Sections[i])) {
+      if (Sections[i].CRN.slice(0, 4) == "CUST")
+        throw new Error("Given Custom Courses are conflicting with Set CRNs");
       throw new Error("Given CRNs are conflicting");
+    }
   }
 }
 module.exports.checkIfConflictingArray = checkIfConflictingArray;

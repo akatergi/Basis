@@ -570,11 +570,13 @@ async function getPermutations(
         }
         size++;
       } else {
+        let Available = false;
         for (let Section of AllSections[index]) {
           if (check(Perm, Section)) {
             if (isLinked(Section)) {
               for (let Recitation of Section.LinkedSections) {
-                if (check(Perm, Recitation))
+                if (check(Perm, Recitation)) {
+                  Available = true;
                   getPermsRecursionForAllSections(
                     Perm.concat(Section, Recitation),
                     getMinTime(Section, Min, Recitation),
@@ -582,8 +584,10 @@ async function getPermutations(
                     getDayOccurences(Section, DO, Recitation),
                     index + 1
                   );
+                }
               }
-            } else
+            } else {
+              Available = true;
               getPermsRecursionForAllSections(
                 Perm.concat(Section),
                 getMinTime(Section, Min),
@@ -591,8 +595,15 @@ async function getPermutations(
                 getDayOccurences(Section, DO),
                 index + 1
               );
+            }
           }
         }
+        if (!Available)
+          throw new Error(
+            `No Section for ${
+              AllSections[index][0].Subject + AllSections[index][0].Code
+            } that fits with your schedule`
+          );
       }
     }
     getPermsRecursionForAllSections(
