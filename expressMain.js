@@ -14,9 +14,9 @@ app.use(express.urlencoded({ extended: true }))
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '/views'))
 app.use(express.static(path.join(__dirname, 'public')))
-
+let secret = process.env.SECRET || "testsecret"
 app.use(session({
-  secret: `s_'mfWntka+d]&>F>[cS(/j]r"[8cWUQs<P~`,
+  secret: secret,
   resave: false,
   saveUninitialized: false,
   cookie: {
