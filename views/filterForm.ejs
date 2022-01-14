@@ -105,9 +105,7 @@
     if (timeToInt(sHour.value + ":" + sMin.value, stime.value == "PM") > timeToInt(eHour.value + ":" + eMin.value, etime.value == "PM")) {
       e.preventDefault()
       alert("Start time must be less than end time!")
-    } 
-    else if (sH.length === 0) {e.preventDefault(); alert("Must specify Start Hour!")}
-    else if (eH.length === 0) {e.preventDefault(); alert("Must specify End Hour!")}
+    }
     else if (parseInt(sH) > 12 || parseInt(sH) < 1 || (sT === "AM" && (parseInt(sH) < 7 || parseInt(sH) === 12))) {e.preventDefault(); alert("Start hour must be between 7 AM and 11 PM")}
     else if (parseInt(sM) < 0 || parseInt(sM) > 59) {e.preventDefault(); alert("Start minute must be between 0 and 60")}
     else if (parseInt(eH) > 12 || parseInt(eH) < 1 || (eT === "AM" && (parseInt(eH) < 7 || parseInt(eH) === 12))) {e.preventDefault(); alert("End hour must be between 7 AM and 11 PM")}
