@@ -1,87 +1,116 @@
 <link rel="stylesheet" href="filterForm.css">
 <% layout("boilerplate") %>
-    <h1 class="display-3 text-center mt-3 mb-4" id="title">Filter Schedules</h1>
-    <form action="/schedules" method="POST">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h2>Preferred Start Time <span class="optional">(optional)</span></h2>
-                            <small class="card-text text-muted mb-5">Input your preferred start time. All sections that start before
-                                this time will be filtered out.
-                            </small>
-                            <div class="form-group fg mt-2">
-                                <input type="number" name="sHour" class="form-control" placeholder="09" max=12 min=1 value="<%= sHour?sHour:"" %>"> <span class="colon">:</span> <input type="number" name="sMinute" class="form-control me-3" placeholder="30" max=59 min=0 step=5 value="<%= sMinute?sMinute:"" %>">
-                                <select class="form-select" name="stime">
-                                    <option <%= stime&&stime==="AM"?"selected":"" %> value="AM">AM</option>
-                                    <option <%= stime&&stime==="PM"?"selected":"" %> value="PM">PM</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h2>Preferred End Time <span class="optional">(optional)</span></h2>
-                            <small class="card-text text-muted mb-5">Input your preferred end time. All sections that start after
-                                this time will be filtered out.
-                            </small>
-                            <div class="form-group fg mt-2">
-                                <input type="number" name="eHour" class="form-control" placeholder="05" max=12 min=1 value="<%= eHour?eHour:"" %>"> <span class="colon">:</span> <input type="number" name="eMinute" class="form-control me-3" placeholder="00" max=59 min=0 step=5 value="<%= eMinute?eMinute:"" %>">
-                                <select class="form-select" name="etime">
-                                    <option value="AM" <%= etime&&etime==="AM"?"selected":"" %>>AM</option>
-                                    <option value="PM" <%= !etime||etime==="PM"?"selected":"" %>>PM</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <input type="hidden" name="Term" value="<%= Term %> ">
-
-                <input type="hidden" name="setSections" value="<%= JSON.stringify(SetSections) %> ">
-                <input type="hidden" name="electivesArr" value="<%= JSON.stringify(electivesArr) %> ">
-                <input type="hidden" name="customCourses" value="<%= JSON.stringify(customCourses) %> ">
-
-                <h1>Courses + Profs</h1>
-                <small class="card-text text-muted mb-3">For each of the below courses, select the filters you desire. Check on the "seat
-                    availability" box if you want to filter out all sections of a course that do not have capacity. In addition, check on all professors that
-                    you would like to take this course with and uncheck all professors that you would like to filter out.
-                </small>
-                <% let i=0 %>
-                <% for(let course of courses) {%>
-                    <div class="col-6 col-md">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h3>
-                                    <%= course.CourseName %>
-                                </h3>
-                                <input type="hidden" name="courses[<%- i %>][CourseName]" value="<%= course.CourseName %>">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" name="courses[<%- i %>][SeatsFilter]" value="true" id="seats-<%= i %>">
-                                    <label for="seats-<%=i%>" class="form-check-label">
-                                        <span class="seatCheck"> <i class="fas fa-chair"></i> Seat Availability </span>
-                                    </label>
-                                </div>
-
-                                <% for(let prof of course.Professors) {%>
-                                    <div class="form-check">
-                                        <% let label= `check-${prof}-${course.CourseName}` %> 
-                                        <input type="checkbox" class="form-check-input" id="<%= label %>"
-                                            value="<%= prof %>" name="courses[<%- i %>][ProfessorFilter][]" checked>
-                                        <label class="form-check-label" for="<%= label %>">
-                                            <i class="fas fa-user-tie"></i> <%= prof===". STAFF" ? prof="TBA" : prof %>
-                                        </label>
-                                    </div>
-                                <% } i++ %>
-                            </div>
-                        </div>
-                    </div>
-                <% } %>
-                <br>
-                <button class="btn btn-large btn-success mb-3">Generate Permutations</button>
+<h1 class="display-3 text-center mt-3 mb-4" id="title">Filter Schedules</h1>
+<form action="/schedules" method="POST">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h2>Preferred Start Time <span class="optional">(optional)</span></h2>
+            <small class="card-text text-muted mb-5">Input your preferred start time. All sections that start before
+              this time will be filtered out.
+            </small>
+            <div class="form-group fg mt-2">
+              <input type="number" name="sHour" id="sHour" class="form-control" placeholder="09" max=12 min=1 value="<%= sHour?sHour:"" %>"> <span class="colon">:</span> <input id="sMin" type="number" name="sMinute" class="form-control me-3" placeholder="30" max=59 min=0 step=5 value="<%= sMinute?sMinute:"" %>">
+              <select class="form-select" name="stime" id="stime">
+                <option <%= stime&&stime==="AM"?"selected":"" %> value="AM">AM</option>
+                <option <%= stime&&stime==="PM"?"selected":"" %> value="PM">PM</option>
+              </select>
             </div>
+          </div>
         </div>
-    </form>
+      </div>
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h2>Preferred End Time <span class="optional">(optional)</span></h2>
+            <small class="card-text text-muted mb-5">Input your preferred end time. All sections that start after
+              this time will be filtered out.
+            </small>
+            <div class="form-group fg mt-2">
+              <input type="number" name="eHour" id="eHour" class="form-control" placeholder="05" max=12 min=1 value="<%= eHour?eHour:"" %>"> <span class="colon">:</span> <input type="number" name="eMinute" id="eMin" class=" form-control me-3" placeholder="00" max=59 min=0 step=5 value="<%= eMinute?eMinute:"" %>">
+              <select class="form-select" name="etime" id="etime">
+                <option value="AM" <%= etime&&etime==="AM"?"selected":"" %>>AM</option>
+                <option value="PM" <%= !etime||etime==="PM"?"selected":"" %>>PM</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <input type="hidden" name="Term" value="<%= Term %> ">
+
+      <input type="hidden" name="setSections" value="<%= JSON.stringify(SetSections) %> ">
+      <input type="hidden" name="electivesArr" value="<%= JSON.stringify(electivesArr) %> ">
+      <input type="hidden" name="customCourses" value="<%= JSON.stringify(customCourses) %> ">
+
+      <h1>Courses + Profs</h1>
+      <small class="card-text text-muted mb-3">For each of the below courses, select the filters you desire. Check on the "seat
+        availability" box if you want to filter out all sections of a course that do not have capacity. In addition, check on all professors that
+        you would like to take this course with and uncheck all professors that you would like to filter out.
+      </small>
+      <% let i=0 %>
+      <% for(let course of courses) {%>
+      <div class="col-6 col-md">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h3>
+              <%= course.CourseName %>
+            </h3>
+            <input type="hidden" name="courses[<%- i %>][CourseName]" value="<%= course.CourseName %>">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="courses[<%- i %>][SeatsFilter]" value="true" id="seats-<%= i %>">
+              <label for="seats-<%=i%>" class="form-check-label">
+                <span class="seatCheck"> <i class="fas fa-chair"></i> Seat Availability </span>
+              </label>
+            </div>
+
+            <% for(let prof of course.Professors) {%>
+            <div class="form-check">
+              <% let label= `check-${prof}-${course.CourseName}` %>
+              <input type="checkbox" class="form-check-input" id="<%= label %>" value="<%= prof %>" name="courses[<%- i %>][ProfessorFilter][]" checked>
+              <label class="form-check-label" for="<%= label %>">
+                <i class="fas fa-user-tie"></i> <%= prof===". STAFF" ? prof="TBA" : prof %>
+              </label>
+            </div>
+            <% } i++ %>
+          </div>
+        </div>
+      </div>
+      <% } %>
+      <br>
+      <button class="btn btn-large btn-success mb-3" id="genPerms">Generate Schedules</button>
+    </div>
+  </div>
+</form>
+
+<script>
+  let sHour = document.querySelector("#sHour")
+  let sMin = document.querySelector("#sMin")
+  let eHour = document.querySelector("#eHour")
+  let eMin = document.querySelector("#eMin")
+  let form = document.querySelector("form")
+  let stime = document.querySelector("#stime")
+  let etime = document.querySelector("#etime")
+
+  let timeToInt = <%- timeToInt %>
+  form.addEventListener("submit", e => {
+    let sH = sHour.value
+    let sM = sMin.value
+    let eH = eHour.value
+    let eM = eMin.value
+    let sT = stime.value
+    let eT = etime.value
+    if (timeToInt(sHour.value + ":" + sMin.value, stime.value == "PM") > timeToInt(eHour.value + ":" + eMin.value, etime.value == "PM")) {
+      e.preventDefault()
+      alert("Start time must be less than end time!")
+    } 
+    else if (sH.length === 0) {e.preventDefault(); alert("Must specify Start Hour!")}
+    else if (eH.length === 0) {e.preventDefault(); alert("Must specify End Hour!")}
+    else if (parseInt(sH) > 12 || parseInt(sH) < 1 || (sT === "AM" && (parseInt(sH) < 7 || parseInt(sH) === 12))) {e.preventDefault(); alert("Start hour must be between 7 AM and 11 PM")}
+    else if (parseInt(sM) < 0 || parseInt(sM) > 59) {e.preventDefault(); alert("Start minute must be between 0 and 60")}
+    else if (parseInt(eH) > 12 || parseInt(eH) < 1 || (eT === "AM" && (parseInt(eH) < 7 || parseInt(eH) === 12))) {e.preventDefault(); alert("End hour must be between 7 AM and 11 PM")}
+    else if (parseInt(eM) < 0 || parseInt(eM) > 59) {e.preventDefault(); alert("End minute must be between 0 and 60")}
+  })
+</script>

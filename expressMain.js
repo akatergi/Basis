@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const path = require("path")
 const ejsMate = require("ejs-mate")
-const { getProfessors, searchByCRNs, timeToInt, intToTime, checkIfConflictingArray, getDayDif, compareTimeDifs } = require("./public/bobsFolder/Tools")
+const { getProfessors, searchByCRNs, timeToInt, intToTime, checkIfConflictingArray } = require("./public/bobsFolder/Tools")
 app.use(express.json());
 const { getPermutations } = require("./public/bobsFolder/Main")
 const session = require("express-session")
@@ -109,7 +109,7 @@ app.get("/filter", async (req, res) => {
     req.flash("error", "Need at least one course to create schedule!")
     return res.redirect("/new")
   }
-  res.render("filterForm", { Term, SetSections, courses, electivesArr, customCourses, sHour, sMinute, stime, eHour, eMinute, etime })
+  res.render("filterForm", { timeToInt, Term, SetSections, courses, electivesArr, customCourses, sHour, sMinute, stime, eHour, eMinute, etime })
 })
 
 app.post("/schedules", async (req, res) => {

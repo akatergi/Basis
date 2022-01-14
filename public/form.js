@@ -302,6 +302,7 @@ createCourse.addEventListener("click", e => {
                 }
             }
             if (Schedule1.length === 0) alert("Course should be on at least one day!")
+            else if (BT1 > ET1) alert("Begin time cannot be greater than end time!")
             else {
                 let customCourseObj = { Subject, Code: "", CRN, BT1, ET1, Schedule1, LCRN: [], Schedule2: "" }
                 customCourses.push(customCourseObj)
@@ -380,6 +381,7 @@ createCourse.addEventListener("click", e => {
                                 }
                             }
                             if (Schedule1.length === 0) alert("Course must be on at least one day!")
+                            else if (BT1 > ET1) alert("Begin time cannot be greater than end time!")
                             else {
                                 customCourseObj = { Subject, Code: "", CRN, BT1, ET1, Schedule1, LCRN: [], Schedule2: "" }
                                 customCourses[idx] = customCourseObj
