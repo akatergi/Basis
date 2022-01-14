@@ -752,7 +752,6 @@ async function getPermutations(
     swap(ArrayOfPermutations, 0, PermWithLeastTimeDif);
     swap(ArrayOfPermutations, IndexToBeSwapped, PermWithLeastDays);
   }
-
   return ArrayOfPermutations;
 }
 module.exports.getPermutations = getPermutations;
