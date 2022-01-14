@@ -25,6 +25,12 @@ timeTDs = Array.from(timeTDs).slice(6)
 let removed = document.querySelector("#removed")
 //Functions
 
+function getStandardDeviation (array) {
+  const n = array.length
+  const mean = array.reduce((a, b) => a + b) / n
+  return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+}
+
 function labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin) {
     let span = document.createElement("span")
     span.classList.add("blockTitle")
