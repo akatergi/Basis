@@ -159,7 +159,6 @@ function getMaxMinDO(ArrayOfSections) {
 module.exports.getMaxMinDO = getMaxMinDO;
 
 function getDayDif(DO) {
-  console.log(DO, math.std(DO))
   return math.std(DO);
 }
 module.exports.getDayDif = getDayDif;
