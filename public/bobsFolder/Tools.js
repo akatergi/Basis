@@ -252,7 +252,7 @@ module.exports.timeToInt = timeToInt;
 
 function isNumberorL(N) {
   for (let digit of N) {
-    digitIsNumber = false;
+    let digitIsNumber = false;
     for (let number of "1234567890L") {
       if (digit == number) {
         digitIsNumber = true;
