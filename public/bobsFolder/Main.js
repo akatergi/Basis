@@ -265,7 +265,7 @@ async function getArraysOfFilteredSections(
               intToTime(EarliestSectionEndTime)
             : "");
       throw new Error(
-        `No available section for\n${
+        `No available section for${
           CourseSubject + CourseCode
         } that applies with given filter!\n` + Reasons
       );
@@ -317,7 +317,7 @@ async function getArraysOfFilteredSections(
                 intToTime(EarliestRecitationEndTime)
               : "");
         throw new Error(
-          `No available recitations for\n${
+          `No available recitations for${
             CourseSubject + CourseCode
           } that applies with given filter!\n` + Reasons
         );
@@ -489,14 +489,14 @@ async function getPermutations(
       if (Max - Min < LeastTimeDif) {
         LeastTimeDif = Max - Min;
         PermWithLeastTimeDif = size;
-      } else if (Max - Min === LeastTimeDif) {
+      } else if (Max - Min === LeastTimeDif && PermWithLeastDays) {
         let CurrentDO = getMaxMinDO(ArrayOfPermutations[PermWithLeastDays])[2];
         if (getDayDif(DO) > getDayDif(CurrentDO)) PermWithLeastTimeDif = size;
       }
       if (getDayDif(DO) > MostDayDif) {
         MostDayDif = getDayDif(DO);
         PermWithLeastDays = size;
-      } else if (getDayDif(DO) === MostDayDif) {
+      } else if (getDayDif(DO) === MostDayDif && PermWithLeastDays) {
         let [CurrentMax, CurrentMin] = getMaxMinDO(
           ArrayOfPermutations[PermWithLeastDays]
         );
@@ -744,7 +744,7 @@ async function getPermutations(
       throw new Error("No Permutations Exist: Must Change Courses!");
     }
   }
-
+  if (ArrayOfPermutations.length == 1) return ArrayOfPermutations
   if (PermWithLeastDays == PermWithLeastTimeDif) {
     swap(ArrayOfPermutations, 0, PermWithLeastDays);
   } else {

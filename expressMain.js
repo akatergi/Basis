@@ -143,12 +143,12 @@ app.post("/schedules", async (req, res) => {
     course.Elective = false
   }
   courses = courses.concat(JSON.parse(electivesArr))
-  try {
+  // try {
     var Schedules = await getPermutations(Term, setSections, CustomSections, courses, PStartTime, PEndTime)
-  } catch (err) {
-    req.flash("error", err.message)
-    return res.redirect("/filter")
-  }
+  // } catch (err) {
+  //   req.flash("error", err.message)
+  //   return res.redirect("/filter")
+  // }
   req.session.Schedules = Schedules
   res.redirect("/schedules")
 })
