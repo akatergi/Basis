@@ -236,7 +236,7 @@ async function getArraysOfFilteredSections(
               : " that ends"
           } after ` +
           intToTime(PEndTime) +
-          ":\n" +
+          ": " +
           SectionWithConflictingFinishTime.map(
             (Section) => `Section ${Section.Section} (${Section.CRN})`
           ).join(" - ") +
@@ -255,7 +255,7 @@ async function getArraysOfFilteredSections(
               : " that ends"
           } after ` +
           intToTime(PEndTime) +
-          ":\n" +
+          ": " +
           SectionWithConflictingFinishLabTime.map(
             (Section) => `Section ${Section.Section} (${Section.CRN})`
           ).join(" - ") +
@@ -290,7 +290,7 @@ async function getArraysOfFilteredSections(
                 : " that starts"
             } before ` +
             intToTime(PStartTime) +
-            ":\n" +
+            ": " +
             RecitationsWithConflictingStartTime.map(
               (Section) => `Section ${Section.Section} (${Section.CRN})`
             ).join(" - ") +
@@ -308,7 +308,7 @@ async function getArraysOfFilteredSections(
                 : " that ends"
             } after ` +
             intToTime(PEndTime) +
-            ":\n" +
+            ": " +
             RecitationsWithConflictingEndTime.map(
               (Section) => `Section ${Section.Section} (${Section.CRN})`
             ).join(" - ") +
@@ -335,11 +335,11 @@ async function getArraysOfFilteredSections(
       if (!FinalListOfFilteredSections && !Elective) {
         throw new Error(`Available sections and available recitations but no section/linkedCRN combination available for\n
             ${CourseSubject + CourseCode} that applies with given filter!\n
-            Available Sections:\n
+            Available Sections:
             + ${ListOfFilteredSections.map(
               (Section) => `Section ${Section.Section} (${Section.CRN})`
             ).join(" - ")}
-            + "\nAvailable Recitations:\n"
+            + "\nAvailable Recitations:"
             + ${ListOfFilteredRecitations.map(
               (Section) => `Section ${Section.Section} (${Section.CRN})`
             ).join(" - ")}`);
