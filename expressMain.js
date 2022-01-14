@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const path = require("path")
 const ejsMate = require("ejs-mate")
-const { getProfessors, searchByCRNs, timeToInt, intToTime, checkIfConflictingArray, getDayDif, compareTimeDifs} = require("./public/bobsFolder/Tools")
+const { getProfessors, searchByCRNs, timeToInt, intToTime, checkIfConflictingArray, getDayDif, compareTimeDifs } = require("./public/bobsFolder/Tools")
 app.use(express.json());
 const { getPermutations } = require("./public/bobsFolder/Main")
 const session = require("express-session")
@@ -31,20 +31,20 @@ app.use((req, res, next) => {
   res.locals.messages = req.flash("error")
   next()
 })
-
+const port = process.env.PORT || 3000
 app.use(express.static(__dirname + "/public"));
-app.listen(3000, () => console.log("Listening on port 3000"))
+app.listen(port, () => console.log(`Listening on port ${port}`))
 
 app.get("/", (req, res) => res.redirect("/new"))
 
 app.get("/new", (req, res) => {
   let { Term, setCRNs, sections, electives, customCourses } = req.session
-  if(!Term) Term="202220"
-  if(!setCRNs) setCRNs=[]
-  if(!sections) sections = []
+  if (!Term) Term = "202220"
+  if (!setCRNs) setCRNs = []
+  if (!sections) sections = []
   if (!electives) electives = []
   if (!customCourses) customCourses = []
-  res.render("scheduleForm", {Term, setCRNs, sections, electives, customCourses, intToTime})
+  res.render("scheduleForm", { Term, setCRNs, sections, electives, customCourses, intToTime })
 })
 
 app.post("/filter", async (req, res) => {
@@ -56,12 +56,12 @@ app.post("/filter", async (req, res) => {
     return res.redirect("/new")
   }
   if (!setCRNs) setCRNs = []
-  setCRNs = setCRNs.filter(e => e.length!==0)
-  if(!customCourses) customCourses=[]
+  setCRNs = setCRNs.filter(e => e.length !== 0)
+  if (!customCourses) customCourses = []
   customCourses = JSON.parse(customCourses)
   req.session.customCourses = customCourses
   if (!sections) sections = []
-  sections = sections.filter(e => e.length!==0)
+  sections = sections.filter(e => e.length !== 0)
   req.session.Term = Term
   req.session.setCRNs = setCRNs
   req.session.sections = sections
@@ -114,8 +114,8 @@ app.get("/filter", async (req, res) => {
 
 app.post("/schedules", async (req, res) => {
   let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses, electivesArr, customCourses } = req.body
-  if(sMinute.length===0) sMinute="00"
-  if(eMinute.length===0) eMinute="00"
+  if (sMinute.length === 0) sMinute = "00"
+  if (eMinute.length === 0) eMinute = "00"
   req.session.sHour = sHour
   req.session.sMinute = sMinute
   req.session.stime = stime
@@ -126,7 +126,7 @@ app.post("/schedules", async (req, res) => {
   let PStartTime, PEndTime;
   if (sHour === "") PStartTime = null
   else PStartTime = timeToInt(sHour + ":" + sMinute, stime === "PM")
-  
+
   if (eHour === "") PEndTime = null
   else PEndTime = timeToInt(eHour + ":" + eMinute, etime === "PM")
 
@@ -160,8 +160,6 @@ app.get("/schedules", (req, res) => {
   }
   else {
     let Schedules = req.session.Schedules
-    let SchedulesTimeDiff = Schedules.sort((x,y) => compareTimeDifs(x,y))
-    let SchedulesDayDiff = Schedules.sort((x,y) => getDayDif(x) - getDayDif(y)) 
     res.render("index.ejs", { Schedules })
   }
 })

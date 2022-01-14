@@ -114,10 +114,15 @@ function genSched(i) {
                     courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                     courseBlock.style.backgroundColor = course.Color
                     if (i === 0) courseBlock.style.borderRadius = "7px 7px 0px 0px"
+                    if(cH+1===endHour && endMin===0){
+                        courseBlock.style.borderRadius = "0px 0px 7px 7px"
+                        courseBlock.classList.add("special")
+                        td.style.borderBottom="none"
+                    }
                 }
             }
             if (cH === endHour) {
-                // endMin === 0 ? cM = 60 : cM = endMin
+                if(endMin===0) break;
                 cM = endMin
                 for (let day of course.Schedule1) {
                     let content = document.querySelector(`.r${cH} .${letterDays[day]} .content`)

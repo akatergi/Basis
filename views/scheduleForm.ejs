@@ -1,135 +1,135 @@
 <link rel="stylesheet" href="scheduleForm.css">
 <% layout("boilerplate") %>
 <div class="container">
-    <div class="row">
-        <div class="col-6 offset-3">
-            <h1 class="display-3 display-lg-4 text-center mt-3 mb-4" id="title">New Schedules</h1>
-        </div>
-        <div class="col-3 d-flex flex-row-reverse">
-            <div id="resetDiv">
-                <button class="btn btn-danger btn-large mt-3" id="reset"><i class="fas fa-recycle"></i></button>
-                <label for="reset" class='resetL'> Reset? </label>
-            </div>
-        </div>
+  <div class="row">
+    <div class="col-6 offset-3">
+      <h1 class="display-3 display-lg-4 text-center mt-3 mb-4" id="title">New Schedules</h1>
     </div>
+    <div class="col-3 d-flex flex-row-reverse">
+      <div id="resetDiv">
+        <button class="btn btn-danger btn-large mt-3" id="reset"><i class="fas fa-recycle"></i></button>
+        <label for="reset" class='resetL'> Reset? </label>
+      </div>
+    </div>
+  </div>
 </div>
-    <form action="/filter" method="POST">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h2 class="card-title">Select Term</h2>
-                            <small class="card-text text-muted mb-5">Select the Term during which you would like your
-                                schedule to
-                                take place.</small>
-                            <div class="form-group">
-                                <label for="selectTerm">Term</label>
-                                <select name="Term" id="selectTerm" class="form-select">
-                                    <option value="202210" <%= Term==="202210" ? "selected" : "" %> >Fall 2021-2022</option>
-                                    <option value="202220" <%= Term==="202220" ? "selected" : "" %>>Spring 2021-2022</option>
-                                    <option value="202230" <%= Term==="202230" ? "selected" : "" %>>Summer 2021-2022</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="card-title">Set CRNS <span class="optional">(optional)</span></h2>
-                            <small class="card-text text-muted">Input any CRNs for courses which you know the exact section you
-                                will attend. If no such sections exist, simply leave this field blank.</small>
-                            <div id="setCRNs">
-                                <% for(let ci=0; ci<setCRNs.length; ci++) {%>
-                                <div class="CRNInpGrp">
-                                    <input type="number" id="crnInput-<%= ci %>" class="crnInput form-control mt-2" name="setCRNs[]" value="<%= setCRNs[ci] %>">
-                                    <a class="clearButton crnClear" id="AclearButton-<%= ci %>"><i class="fas fa-trash"></i></a>
-                                </div>
-                                <% }%> 
-                            </div>
-                            <button class="btn btn-outline-success btn-sm mt-2" id="addCRN">Add CRN</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="card-title">Courses</h2>
-                            <small class="card-text text-muted">Enter all courses you wish to take this semester. </small>
-                            <div id="courses" class="form-group">
-                                <% for(let si=0; si<sections.length; si++) {%>
-                                    <div class="CRNInpGrp">
-                                        <input type="text" id="courseInput-<%= si %>" class="form-control courseInput mt-2" value="<%= sections[si] %>" name="sections[]">
-                                        <a id="BclearButton-<%= si %>" class="clearButton courseClear"> <i class="fas fa-trash"></i> </a>
-                                    </div> 
-                                <%} %> 
-                            </div>
-                            <button class="btn btn-outline-success btn-sm mt-2" id="addCourse">Add Course</button> <br>
-                            <small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Note that any courses placed in the Set CRNs card, if any, should NOT be placed in this one.</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-5 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="card-title">Electives <span class="optional">(optional)</span></h2>
-                            <small class="card-text text-muted"> Add the electives you want, providing the type (Humanity, Social Science, ...) and we will find all possibilities for you! </small>
-                            <div id="setElectives" class="form-group">
-                                <% for(let ei=0; ei<electives.length; ei++) {%>
-                                    <div class="CRNInpGrp">
-                                        <select name="electives[]" id="select-<%= ei %>" class="form-select mt-2" id="electiveInput-<%= ei %>">
-                                            <option value="SS1" <%= electives[ei]==="SS1" ? "selected" : ""%>>Social Sciences I</option>                                       
-                                            <option value="SS2" <%= electives[ei]==="SS2" ? "selected" : ""%>>Social Sciences II</option>                                       
-                                            <option value="H1" <%= electives[ei]==="H1" ? "selected" : ""%>>Humanities I</option>                                       
-                                            <option value="H2" <%= electives[ei]==="H2" ? "selected" : ""%>>Humanities II</option>                                       
-                                            <option value="NS" <%= electives[ei]==="NS" ? "selected" : ""%>>Natural Sciences</option>                                       
-                                            <option value="Ar" <%= electives[ei]==="Ar" ? "selected" : ""%>>Arabic Communication Skills</option>                                      
-                                            <option value="En" <%= electives[ei]==="En" ? "selected" : ""%>>English Communication Skills</option>                                      
-                                            <option value="QT" <%= electives[ei]==="QT" ? "selected" : ""%>>Quantitative Thought</option>                                      
-                                        </select>
-                                        <a class="clearButton electiveClear" id="CclearButton-<%= ei %>"><i class="fas fa-trash"></i></a>
-                                    </div>
-                                <% } %> 
-                            </div>
-                            <button id="addElective" class="btn btn-outline-success btn-sm mt-2">Add Elective</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-7 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="card-title">Custom Courses <span class="optional">(optional)</span></h2>
-                            <small class="card-text text-muted"> Create your own custom course blocks that can be displayed on your schedule! These can be things like breaks, gym time, tutoring, ... </small>
-                            <ul class="list-group" id="setCustomCourses">
-                                <% for(let ci=0; ci<customCourses.length; ci++) {%> 
-                                    <div class="CRNInpGrp">
-                                        <li class="list-group-item form-control mt-2" id="li-<%= ci %>">
-                                            Title: <%= customCourses[ci].Subject %>, Time: <%= intToTime(customCourses[ci].BT1) %> - <%= intToTime(customCourses[ci].ET1) %>, Schedule: <%= customCourses[ci].Schedule1 %>    
-                                        </li>
-                                        <a data-bs-toggle="modal" data-bs-target="#editModal" class="editButton" id="DeditButton-<%= ci %>"><i class="fas fa-edit"></i></a>
-                                        <a class="clearButton customClear" id="DclearButton-<%= ci %>"><i class="fas fa-trash"></i></a>
-                                    </div>
-                                <% } %> 
-                            </ul>
-                            <%- include("partials/mainModal") %>
-                            <%- include("partials/editModal") %>
-                            <button id="addCustomCourse" type="button" class="btn btn-outline-success btn-sm mt-2"  data-bs-toggle="modal" data-bs-target="#mainModal">Make Course</button>
-                        </div>
-                    </div>
-                </div>
-                <button class="btn btn-primary2 btn-large mt-4 mb-3" id="next">Next &gt </button>
+<form action="/filter" method="POST">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h2 class="card-title">Select Term</h2>
+            <small class="card-text text-muted mb-5">Select the Term during which you would like your
+              schedule to
+              take place.</small>
+            <div class="form-group">
+              <label for="selectTerm">Term</label>
+              <select name="Term" id="selectTerm" class="form-select">
+                <option value="202210" <%= Term==="202210" ? "selected" : "" %>>Fall 2021-2022</option>
+                <option value="202220" <%= Term==="202220" ? "selected" : "" %>>Spring 2021-2022</option>
+                <option value="202230" <%= Term==="202230" ? "selected" : "" %>>Summer 2021-2022</option>
+              </select>
             </div>
+          </div>
         </div>
-    </form>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">Set CRNS <span class="optional">(optional)</span></h2>
+            <small class="card-text text-muted">Input any CRNs for courses which you know the exact section you
+              will attend. If no such sections exist, simply leave this field blank.</small>
+            <div id="setCRNs">
+              <% for(let ci=0; ci<setCRNs.length; ci++) {%>
+              <div class="CRNInpGrp">
+                <input type="number" id="crnInput-<%= ci %>" class="crnInput form-control mt-2" name="setCRNs[]" value="<%= setCRNs[ci] %>">
+                <a class="clearButton crnClear" id="AclearButton-<%= ci %>"><i class="fas fa-trash"></i></a>
+              </div>
+              <% }%>
+            </div>
+            <button class="btn btn-outline-success btn-sm mt-2" id="addCRN">Add CRN</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">Courses</h2>
+            <small class="card-text text-muted">Enter all courses you wish to take this semester. </small>
+            <div id="courses" class="form-group">
+              <% for(let si=0; si<sections.length; si++) {%>
+              <div class="CRNInpGrp">
+                <input type="text" id="courseInput-<%= si %>" class="form-control courseInput mt-2" value="<%= sections[si] %>" name="sections[]">
+                <a id="BclearButton-<%= si %>" class="clearButton courseClear"> <i class="fas fa-trash"></i> </a>
+              </div>
+              <%} %>
+            </div>
+            <button class="btn btn-outline-success btn-sm mt-2" id="addCourse">Add Course</button> <br>
+            <small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Note that any courses placed in the Set CRNs card, if any, should NOT be placed in this one.</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">Electives <span class="optional">(optional)</span></h2>
+            <small class="card-text text-muted"> Add the electives you want, providing the type (Humanity, Social Science, ...) and we will find all possibilities for you! </small>
+            <div id="setElectives" class="form-group">
+              <% for(let ei=0; ei<electives.length; ei++) {%>
+              <div class="CRNInpGrp">
+                <select name="electives[]" id="select-<%= ei %>" class="form-select mt-2" id="electiveInput-<%= ei %>">
+                  <option value="SS1" <%= electives[ei]==="SS1" ? "selected" : ""%>>Social Sciences I</option>
+                  <option value="SS2" <%= electives[ei]==="SS2" ? "selected" : ""%>>Social Sciences II</option>
+                  <option value="H1" <%= electives[ei]==="H1" ? "selected" : ""%>>Humanities I</option>
+                  <option value="H2" <%= electives[ei]==="H2" ? "selected" : ""%>>Humanities II</option>
+                  <option value="NS" <%= electives[ei]==="NS" ? "selected" : ""%>>Natural Sciences</option>
+                  <option value="Ar" <%= electives[ei]==="Ar" ? "selected" : ""%>>Arabic Communication Skills</option>
+                  <option value="En" <%= electives[ei]==="En" ? "selected" : ""%>>English Communication Skills</option>
+                  <option value="QT" <%= electives[ei]==="QT" ? "selected" : ""%>>Quantitative Thought</option>
+                </select>
+                <a class="clearButton electiveClear" id="CclearButton-<%= ei %>"><i class="fas fa-trash"></i></a>
+              </div>
+              <% } %>
+            </div>
+            <button id="addElective" class="btn btn-outline-success btn-sm mt-2">Add Elective</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-7 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">Custom Courses <span class="optional">(optional)</span></h2>
+            <small class="card-text text-muted"> Create your own custom course blocks that can be displayed on your schedule! These can be things like breaks, gym time, tutoring, ... </small>
+            <ul class="list-group" id="setCustomCourses">
+              <% for(let ci=0; ci<customCourses.length; ci++) {%>
+              <div class="CRNInpGrp">
+                <li class="list-group-item form-control mt-2" id="li-<%= ci %>">
+                  Title: <%= customCourses[ci].Subject %>, Time: <%= intToTime(customCourses[ci].BT1) %> - <%= intToTime(customCourses[ci].ET1) %>, Schedule: <%= customCourses[ci].Schedule1 %>
+                </li>
+                <a data-bs-toggle="modal" data-bs-target="#editModal" class="editButton" id="DeditButton-<%= ci %>"><i class="fas fa-edit"></i></a>
+                <a class="clearButton customClear" id="DclearButton-<%= ci %>"><i class="fas fa-trash"></i></a>
+              </div>
+              <% } %>
+            </ul>
+            <%- include("partials/mainModal") %>
+            <%- include("partials/editModal") %>
+            <button id="addCustomCourse" type="button" class="btn btn-outline-success btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#mainModal">Make Course</button>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary2 btn-large mt-4 mb-3" id="next">Next &gt </button>
+    </div>
+  </div>
+</form>
 
 <script>
-    let counter = <%- setCRNs.length %>;
-    let counter2 = <%- sections.length %>;
-    let counter3 = <%- customCourses.length %>;
-    let customCourses = <%- JSON.stringify(customCourses) %>;
-    let totalCount = counter+counter2+counter3+<%- electives.length %>
+  let counter = <%- setCRNs.length %>;
+  let counter2 = <%- sections.length %>;
+  let counter3 = <%- customCourses.length %>;
+  let customCourses = <%- JSON.stringify(customCourses) %>;
+  let totalCount = counter + counter2 + counter3 + <%- electives.length %>
 </script>
 
 <script src="form.js"></script>
