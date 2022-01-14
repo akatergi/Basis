@@ -1,4 +1,4 @@
-var {
+const {
   Course,
   hasLab,
   isLinked,
