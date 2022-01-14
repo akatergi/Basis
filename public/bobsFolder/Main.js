@@ -466,7 +466,7 @@ async function getPermutations(
     }
     num *= sum;
   }
-  if (num > 5000)
+  if (num > 16000)
     throw new Error(
       ` Will not calculate ${num} schedules, use filters to lower amount of perms to get below 15000 schedules`
     );
