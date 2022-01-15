@@ -1,13 +1,4 @@
-const { DocumentPosition } = require("domutils");
-const { json } = require("express/lib/response");
 const {
-  compare,
-  sum,
-  permutations,
-  usolveDependencies,
-  add
-} = require("mathjs");
-var {
   Course,
   hasLab,
   isLinked,

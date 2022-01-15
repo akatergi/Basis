@@ -91,8 +91,8 @@ function CRNPlaceholder(e) {
 }
 
 function coursePlaceholder() {
-    let courses = ["MATH", "BIOL", "CHEM", "ENGL", "EECE", "CIVE", "PHYS", "INDE"]
-    return `eg: ${courses[Math.floor(Math.random() * courses.length)]}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}`
+    let courses = ["MATH", "STAT", "BIOL", "CHEM", "ENGL", "EECE", "CIVE", "PHYS", "INDE", "HIST", "DCSN", "CMPS", "ACCT", "ECON", "FEAA", "ARAB", "MECH", "MNGT", "MUSC", "ARCH", "AROL", "BUSS", "BMEN"]
+    return `eg: ${courses[Math.floor(Math.random() * courses.length)]}` + (Math.floor(Math.random() * 5) + 1) + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 9)
 }
 
 addCRN.addEventListener('click', e => {

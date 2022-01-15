@@ -159,7 +159,6 @@ function getMaxMinDO(ArrayOfSections) {
 module.exports.getMaxMinDO = getMaxMinDO;
 
 function getDayDif(DO) {
-  console.log(DO, math.std(DO))
   return math.std(DO);
 }
 module.exports.getDayDif = getDayDif;
@@ -253,7 +252,7 @@ module.exports.timeToInt = timeToInt;
 
 function isNumberorL(N) {
   for (let digit of N) {
-    digitIsNumber = false;
+    let digitIsNumber = false;
     for (let number of "1234567890L") {
       if (digit == number) {
         digitIsNumber = true;

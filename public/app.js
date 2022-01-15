@@ -25,6 +25,28 @@ timeTDs = Array.from(timeTDs).slice(6)
 let removed = document.querySelector("#removed")
 //Functions
 
+const isRecitation = ({ Section }) => !isNumberorL(Section);
+
+function isNumberorL(N) {
+  for (let digit of N) {
+    let digitIsNumber = false;
+    for (let number of "1234567890L") {
+      if (digit == number) {
+        digitIsNumber = true;
+        continue;
+      }
+    }
+    if (!digitIsNumber) return false;
+  }
+  return true;
+}
+
+function getStandardDeviation (array) {
+  const n = array.length
+  const mean = array.reduce((a, b) => a + b) / n
+  return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+}
+
 function labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin) {
     let span = document.createElement("span")
     span.classList.add("blockTitle")
@@ -470,7 +492,9 @@ function updateBoxes() {
                 updateBoxes()
             }
             else {
-                alert("Cannot remove course as this results in 0 schedules!")
+              for (let Section of Schedules[i]){
+                if (CRN === Section.CRN) alert(`Cannot remove this ${isRecitation(Section) ? "recitation":"section"} for ${Section.Subject + Section.Code} since it would result in 0 Schedules`)
+              }
             }
         }
         )
