@@ -687,28 +687,27 @@ async function getPermutations(
                   Section.ISName
               );
             }
-            if (
-              UnselectedProfessorsPerCourse.length <
-              MinNumberOfProfessorsToChange
-            ) {
-              MinNumberOfProfessorsToChange =
-                UnselectedProfessorsPerCourse.length;
-              ArrayOfListOfAvailableUnselectedProfessorsPerCourse = [
-                UnselectedProfessorsPerCourse
-              ];
-            } else if (
-              UnselectedProfessorsPerCourse.length ==
-              MinNumberOfProfessorsToChange
-            )
-              ArrayOfListOfAvailableUnselectedProfessorsPerCourse.push(
-                UnselectedProfessorsPerCourse
-              );
           }
+          if (
+            UnselectedProfessorsPerCourse.length < MinNumberOfProfessorsToChange
+          ) {
+            MinNumberOfProfessorsToChange =
+              UnselectedProfessorsPerCourse.length;
+            ArrayOfListOfAvailableUnselectedProfessorsPerCourse = [
+              UnselectedProfessorsPerCourse
+            ];
+          } else if (
+            UnselectedProfessorsPerCourse.length ==
+            MinNumberOfProfessorsToChange
+          )
+            ArrayOfListOfAvailableUnselectedProfessorsPerCourse.push(
+              UnselectedProfessorsPerCourse
+            );
         }
-        var ProfessorsToChange = "";
-        let first = true;
+        let ProfessorsToChange = "";
         let AddedUnselectedProfessors = [];
-        for (let AvailableUnselectedProfessorsPerCourse of ArrayOfListOfAvailableUnselectedProfessorsPerCourse) {
+        for (let i = 1; i < Math.min(5, ArrayOfListOfAvailableUnselectedProfessorsPerCourse.length);i++) {
+          let AvailableUnselectedProfessorsPerCourse = ArrayOfListOfAvailableUnselectedProfessorsPerCourse[i]
           AvailableUnselectedProfessorsPerCourse.sort((a, b) =>
             a.localeCompare(b)
           );
@@ -717,25 +716,24 @@ async function getPermutations(
               JSON.stringify(AvailableUnselectedProfessorsPerCourse)
             )
           ) {
-            if (first) first = false;
-            else ProfessorsToChange += "\n or \n";
+            ProfessorsToChange += i + ": ";
             AddedUnselectedProfessors.push(
               JSON.stringify(AvailableUnselectedProfessorsPerCourse)
             );
             ProfessorsToChange += AvailableUnselectedProfessorsPerCourse.map(
               (x) => x.split(":").join(": ")
-            ).join(", ");
+            ).join(";\t") + "\n";
           }
         }
         throw new Error(
-          "No Permutations Available:\nSuggestion: Select the following professors\n" +
+          "No Permutations Available:\nSuggestion: Select any of the following combination of professors\n" +
             ProfessorsToChange
         );
       }
       throw new Error("No Permutations Exist: Must Change Courses!");
     }
   }
-  if (ArrayOfPermutations.length == 1) return ArrayOfPermutations
+  if (ArrayOfPermutations.length == 1) return ArrayOfPermutations;
   if (PermWithLeastDays == PermWithLeastTimeDif) {
     swap(ArrayOfPermutations, 0, PermWithLeastDays);
   } else {
