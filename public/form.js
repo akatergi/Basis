@@ -368,6 +368,7 @@ createCourse.addEventListener("click", e => {
                         else if (sH.length === 0) alert("Must specify Start Hour!")
                         else if (eH.length === 0) alert("Must specify End Hour!")
                         else if (BT1 > ET1) alert("End time must be less than start time!")
+                        else if ((ET1-BT1)<30) alert("Custom Course must be at least 30 minutes!")
 
                         else {
 
