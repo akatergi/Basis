@@ -191,7 +191,8 @@ div.contentBoth{
 }
 
 #infoalert{
-    padding-top:1em;
+    padding-top:0.5em;
+    font-size: 0.9em;
     padding-left:0.65em;
     padding-right:0.65em;
     /* padding-top:1em; */
