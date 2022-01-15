@@ -486,6 +486,7 @@ function updateBoxes() {
                 updateBoxes()
             }
             else {
+              if (CRN.slice(0,4) == "CUST") alert("Cannot remove custom courses")
               for (let Section of Schedules[i]){
                 if (CRN === Section.CRN) alert(`Cannot remove this ${isRecitation(Section) ? "recitation":"section"} for ${Section.Subject + Section.Code} since it would result in 0 Schedules`)
               }
