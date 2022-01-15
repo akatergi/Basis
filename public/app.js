@@ -111,7 +111,6 @@ function genSched(i) {
                         content.classList.add("contentBoth")
                     }
                     content.append(courseBlock)
-                    courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                     courseBlock.style.backgroundColor = course.Color
                     if (i === 0) courseBlock.style.borderRadius = "7px 7px 0px 0px"
                     if(cH+1===endHour && endMin===0){
@@ -119,6 +118,7 @@ function genSched(i) {
                         courseBlock.classList.add("special")
                         td.style.borderBottom="none"
                     }
+                    courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                 }
             }
             if (cH === endHour) {
@@ -194,6 +194,12 @@ function genSched(i) {
                         courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                         courseBlock.style.backgroundColor = course.Color
                         if (i === 0) courseBlock.style.borderRadius = "7px 7px 0px 0px"
+                        if(cH+1===endHour && endMin===0){
+                            courseBlock.style.borderRadius = "0px 0px 7px 7px"
+                            courseBlock.classList.add("special")
+                            td.style.borderBottom="none"
+                        }
+                        courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                     }
                 }
                 if (cH === endHour) {
