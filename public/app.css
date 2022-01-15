@@ -207,6 +207,7 @@ div.contentBoth{
 .removed-li{
     color: #d12727;
     font-weight: 500;
+    font-size: 0.9em;
     transition: all 170ms;
 }
 
