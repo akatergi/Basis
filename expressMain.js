@@ -164,4 +164,4 @@ app.get("/schedules", (req, res) => {
   }
 })
 
-app.get("/test", (req, res) => res.send("hi"))
+app.get("/about", (req, res) => res.render("about"))
