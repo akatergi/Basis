@@ -7,7 +7,7 @@
     </div>
     <div class="col-3 d-flex flex-row-reverse">
       <div id="resetDiv">
-        <button class="btn btn-danger btn-large mt-3" id="reset"><i class="fas fa-recycle"></i></button>
+        <button type="button" class="btn btn-danger btn-large mt-3" id="reset"><i class="fas fa-recycle"></i></button>
         <label for="reset" class='resetL'> Reset? </label>
       </div>
     </div>
@@ -48,7 +48,7 @@
               </div>
               <% }%>
             </div>
-            <button class="btn btn-outline-success btn-sm mt-2" id="addCRN">Add CRN</button>
+            <button class="btn btn-outline-success btn-sm mt-2" type="button" id="addCRN">Add CRN</button>
           </div>
         </div>
       </div>
@@ -66,7 +66,7 @@
               </div>
               <%} %>
             </div>
-            <button class="btn btn-outline-success btn-sm mt-2" id="addCourse">Add Course</button> <br>
+            <button type="button" class="btn btn-outline-success btn-sm mt-2" id="addCourse">Add Course</button> <br>
             <small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Note that any courses placed in the Set CRNs card, if any, should NOT be placed in this one.</small>
           </div>
         </div>
@@ -93,7 +93,7 @@
               </div>
               <% } %>
             </div>
-            <button id="addElective" class="btn btn-outline-success btn-sm mt-2">Add Elective</button>
+            <button type="button" id="addElective" class="btn btn-outline-success btn-sm mt-2">Add Elective</button>
           </div>
         </div>
       </div>
@@ -115,7 +115,7 @@
             </ul>
             <%- include("partials/mainModal") %>
             <%- include("partials/editModal") %>
-            <button id="addCustomCourse" type="button" class="btn btn-outline-success btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#mainModal">Make Course</button>
+            <button id="addCustomCourse" type="button" class="btn btn-outline-success btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#mainModal" type="button">Make Course</button>
           </div>
         </div>
       </div>
