@@ -606,7 +606,7 @@ async function getPermutations(
     );
     if (ArrayOfPermutations.length == 0) {
       throw new Error(
-        "No Permutations with the given sections available, try different courses"
+        "No Permutations with the given sections available, full conflict"
       );
     } else {
       let CoursesWithSeatsFilter = [];
@@ -633,8 +633,9 @@ async function getPermutations(
             Section.SeatsA <= 0
           )
             validSeats = false;
-          if (
-            !FilteredProfessorsForEachCourse[
+          if (FilteredProfessorsForEachCourse[
+            Section.Subject + Section.Code] && 
+            !FilteredProfessorsForEachCourse[ 
               Section.Subject + Section.Code
             ].includes(Section.IName + " " + Section.ISName) &&
             !isRecitation(Section)
