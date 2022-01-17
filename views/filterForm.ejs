@@ -52,7 +52,7 @@
       </small>
       <% let i=0 %>
       <% for(let course of courses) {%>
-      <% let course2 = (courses2.filter(el => el.CourseName===course.CourseName))[0] %> 
+      <% let course2 = courses2 ? (courses2.filter(el => el.CourseName===course.CourseName))[0] : null %> 
       <div class="col-6 col-md">
         <div class="card mb-3">
           <div class="card-body">
