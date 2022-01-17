@@ -589,7 +589,8 @@ idxSpan.addEventListener("dblclick", e => {
     newInp.focus()
     newInp.addEventListener("change", e => {
         let v = newInp.value
-        if (v <= Schedules.length) {
+        console.log(typeof v)
+        if (v <= Schedules.length && v>0) {
             clearSched()
             i = v - 1;
             index.innerHTML = ""

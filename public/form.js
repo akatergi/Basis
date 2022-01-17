@@ -266,10 +266,12 @@ form.addEventListener("submit", e => {
     newInp.type = "hidden"
     newInp.name = "customCourses"
     newInp.value = JSON.stringify(customCourses)
+    console.log(customCourses, newInp.value)
     setCustomCourses.append(newInp)
 })
 
 createCourse.addEventListener("click", e => {
+    e.preventDefault()
     if (totalCount < 9) {
         let Subject = customTitle.value
         let sH = sHour.value
@@ -303,7 +305,7 @@ createCourse.addEventListener("click", e => {
             }
             if (Schedule1.length === 0) alert("Course should be on at least one day!")
             else if (BT1 > ET1) alert("Begin time cannot be greater than end time!")
-            else if ((ET1-BT1)<30) alert("Custom Course must be at least 30 minutes!")
+            else if ((ET1 - BT1) < 30) alert("Custom Course must be at least 30 minutes!")
             else {
                 let customCourseObj = { Subject, Code: "", CRN, BT1, ET1, Schedule1, LCRN: [], Schedule2: "" }
                 customCourses.push(customCourseObj)
@@ -348,7 +350,8 @@ createCourse.addEventListener("click", e => {
                     if (eT === "PM") { editePM.selected = true; editeAM.selected = false }
                     else { editePM.selected = false; editeAM.selected = true }
 
-                    updateButton.addEventListener("click", () => {
+                    updateButton.addEventListener("click", e => {
+                        e.preventDefault()
                         let idx = customCourses.indexOf(customCourseObj)
                         Subject = editTitle.value
                         sH = editsHour.value
@@ -357,19 +360,19 @@ createCourse.addEventListener("click", e => {
                         eH = editeHour.value
                         eM = editeMinute.value
                         eT = editeTime.value
+                        BT1 = timeToInt(sH + ":" + sM, sT === "PM")
+                        ET1 = timeToInt(eH + ":" + eM, eT === "PM")
                         if (!sM) sM = "00"
                         if (!eM) eM = "00"
-                        else if (parseInt(sH) > 12 || parseInt(sH) < 1 || (sT === "AM" && (parseInt(sH) < 7 || parseInt(sH) === 12))) alert("Start hour must be between 7 AM and 11 PM")
+                        if (parseInt(sH) > 12 || parseInt(sH) < 1 || (sT === "AM" && (parseInt(sH) < 7 || parseInt(sH) === 12))) alert("Start hour must be between 7 AM and 11 PM")
                         else if (parseInt(sM) < 0 || parseInt(sM) > 59) alert("Start minute must be between 0 and 60")
                         else if (parseInt(eH) > 12 || parseInt(eH) < 1 || (eT === "AM" && (parseInt(eH) < 7 || parseInt(eH) === 12))) alert("End hour must be between 7 AM and 11 PM")
                         else if (parseInt(eM) < 0 || parseInt(eM) > 59) alert("End minute must be between 0 and 60")
-                        BT1 = timeToInt(sH + ":" + sM, sT === "PM")
-                        ET1 = timeToInt(eH + ":" + eM, eT === "PM")
-                        if (Subject === "") alert("Need to specify name!")
+                        else if (Subject === "") alert("Need to specify name!")
                         else if (sH.length === 0) alert("Must specify Start Hour!")
                         else if (eH.length === 0) alert("Must specify End Hour!")
                         else if (BT1 > ET1) alert("End time must be less than start time!")
-                        else if ((ET1-BT1)<30) alert("Custom Course must be at least 30 minutes!")
+                        else if ((ET1 - BT1) < 30) alert("Custom Course must be at least 30 minutes!")
 
                         else {
 
@@ -496,6 +499,8 @@ editButtons.forEach(editButton => {
         let eH = P2.slice(0, P2.length - 2)
         if (eH > 12) { eH -= 12; eT = "PM" }
         else eT = "AM"
+        if (sH == 12) sT = "PM"
+        if (eH == 12) eT = "PM"
         editTitle.value = Subject
         editsHour.value = sH
         editeHour.value = eH
@@ -527,15 +532,15 @@ editButtons.forEach(editButton => {
             eH = editeHour.value
             eM = editeMinute.value
             eT = editeTime.value
+            BT1 = timeToInt(sH + ":" + sM, sT === "PM")
+            ET1 = timeToInt(eH + ":" + eM, eT === "PM")
             if (!sM) sM = "00"
             if (!eM) eM = "00"
-            else if (parseInt(sH) > 12 || parseInt(sH) < 1 || (sT === "AM" && (parseInt(sH) < 7 || parseInt(sH) === 12))) alert("Start hour must be between 7 AM and 11 PM")
+            if (parseInt(sH) > 12 || parseInt(sH) < 1 || (sT === "AM" && (parseInt(sH) < 7 || parseInt(sH) === 12))) alert("Start hour must be between 7 AM and 11 PM")
             else if (parseInt(sM) < 0 || parseInt(sM) > 59) alert("Start minute must be between 0 and 60")
             else if (parseInt(eH) > 12 || parseInt(eH) < 1 || (eT === "AM" && (parseInt(eH) < 7 || parseInt(eH) === 12))) alert("End hour must be between 7 AM and 11 PM")
             else if (parseInt(eM) < 0 || parseInt(eM) > 59) alert("End minute must be between 0 and 60")
-            BT1 = timeToInt(sH + ":" + sM, sT === "PM")
-            ET1 = timeToInt(eH + ":" + eM, eT === "PM")
-            if (Subject === "") alert("Need to specify name!")
+            else if (Subject === "") alert("Need to specify name!")
             else if (sH.length === 0) alert("Must specify Start Hour!")
             else if (eH.length === 0) alert("Must specify End Hour!")
 
@@ -586,6 +591,33 @@ for (let j = 0; j < checks.length; j++) {
         if (e.keyCode === 9 && check !== checkSaturday) checks[j + 1].select()
     })
 }
+
+let order2 = [editTitle, editsHour, editsMinute, editeHour, editeMinute]
+
+for (let j = 0; j < order.length - 1; j++) {
+    let inp = order2[j]
+    inp.addEventListener("keydown", e => {
+        if (e.keyCode === 13) { e.preventDefault(); order[j + 1].select() }
+    })
+}
+
+editeMinute.addEventListener("keydown", e => {
+    if (e.keyCode === 13) { e.preventDefault(); checkMonday.select() }
+})
+
+let checks2 = [editcheckMonday, editcheckTuesday, editcheckWednesday, editcheckThursday, editcheckFriday, editcheckSaturday]
+
+for (let j = 0; j < checks.length; j++) {
+    let check = checks2[j]
+    check.addEventListener("keydown", e => {
+        e.preventDefault()
+        if (e.keyCode === 13) check.checked = !check.checked
+        if (e.keyCode === 9 && check !== checkSaturday) checks[j + 1].select()
+    })
+}
+
+checkSaturday.addEventListener("keydown", e => { e.preventDefault(); if (e.keyCode === 13) checkSaturday.checked = !checkSaturday.checked })
+editcheckSaturday.addEventListener("keydown", e => { e.preventDefault(); if (e.keyCode === 13) editcheckSaturday.checked = !editcheckSaturday.checked })
 
 document.querySelector("#reset").addEventListener("click", () => {
     let sets = [setCRNs, setCourses, setElectives, setCustomCourses]
