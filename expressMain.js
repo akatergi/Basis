@@ -132,7 +132,6 @@ app.post("/schedules", async (req, res) => {
   }
 
   req.session.courses2 = courses2
-  Term = "202220"
   let PStartTime, PEndTime;
   if (sHour === "") PStartTime = null
   else PStartTime = timeToInt(sHour + ":" + sMinute, stime === "PM")
