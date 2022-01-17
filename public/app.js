@@ -608,7 +608,7 @@ idxSpan.addEventListener("dblclick", e => {
 let copy = document.querySelector(".copyCRNs")
 copy.addEventListener('click', e => {
     let newInp = document.createElement("input")
-    newInp.value = Schedules[i].map(x => x.CRN).join("\t")
+    newInp.value = Schedules[i].map(x => x.CRN).filter(e => e[0]!="C").join("\t")
     document.body.append(newInp)
     newInp.select()
     document.execCommand("copy")

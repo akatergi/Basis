@@ -54,6 +54,7 @@ app.post("/filter", async (req, res) => {
     req.flash("error", "Must enter Term")
     return res.redirect("/new")
   }
+  Term = Term.slice(0,6)
   if (!setCRNs) setCRNs = []
   setCRNs = setCRNs.filter(e => e.length !== 0)
   if (!customCourses) customCourses = []
@@ -114,6 +115,7 @@ app.get("/filter", async (req, res) => {
 
 app.post("/schedules", async (req, res) => {
   let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses2, electivesArr, customCourses } = req.body
+  Term = Term.slice(0,6)
   if (sMinute.length === 0) sMinute = "00"
   if (eMinute.length === 0) eMinute = "00"
   req.session.sHour = sHour
