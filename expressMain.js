@@ -7,7 +7,6 @@ app.use(express.json());
 const { getPermutations } = require("./public/bobsFolder/Main")
 const session = require("express-session")
 const flash = require("connect-flash")
-
 app.engine("ejs", ejsMate)
 
 app.use(express.urlencoded({ extended: true }))
@@ -146,12 +145,12 @@ app.post("/schedules", async (req, res) => {
   let CustomSections = customCourses
 
   courses2 = courses2.concat(JSON.parse(electivesArr))
-  try {
+  // try {
     var Schedules = await getPermutations(Term, setSections, CustomSections, courses2, PStartTime, PEndTime)
-  } catch (err) {
-    req.flash("error", err.message)
-    return res.redirect("/filter")
-  }
+  // } catch (err) {
+  //   req.flash("error", err.message)
+  //   return res.redirect("/filter")
+  // }
   req.session.Schedules = Schedules
   res.redirect("/schedules")
 })
