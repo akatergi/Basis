@@ -362,9 +362,7 @@ async function getProfessors(Term, CourseSubject, CourseCode) {
         return ListOfProfs;
       } else {
         let TermsThatHaveTheCourse = [];
-        console.log("yesssssss");
         for (let Term in gotCourses) {
-          console.log(Term);
           if (gotCourses[Term][CourseSubject][CourseCode])
             TermsThatHaveTheCourse.push(codeToTerm(Term)[0]);
         }
@@ -386,8 +384,7 @@ async function getProfessors(Term, CourseSubject, CourseCode) {
       let TermsThatHaveTheCourse = [];
       for (let Term in gotCourses)
         if (
-          gotCourses[Term][CourseSubject] &&
-          gotCourses[Term][CourseSubject][CourseCode]
+          gotCourses[Term][CourseSubject]
         )
           TermsThatHaveTheCourse.push(codeToTerm(Term)[0]);
       if (TermsThatHaveTheCourse.length == 1)
