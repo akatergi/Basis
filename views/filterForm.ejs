@@ -52,24 +52,26 @@
       </small>
       <% let i=0 %>
       <% for(let course of courses) {%>
+      <% let course2 = (courses2.filter(el => el.CourseName===course.CourseName))[0] %> 
       <div class="col-6 col-md">
         <div class="card mb-3">
           <div class="card-body">
             <h3>
               <%= course.CourseName %>
             </h3>
-            <input type="hidden" name="courses[<%- i %>][CourseName]" value="<%= course.CourseName %>">
+            <input type="hidden" name="courses2[<%- i %>][CourseName]" value="<%= course.CourseName %>">
             <div class="form-check">
-              <input type="checkbox" class="form-check-input" name="courses[<%- i %>][SeatsFilter]" value="true" id="seats-<%= i %>">
+              <% let c = course2&&course2.SeatsFilter %>
+              <input type="checkbox" class="form-check-input" name="courses2[<%- i %>][SeatsFilter]" value="true" id="seats-<%= i %>" <%= c ? "checked" : ""%>>
               <label for="seats-<%=i%>" class="form-check-label">
                 <span class="seatCheck"> <i class="fas fa-chair"></i> Seat Availability </span>
               </label>
             </div>
 
-            <% for(let prof of course.Professors) {%>
+            <% for(let prof of course.Professors) {%> 
             <div class="form-check">
               <% let label= `check-${prof}-${course.CourseName}` %>
-              <input type="checkbox" class="form-check-input" id="<%= label %>" value="<%= prof %>" name="courses[<%- i %>][ProfessorFilter][]" checked>
+              <input type="checkbox" class="form-check-input" id="<%= label %>" value="<%= prof %>" name="courses2[<%- i %>][ProfessorFilter][]" <%= course2&&!course2.ProfessorFilter.includes(prof) ? "" : "checked" %>>
               <label class="form-check-label" for="<%= label %>">
                 <i class="fas fa-user-tie"></i> <%= prof===". STAFF" ? prof="TBA" : prof %>
               </label>

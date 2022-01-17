@@ -99,7 +99,8 @@ app.post("/filter", async (req, res) => {
 })
 
 app.get("/filter", async (req, res) => {
-  let { Term, SetSections, courses, electivesArr, customCourses, sHour, sMinute, stime, eHour, eMinute, etime } = req.session
+  let { Term, SetSections, courses, courses2, electivesArr, customCourses, sHour, sMinute, stime, eHour, eMinute, etime } = req.session
+  if (!courses2) courses2 = []
   if (!Term || !SetSections || !courses) {
     req.flash("error", "Missing parameters!")
     return res.redirect("/new")
@@ -109,11 +110,11 @@ app.get("/filter", async (req, res) => {
     req.flash("error", "Need at least one course to create schedule!")
     return res.redirect("/new")
   }
-  res.render("filterForm", { timeToInt, Term, SetSections, courses, electivesArr, customCourses, sHour, sMinute, stime, eHour, eMinute, etime })
+  res.render("filterForm", { timeToInt, Term, SetSections, courses, electivesArr, customCourses, sHour, sMinute, stime, eHour, eMinute, etime, courses2 })
 })
 
 app.post("/schedules", async (req, res) => {
-  let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses, electivesArr, customCourses } = req.body
+  let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses2, electivesArr, customCourses } = req.body
   if (sMinute.length === 0) sMinute = "00"
   if (eMinute.length === 0) eMinute = "00"
   req.session.sHour = sHour
@@ -122,6 +123,16 @@ app.post("/schedules", async (req, res) => {
   req.session.eHour = eHour
   req.session.eMinute = eMinute
   req.session.etime = etime
+  if (!courses2) courses2 = []
+
+  for (let i in courses2) {
+    if (courses2[i].SeatsFilter === "true") courses2[i].SeatsFilter = true;
+    else courses2[i].SeatsFilter = false;
+    if (!courses2[i].ProfessorFilter) courses2[i].ProfessorFilter = []
+    courses2[i].Elective = false
+  }
+
+  req.session.courses2 = courses2
   Term = "202220"
   let PStartTime, PEndTime;
   if (sHour === "") PStartTime = null
@@ -134,17 +145,9 @@ app.post("/schedules", async (req, res) => {
   customCourses = JSON.parse(customCourses)
   let CustomSections = customCourses
 
-  if (!courses) courses = []
-
-  for (let course of courses) {
-    if (course.SeatsFilter === "true") course.SeatsFilter = true;
-    else course.SeatsFilter = false;
-    if (!course.ProfessorFilter) course.ProfessorFilter = []
-    course.Elective = false
-  }
-  courses = courses.concat(JSON.parse(electivesArr))
+  courses2 = courses2.concat(JSON.parse(electivesArr))
   try {
-    var Schedules = await getPermutations(Term, setSections, CustomSections, courses, PStartTime, PEndTime)
+    var Schedules = await getPermutations(Term, setSections, CustomSections, courses2, PStartTime, PEndTime)
   } catch (err) {
     req.flash("error", err.message)
     return res.redirect("/filter")
