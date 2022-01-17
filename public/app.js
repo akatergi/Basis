@@ -28,23 +28,23 @@ let removed = document.querySelector("#removed")
 const isRecitation = ({ Section }) => !isNumberorL(Section);
 
 function isNumberorL(N) {
-  for (let digit of N) {
-    let digitIsNumber = false;
-    for (let number of "1234567890L") {
-      if (digit == number) {
-        digitIsNumber = true;
-        continue;
-      }
+    for (let digit of N) {
+        let digitIsNumber = false;
+        for (let number of "1234567890L") {
+            if (digit == number) {
+                digitIsNumber = true;
+                continue;
+            }
+        }
+        if (!digitIsNumber) return false;
     }
-    if (!digitIsNumber) return false;
-  }
-  return true;
+    return true;
 }
 
-function getStandardDeviation (array) {
-  const n = array.length
-  const mean = array.reduce((a, b) => a + b) / n
-  return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+function getStandardDeviation(array) {
+    const n = array.length
+    const mean = array.reduce((a, b) => a + b) / n
+    return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
 }
 
 function labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin) {
@@ -135,16 +135,16 @@ function genSched(i) {
                     content.append(courseBlock)
                     courseBlock.style.backgroundColor = course.Color
                     if (i === 0) courseBlock.style.borderRadius = "7px 7px 0px 0px"
-                    if(cH+1===endHour && endMin===0){
+                    if (cH + 1 === endHour && endMin === 0) {
                         courseBlock.style.borderRadius = "0px 0px 7px 7px"
                         courseBlock.classList.add("special")
-                        td.style.borderBottom="none"
+                        td.style.borderBottom = "none"
                     }
                     courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                 }
             }
             if (cH === endHour) {
-                if(endMin===0) break;
+                if (endMin === 0) break;
                 cM = endMin
                 for (let day of course.Schedule1) {
                     let content = document.querySelector(`.r${cH} .${letterDays[day]} .content`)
@@ -216,10 +216,10 @@ function genSched(i) {
                         courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                         courseBlock.style.backgroundColor = course.Color
                         if (i === 0) courseBlock.style.borderRadius = "7px 7px 0px 0px"
-                        if(cH+1===endHour && endMin===0){
+                        if (cH + 1 === endHour && endMin === 0) {
                             courseBlock.style.borderRadius = "0px 0px 7px 7px"
                             courseBlock.classList.add("special")
-                            td.style.borderBottom="none"
+                            td.style.borderBottom = "none"
                         }
                         courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                     }
@@ -492,10 +492,10 @@ function updateBoxes() {
                 updateBoxes()
             }
             else {
-              if (CRN.slice(0,4) == "CUST") alert("Cannot remove custom courses")
-              for (let Section of Schedules[i]){
-                if (CRN === Section.CRN) alert(`Cannot remove this ${isRecitation(Section) ? "recitation":"section"} for ${Section.Subject + Section.Code} since it would result in 0 Schedules`)
-              }
+                if (CRN.slice(0, 4) == "CUST") alert("Cannot remove custom courses")
+                for (let Section of Schedules[i]) {
+                    if (CRN === Section.CRN) alert(`Cannot remove this ${isRecitation(Section) ? "recitation" : "section"} for ${Section.Subject + Section.Code} since it would result in 0 Schedules`)
+                }
             }
         }
         )
@@ -590,7 +590,7 @@ idxSpan.addEventListener("dblclick", e => {
     newInp.addEventListener("change", e => {
         let v = newInp.value
         console.log(typeof v)
-        if (v <= Schedules.length && v>0) {
+        if (v <= Schedules.length && v > 0) {
             clearSched()
             i = v - 1;
             index.innerHTML = ""
@@ -623,5 +623,34 @@ copy.addEventListener('click', e => {
         copy.style.border = "2px solid lightblue"
         copy.style.backgroundColor = "#ceebf5"
         copy.style.color = "darkblue"
-    },1000)
+    }, 1000)
+})
+
+document.querySelector("#genPDF").addEventListener("click", e => {
+    var prtContent = document.getElementById("s");
+    var WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+    WinPrint.document.write(`<!DOCTYPE html>
+    <html lang="en">
+    
+    <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="./boilerplate.css">
+      <link rel="stylesheet" href="./app.css">
+      <link rel="stylesheet" href="./print.css">
+      <link rel="icon" href="favicon.ico?v=1.1">
+      <title>Basis</title>
+    </head>
+    `);
+    WinPrint.document.write(prtContent.innerHTML);
+    WinPrint.document.write(`
+    </body>
+    </html>
+    `);
+    WinPrint.document.close();
+    WinPrint.focus();
+    // WinPrint.close();
 })

@@ -233,7 +233,20 @@ div.contentBoth{
     transform: scale(1.2);
 }
 
-.sortButton{
-    width:33.33%;
-    font-size:x-small
+#genPDF{
+    border:2px solid rgb(160, 170, 181);
+    border-radius: 1rem;
+    background-color: #cbd5df;
+    margin-top:0.5em;
+    color: #584848;
+    transition: all 200ms;
+}
+
+#genPDF:hover{
+    transform: scale(1.2);
+}
+
+.utils{
+    display: flex;
+    justify-content: space-evenly;
 }

@@ -1,4 +1,6 @@
 <link rel="stylesheet" href="./app.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+<script type="text/javascript" src="html2canvas.min.js"></script>
 <% layout("boilerplate") %>
 <div class="container-fluid">
   <div class="row">
@@ -33,41 +35,43 @@
         <span id="currSched"> <span id="index">1</span> of <span id="total"><%= Schedules.length %> </span> </span>
         <a class="rightArrow"> <i class="fas fa-arrow-circle-right"></i> </a>
       </div>
-      <table>
-        <tr class="top">
-          <th>Times</th>
-          <th>MONDAY</th>
-          <th>TUESDAY</th>
-          <th>WEDNESDAY</th>
-          <th>THURSDAY</th>
-          <th>FRIDAY</th>
-          <th>SATURDAY</th>
-        </tr>
-        <% for(let i=7; i<24; i++) {%>
-        <tr class="r<%= i %>">
-          <td class="time"><%= `${i}:00` %> </td>
-          <td class="box monday">
-            <div class="content"></div>
-          </td>
-          <td class="box tuesday">
-            <div class="content"></div>
-          </td>
-          <td class="box wednesday">
-            <div class="content"></div>
-          </td>
-          <td class="box thursday">
-            <div class="content">
-            </div>
-          </td>
-          <td class="box friday">
-            <div class="content"></div>
-          </td>
-          <td class="box saturday">
-            <div class="content"></div>
-          </td>
-        </tr>
-        <% } %>
-      </table>
+      <div id="s">
+        <table>
+          <tr class="top">
+            <th>Times</th>
+            <th>MONDAY</th>
+            <th>TUESDAY</th>
+            <th>WEDNESDAY</th>
+            <th>THURSDAY</th>
+            <th>FRIDAY</th>
+            <th>SATURDAY</th>
+          </tr>
+          <% for(let i=7; i<24; i++) {%>
+          <tr class="r<%= i %>">
+            <td class="time"><%= `${i}:00` %> </td>
+            <td class="box monday">
+              <div class="content"></div>
+            </td>
+            <td class="box tuesday">
+              <div class="content"></div>
+            </td>
+            <td class="box wednesday">
+              <div class="content"></div>
+            </td>
+            <td class="box thursday">
+              <div class="content">
+              </div>
+            </td>
+            <td class="box friday">
+              <div class="content"></div>
+            </td>
+            <td class="box saturday">
+              <div class="content"></div>
+            </td>
+          </tr>
+          <% } %>
+        </table>
+      </div>
     </div>
     <div class="col-12 col-md-2">
       <div class="card mt-5">
@@ -85,7 +89,10 @@
           </li>
         </ul>
       </div>
-      <button class="copyCRNs">Copy CRNs <i class="fas fa-clipboard-list"></i></button>
+      <div class="utils">
+        <button class="copyCRNs">Copy CRNs <i class="fas fa-clipboard-list"></i></button>
+        <button id="genPDF">Print <i class="fas fa-print"></i></button>
+      </div>
     </div>
   </div>
 </div>
