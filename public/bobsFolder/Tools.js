@@ -222,7 +222,7 @@ function codeToTerm(Code) {
     Term = Code.slice(4);
   if (Term == "10") Term = "Fall";
   else if (Term == "20") Term = "Spring";
-  else Term = "Summer";
+  else if (Term == "30") Term = "Summer";
   return [Term, Year];
 }
 module.exports.codeToTerm = codeToTerm;

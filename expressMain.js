@@ -48,7 +48,6 @@ app.get("/new", (req, res) => {
 
 app.post("/filter", async (req, res) => {
   let { Term, setCRNs, sections, electives, customCourses } = req.body
-
   if (!electives) electives = []
   if (!Term) {
     req.flash("error", "Must enter Term")
@@ -144,12 +143,12 @@ app.post("/schedules", async (req, res) => {
   let CustomSections = customCourses
 
   courses2 = courses2.concat(JSON.parse(electivesArr))
-  try {
+  // try {
     var Schedules = await getPermutations(Term, setSections, CustomSections, courses2, PStartTime, PEndTime)
-  } catch (err) {
-    req.flash("error", err.message)
-    return res.redirect("/filter")
-  }
+  // } catch (err) {
+  //   req.flash("error", err.message)
+  //   return res.redirect("/filter")
+  // }
   req.session.Schedules = Schedules
   res.redirect("/schedules")
 })
