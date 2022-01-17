@@ -34,14 +34,18 @@ module.exports.checkSectionWithFilters = checkSectionWithFilters;
 
 function checkIfConflictingArray(Sections, PBT, PET) {
   for (let i = 0; i < Sections.length; i++) {
-    if (!Sections[i].BT1) throw new Error(`Section: ${
-      Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
-    } has no Start Time`
-  );
-  if (!Sections[i].ET1) throw new Error(`Section: ${
-    Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
-  } has no Begin Time`
-);
+    if (!Sections[i].BT1)
+      throw new Error(
+        `Section: ${
+          Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
+        } has no Start Time`
+      );
+    if (!Sections[i].ET1)
+      throw new Error(
+        `Section: ${
+          Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
+        } has no Begin Time`
+      );
     if (Sections[i].BT1 < PBT && PBT)
       throw new Error(
         `Section: ${
@@ -344,24 +348,64 @@ async function searchByCRNs(Term, CRNsToBeConverted) {
 module.exports.searchByCRNs = searchByCRNs;
 
 async function getProfessors(Term, CourseSubject, CourseCode) {
-  try {
-    var Sections = (await readCourses(Term))[Term][CourseSubject][CourseCode];
-  } catch {
-    throw new Error(`Could not find a course with Subject ${CourseSubject}!`);
+  let gotCourses = await readCourses(Term);
+  if (gotCourses[Term]) {
+    if (gotCourses[Term][CourseSubject]) {
+      if (gotCourses[Term][CourseSubject][CourseCode]) {
+        let Sections = gotCourses[Term][CourseSubject][CourseCode];
+        let ListOfProfs = [];
+        for (let Section of Sections) {
+          let Professor = Section.IName + " " + Section.ISName;
+          if (!ListOfProfs.includes(Professor) && !isRecitation(Section))
+            ListOfProfs.push(Professor);
+        }
+        return ListOfProfs;
+      } else {
+        let TermsThatHaveTheCourse = [];
+        console.log("yesssssss");
+        for (let Term in gotCourses) {
+          console.log(Term);
+          if (gotCourses[Term][CourseSubject][CourseCode])
+            TermsThatHaveTheCourse.push(codeToTerm(Term)[0]);
+        }
+        if (TermsThatHaveTheCourse.length == 1)
+          throw new Error(
+            `${CourseSubject + CourseCode} only exists in the ${
+              TermsThatHaveTheCourse[0]
+            } term`
+          );
+        else if (TermsThatHaveTheCourse.length == 2)
+          throw new Error(
+            `${
+              CourseSubject + CourseCode
+            } only exists in the ${TermsThatHaveTheCourse.join(" and ")} terms`
+          );
+        else throw new Error(`${CourseSubject + CourseCode} does not exist!`);
+      }
+    } else {
+      let TermsThatHaveTheCourse = [];
+      for (let Term in gotCourses)
+        if (
+          gotCourses[Term][CourseSubject] &&
+          gotCourses[Term][CourseSubject][CourseCode]
+        )
+          TermsThatHaveTheCourse.push(codeToTerm(Term)[0]);
+      if (TermsThatHaveTheCourse.length == 1)
+        throw new Error(
+          `Courses with subject ${CourseSubject} only exist in the ${TermsThatHaveTheCourse[0]} term`
+        );
+      else if (TermsThatHaveTheCourse.length == 2)
+        throw new Error(
+          `Courses with subject ${CourseSubject} only exist in the ${TermsThatHaveTheCourse.join(
+            " and "
+          )} terms`
+        );
+      else
+        throw new Error(`Courses with subject ${CourseSubject} do not exist!`);
+    }
+  } else {
+    throw new Error(`No Courses for ${codeToTerm(Term)[0]} in database`);
   }
-  if (!Sections)
-    throw new Error(
-      `No Sections for ${CourseSubject + CourseCode} in the ${
-        codeToTerm(Term)[0]
-      } semester`
-    );
-  let ListOfProfs = [];
-  for (let Section of Sections) {
-    let Professor = Section.IName + " " + Section.ISName;
-    if (!ListOfProfs.includes(Professor) && !isRecitation(Section))
-      ListOfProfs.push(Professor);
-  }
-  return ListOfProfs;
 }
 module.exports.getProfessors = getProfessors;
 

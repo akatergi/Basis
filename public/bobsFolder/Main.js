@@ -633,9 +633,9 @@ async function getPermutations(
             Section.SeatsA <= 0
           )
             validSeats = false;
-          if (FilteredProfessorsForEachCourse[
-            Section.Subject + Section.Code] && 
-            !FilteredProfessorsForEachCourse[ 
+          if (
+            FilteredProfessorsForEachCourse[Section.Subject + Section.Code] &&
+            !FilteredProfessorsForEachCourse[
               Section.Subject + Section.Code
             ].includes(Section.IName + " " + Section.ISName) &&
             !isRecitation(Section)
@@ -707,8 +707,17 @@ async function getPermutations(
         }
         let ProfessorsToChange = "";
         let AddedUnselectedProfessors = [];
-        for (let i = 1; i < Math.min(5, ArrayOfListOfAvailableUnselectedProfessorsPerCourse.length);i++) {
-          let AvailableUnselectedProfessorsPerCourse = ArrayOfListOfAvailableUnselectedProfessorsPerCourse[i]
+        for (
+          let i = 1;
+          i <
+          Math.min(
+            5,
+            ArrayOfListOfAvailableUnselectedProfessorsPerCourse.length
+          );
+          i++
+        ) {
+          let AvailableUnselectedProfessorsPerCourse =
+            ArrayOfListOfAvailableUnselectedProfessorsPerCourse[i];
           AvailableUnselectedProfessorsPerCourse.sort((a, b) =>
             a.localeCompare(b)
           );
@@ -721,9 +730,10 @@ async function getPermutations(
             AddedUnselectedProfessors.push(
               JSON.stringify(AvailableUnselectedProfessorsPerCourse)
             );
-            ProfessorsToChange += AvailableUnselectedProfessorsPerCourse.map(
-              (x) => x.split(":").join(": ")
-            ).join(";\t") + "\n";
+            ProfessorsToChange +=
+              AvailableUnselectedProfessorsPerCourse.map((x) =>
+                x.split(":").join(": ")
+              ).join(";\t") + "\n";
           }
         }
         throw new Error(
