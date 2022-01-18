@@ -255,7 +255,7 @@ async function getArraysOfFilteredSections(
               intToTime(EarliestSectionEndTime)
             : "");
       throw new Error(
-        `No available section for${
+        `No available section for ${
           CourseSubject + CourseCode
         } that applies with given filter!\n` + Reasons
       );
@@ -307,7 +307,7 @@ async function getArraysOfFilteredSections(
                 intToTime(EarliestRecitationEndTime)
               : "");
         throw new Error(
-          `No available recitations for${
+          `No available recitations for ${
             CourseSubject + CourseCode
           } that applies with given filter!\n` + Reasons
         );
