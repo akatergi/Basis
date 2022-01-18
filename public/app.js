@@ -1,5 +1,4 @@
 // set Variables
-
 let i = 0
 let letterDays = {
     "M": "monday",
@@ -23,7 +22,11 @@ let t = false
 let timeTDs = document.querySelectorAll(".time")
 timeTDs = Array.from(timeTDs).slice(6)
 let removed = document.querySelector("#removed")
+let sortButton = document.querySelectorAll("input[type=radio]")
+let sortType = 0 //0 default, 1 timedif, 2 daydif
 //Functions
+
+const hasLab = ({ Schedule2 }) => Boolean(Schedule2);
 
 const isRecitation = ({ Section }) => !isNumberorL(Section);
 
@@ -46,6 +49,84 @@ function getStandardDeviation(array) {
     const mean = array.reduce((a, b) => a + b) / n
     return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
 }
+
+function getMaxMinDO(ArrayOfSections) {
+  let MaxTime = 0;
+  let MinTime = 2400;
+  let DayOccurences = [0, 0, 0, 0, 0, 0];
+  for (let Section of ArrayOfSections) {
+    MinTime = getMinTime(Section, MinTime);
+    MaxTime = getMaxTime(Section, MaxTime);
+    DayOccurences = getDayOccurences(Section, DayOccurences);
+  }
+  return [MaxTime, MinTime, DayOccurences];
+}
+
+function getDayDif(DO) {
+  return getStandardDeviation(DO);
+}
+
+function addToOccurences(DO, Schedule) {
+  const WeekDays = "MTWRFS";
+  for (let Day of Schedule) DO[WeekDays.indexOf(Day)]++;
+}
+
+function getDayOccurences(Section, Days, Recitation = { Schedule1: "" }) {
+  let Occurences = [...Days];
+  addToOccurences(Occurences, Section.Schedule1);
+  addToOccurences(Occurences, Recitation.Schedule1);
+  if (hasLab(Section)) addToOccurences(Occurences, Section.Schedule2);
+  return Occurences;
+}
+
+function getMinTime(Section, MinTime, Recitation = { BT1: 2400 }) {
+  let min = Math.min(Section.BT1, Recitation.BT1);
+  if (min < MinTime) MinTime = min;
+  if (hasLab(Section) && Section.BT2 < MinTime) MinTime = Section.BT2;
+  return MinTime;
+}
+
+function getMaxTime(Section, MaxTime, Recitation = { ET1: 0 }) {
+  let max = Math.max(Section.ET1, Recitation.ET1);
+  if (max > MaxTime) MaxTime = max;
+  if (hasLab(Section) && Section.ET2 > MaxTime) MaxTime = Section.ET2;
+  return MaxTime;
+}
+
+sortButton[0].addEventListener("click", () => {
+  Schedules = mainSchedules.filter(Schedule => {
+    for (let course of Schedule) {
+        if (deletedCRNs.includes(course.CRN)) return false
+    }
+    return checkCRNsInSched(Schedule, lockedCRNs)
+})
+i = 0
+  idxSpan.innerText = 1
+  clearSched()
+  genSched(i)
+  boxes = document.querySelectorAll(".course")
+  updateBoxes()
+})
+
+sortButton[1].addEventListener("click", () => {
+  Schedules.sort((x,y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
+  i = 0
+  idxSpan.innerText = 1
+  clearSched()
+  genSched(i)
+  boxes = document.querySelectorAll(".course")
+  updateBoxes()
+})
+
+sortButton[2].addEventListener("click", () => {
+  Schedules.sort((x,y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
+  i = 0
+  idxSpan.innerText = 1
+  clearSched()
+  genSched(i)
+  boxes = document.querySelectorAll(".course")
+  updateBoxes()
+})
 
 function labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin) {
     let span = document.createElement("span")

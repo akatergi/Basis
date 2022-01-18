@@ -11,7 +11,6 @@ const {
   getDayOccurences,
   getMaxTime,
   getMinTime,
-  swap,
   getDayDif,
   getColor,
   readCourses,
@@ -743,14 +742,6 @@ async function getPermutations(
       }
       throw new Error("No Permutations Exist: Must Change Courses!");
     }
-  }
-  if (ArrayOfPermutations.length == 1) return ArrayOfPermutations;
-  if (PermWithLeastDays == PermWithLeastTimeDif) {
-    swap(ArrayOfPermutations, 0, PermWithLeastDays);
-  } else {
-    let IndexToBeSwapped = PermWithLeastDays === 0 ? PermWithLeastTimeDif : 1;
-    swap(ArrayOfPermutations, 0, PermWithLeastTimeDif);
-    swap(ArrayOfPermutations, IndexToBeSwapped, PermWithLeastDays);
   }
   return ArrayOfPermutations;
 }

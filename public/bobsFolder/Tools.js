@@ -73,14 +73,6 @@ function checkIfConflictingArray(Sections, PBT, PET) {
 }
 module.exports.checkIfConflictingArray = checkIfConflictingArray;
 
-function swap(Arr, index1, index2) {
-  if (index1 == index2) return;
-  let temp = Arr[index1];
-  Arr[index1] = Arr[index2];
-  Arr[index2] = temp;
-}
-module.exports.swap = swap;
-
 function getMinTime(Section, MinTime, Recitation = { BT1: 2400 }) {
   let min = Math.min(Section.BT1, Recitation.BT1);
   if (min < MinTime) MinTime = min;
