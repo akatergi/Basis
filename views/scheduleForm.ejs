@@ -61,7 +61,7 @@
             <div id="courses" class="form-group">
               <% for(let si=0; si<sections.length; si++) {%>
               <div class="CRNInpGrp">
-                <input type="text" id="courseInput-<%= si %>" class="form-control courseInput mt-2" value="<%= sections[si] %>" name="sections[]">
+                <input type="text" id="courseInput-<%= si %>" minlength="7" class="form-control courseInput mt-2" value="<%= sections[si] %>" name="sections[]">
                 <a id="BclearButton-<%= si %>" class="clearButton courseClear"> <i class="fas fa-trash"></i> </a>
               </div>
               <%} %>

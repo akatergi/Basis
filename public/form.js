@@ -160,6 +160,7 @@ addCourse.addEventListener('click', e => {
         e.preventDefault();
         let newInp = document.createElement("input")
         newInp.type = "text"
+        newInp.minLength = "7"
         newInp.id = `courseInput-${counter2}`
         newInp.classList.add("courseInput")
         newInp.name = "sections[]"
