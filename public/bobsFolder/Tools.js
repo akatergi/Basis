@@ -310,11 +310,18 @@ async function readCRNs(Term) {
 module.exports.readCRNs = readCRNs;
 
 async function readElectives(Term) {
+  let CRNs = await readCRNs(Term);
   let path = `./public/bobsFolder/${codeToTerm(Term)[[1]]}/${
     codeToTerm(Term)[0]
   }/Electives.json`;
   if (!fs.existsSync(path)) await getElectives(Term);
-  return JSON.parse(fs.readFileSync(path));
+  let Data = JSON.parse(fs.readFileSync(path))
+  for (let TypeOfElective in Data){
+    for (let i = 0; i <Data[TypeOfElective].length; i++){
+      Data[TypeOfElective][i] = CRNs[Data[TypeOfElective][i]]
+    }
+  }
+  return Data;
 }
 module.exports.readElectives = readElectives;
 
@@ -485,7 +492,6 @@ async function getElectives(Term) {
     En: [],
     QT: []
   };
-  let CRNs = await readCRNs(Term);
   Term = codeToTerm(Term);
   const $ = cheerio.load(
     fs.readFileSync(
@@ -495,7 +501,7 @@ async function getElectives(Term) {
   $("body > table > tbody > tr").each((index, element) => {
     if (index > 0) {
       Electives[D[$($(element).find("td")[4]).text().trim()]].push(
-        CRNs[$($(element).find("td")[1]).text().trim()]
+        $($(element).find("td")[1]).text().trim()
       );
     }
   });
