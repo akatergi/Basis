@@ -511,10 +511,11 @@ function updateBoxes() {
                 seats.innerText = `${course.SeatsA || course.SeatsA == 0 ? course.SeatsA : "N/A"}/${(course.SeatsA + course.SeatsT) ? (course.SeatsA + course.SeatsT) : "N/A"}`
                 cardTitle.innerText = `${course.Subject} ${course.Code}`
                 cardName.innerText = course.Title
+                console.log(course, course.Buil2)
                 if (course.IName === "." && course.ISName === "STAFF") instructor.innerText = 'TBA'
                 else if (!course.IName || !course.ISName) instructor.innerText = "N/A"
                 else instructor.innerText = `${course.IName} ${course.ISName}`
-                if (box.classList.contains("occ1")) building.innerText = `${course.Buil1} ${course.R1}`
+                if (box.classList.contains("occ1") && CRN[0]!="C") building.innerText = `${course.Buil1} ${course.R1}`
                 else course.Buil2 ? building.innerText = `${course.Buil2} ${course.R2}` : building.innerText = "N/A"
             }
         })
