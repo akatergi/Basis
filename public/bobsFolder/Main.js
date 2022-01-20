@@ -706,6 +706,7 @@ async function getPermutations(
         }
         let ProfessorsToChange = "";
         let AddedUnselectedProfessors = [];
+        let count = 1
         for (
           let i = 1;
           i <
@@ -725,7 +726,8 @@ async function getPermutations(
               JSON.stringify(AvailableUnselectedProfessorsPerCourse)
             )
           ) {
-            ProfessorsToChange += i + ": ";
+            ProfessorsToChange += count + ": ";
+            count++
             AddedUnselectedProfessors.push(
               JSON.stringify(AvailableUnselectedProfessorsPerCourse)
             );
