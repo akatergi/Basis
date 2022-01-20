@@ -315,10 +315,10 @@ async function readElectives(Term) {
     codeToTerm(Term)[0]
   }/Electives.json`;
   if (!fs.existsSync(path)) await getElectives(Term);
-  let Data = JSON.parse(fs.readFileSync(path))
-  for (let TypeOfElective in Data){
-    for (let i = 0; i <Data[TypeOfElective].length; i++){
-      Data[TypeOfElective][i] = CRNs[Data[TypeOfElective][i]]
+  let Data = JSON.parse(fs.readFileSync(path));
+  for (let TypeOfElective in Data) {
+    for (let i = 0; i < Data[TypeOfElective].length; i++) {
+      Data[TypeOfElective][i] = CRNs[Data[TypeOfElective][i]];
     }
   }
   return Data;
@@ -382,9 +382,7 @@ async function getProfessors(Term, CourseSubject, CourseCode) {
     } else {
       let TermsThatHaveTheCourse = [];
       for (let Term in gotCourses)
-        if (
-          gotCourses[Term][CourseSubject]
-        )
+        if (gotCourses[Term][CourseSubject])
           TermsThatHaveTheCourse.push(codeToTerm(Term)[0]);
       if (TermsThatHaveTheCourse.length == 1)
         throw new Error(
