@@ -51,84 +51,84 @@ function getStandardDeviation(array) {
 }
 
 function getMaxMinDO(ArrayOfSections) {
-  let MaxTime = 0;
-  let MinTime = 2400;
-  let DayOccurences = [0, 0, 0, 0, 0, 0];
-  for (let Section of ArrayOfSections) {
-    MinTime = getMinTime(Section, MinTime);
-    MaxTime = getMaxTime(Section, MaxTime);
-    DayOccurences = getDayOccurences(Section, DayOccurences);
-  }
-  return [MaxTime, MinTime, DayOccurences];
+    let MaxTime = 0;
+    let MinTime = 2400;
+    let DayOccurences = [0, 0, 0, 0, 0, 0];
+    for (let Section of ArrayOfSections) {
+        MinTime = getMinTime(Section, MinTime);
+        MaxTime = getMaxTime(Section, MaxTime);
+        DayOccurences = getDayOccurences(Section, DayOccurences);
+    }
+    return [MaxTime, MinTime, DayOccurences];
 }
 
 function getDayDif(DO) {
-  return getStandardDeviation(DO);
+    return getStandardDeviation(DO);
 }
 
 function addToOccurences(DO, Schedule) {
-  const WeekDays = "MTWRFS";
-  for (let Day of Schedule) DO[WeekDays.indexOf(Day)]++;
+    const WeekDays = "MTWRFS";
+    for (let Day of Schedule) DO[WeekDays.indexOf(Day)]++;
 }
 
 function getDayOccurences(Section, Days, Recitation = { Schedule1: "" }) {
-  let Occurences = [...Days];
-  addToOccurences(Occurences, Section.Schedule1);
-  addToOccurences(Occurences, Recitation.Schedule1);
-  if (hasLab(Section)) addToOccurences(Occurences, Section.Schedule2);
-  return Occurences;
+    let Occurences = [...Days];
+    addToOccurences(Occurences, Section.Schedule1);
+    addToOccurences(Occurences, Recitation.Schedule1);
+    if (hasLab(Section)) addToOccurences(Occurences, Section.Schedule2);
+    return Occurences;
 }
 
 function getMinTime(Section, MinTime, Recitation = { BT1: 2400 }) {
-  let min = Math.min(Section.BT1, Recitation.BT1);
-  if (min < MinTime) MinTime = min;
-  if (hasLab(Section) && Section.BT2 < MinTime) MinTime = Section.BT2;
-  return MinTime;
+    let min = Math.min(Section.BT1, Recitation.BT1);
+    if (min < MinTime) MinTime = min;
+    if (hasLab(Section) && Section.BT2 < MinTime) MinTime = Section.BT2;
+    return MinTime;
 }
 
 function getMaxTime(Section, MaxTime, Recitation = { ET1: 0 }) {
-  let max = Math.max(Section.ET1, Recitation.ET1);
-  if (max > MaxTime) MaxTime = max;
-  if (hasLab(Section) && Section.ET2 > MaxTime) MaxTime = Section.ET2;
-  return MaxTime;
+    let max = Math.max(Section.ET1, Recitation.ET1);
+    if (max > MaxTime) MaxTime = max;
+    if (hasLab(Section) && Section.ET2 > MaxTime) MaxTime = Section.ET2;
+    return MaxTime;
 }
 
 sortButton[0].addEventListener("click", () => {
-  sortType = 0
-  Schedules = mainSchedules.filter(Schedule => {
-    for (let course of Schedule) {
-        if (deletedCRNs.includes(course.CRN)) return false
-    }
-    return checkCRNsInSched(Schedule, lockedCRNs)
-})
-i = 0
-  idxSpan.innerText = 1
-  clearSched()
-  genSched(i)
-  boxes = document.querySelectorAll(".course")
-  updateBoxes()
+    sortType = 0
+    Schedules = mainSchedules.filter(Schedule => {
+        for (let course of Schedule) {
+            if (deletedCRNs.includes(course.CRN)) return false
+        }
+        return checkCRNsInSched(Schedule, lockedCRNs)
+    })
+    i = 0
+    idxSpan.innerText = 1
+    clearSched()
+    genSched(i)
+    boxes = document.querySelectorAll(".course")
+    updateBoxes()
 })
 
 sortButton[1].addEventListener("click", () => {
-  sortType = 1
-  Schedules.sort((x,y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2])).sort((x,y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
-  i = 0
-  idxSpan.innerText = 1
-  clearSched()
-  genSched(i)
-  boxes = document.querySelectorAll(".course")
-  updateBoxes()
+    sortType = 1
+    Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2])).sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
+    i = 0
+    idxSpan.innerText = 1
+    clearSched()
+    genSched(i)
+    boxes = document.querySelectorAll(".course")
+    updateBoxes()
 })
 
 sortButton[2].addEventListener("click", () => {
-  sortType = 2
-  Schedules.sort((x,y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])).sort((x,y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
-  i = 0
-  idxSpan.innerText = 1
-  clearSched()
-  genSched(i)
-  boxes = document.querySelectorAll(".course")
-  updateBoxes()
+    sortType = 2
+    Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])).sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
+    i = 0
+    idxSpan.innerText = 1
+    clearSched()
+    genSched(i)
+    boxes = document.querySelectorAll(".course")
+    updateBoxes()
 })
 
 function labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin) {
@@ -224,7 +224,7 @@ function genSched(i) {
                         courseBlock.classList.add("special")
                         td.style.borderBottom = "none"
                     }
-                    courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
+                    courseBlock.classList.add("occ1", "occupied", `occupied-${course.CRN}`)
                 }
             }
             if (cH === endHour) {
@@ -245,7 +245,7 @@ function genSched(i) {
                         let courseBott = document.querySelector(`.r${cH} .${letterDays[day]} .occupied`)
                         courseBott.before(courseBlock)
                     }
-                    courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
+                    courseBlock.classList.add("occ1", "occupied", `occupied-${course.CRN}`)
                     if (written === false) {
                         overrideWritten = true
                         labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin)
@@ -305,6 +305,7 @@ function genSched(i) {
                             courseBlock.classList.add("special")
                             td.style.borderBottom = "none"
                         }
+                        // courseBlock.classList.add("occ2")
                         courseBlock.classList.add("occupied", `occupied-${course.CRN}`)
                     }
                 }
@@ -499,9 +500,11 @@ function updateBoxes() {
                 let credits = document.querySelector("#credits")
                 let seats = document.querySelector("#seats")
                 let course = findByCRN(CRN)
+                console.log(box, course, CRN)
                 let cardTitle = document.querySelector("#cardTitle")
                 let cardName = document.querySelector("#cardName")
                 let instructor = document.querySelector("#instructor")
+                let building = document.querySelector("#building")
                 section.innerText = course.Section ? course.Section : "N/A"
                 crn.innerText = course.CRN
                 credits.innerText = course.CH ? course.CH : "N/A"
@@ -511,6 +514,8 @@ function updateBoxes() {
                 if (course.IName === "." && course.ISName === "STAFF") instructor.innerText = 'TBA'
                 else if (!course.IName || !course.ISName) instructor.innerText = "N/A"
                 else instructor.innerText = `${course.IName} ${course.ISName}`
+                if (box.classList.contains("occ1")) building.innerText = `${course.Buil1} ${course.R1}`
+                else course.Buil2 ? building.innerText = `${course.Buil2} ${course.R2}` : building.innerText = "N/A"
             }
         })
 
@@ -526,8 +531,8 @@ function updateBoxes() {
                     }
                     return checkCRNsInSched(Schedule, lockedCRNs)
                 })
-                if (sortType == 1) Schedules.sort((x,y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2])).sort((x,y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
-                else if (sortType == 2) Schedules.sort((x,y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])).sort((x,y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
+                if (sortType == 1) Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2])).sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
+                else if (sortType == 2) Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])).sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
                 let newIdxOfSched = Schedules.indexOf(currentSched)
                 i = newIdxOfSched
                 total.innerText = Schedules.length
@@ -603,8 +608,8 @@ function updateDeletedCRNs(CRN, name) {
             }
             return checkCRNsInSched(Schedule, lockedCRNs)
         })
-        if (sortType == 1) Schedules.sort((x,y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2])).sort((x,y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
-        else if (sortType == 2) Schedules.sort((x,y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])).sort((x,y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
+        if (sortType == 1) Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2])).sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
+        else if (sortType == 2) Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])).sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
         let newIdxOfSched = Schedules.indexOf(currentSched)
         i = newIdxOfSched
         total.innerText = Schedules.length
@@ -677,7 +682,7 @@ idxSpan.addEventListener("dblclick", e => {
     newInp.focus()
     newInp.addEventListener("change", e => {
         let v = newInp.value
-        console.log(typeof v)
+        v = parseInt(v)
         if (v <= Schedules.length && v > 0) {
             clearSched()
             i = v - 1;
@@ -696,7 +701,7 @@ idxSpan.addEventListener("dblclick", e => {
 let copy = document.querySelector(".copyCRNs")
 copy.addEventListener('click', e => {
     let newInp = document.createElement("input")
-    newInp.value = Schedules[i].map(x => x.CRN).filter(e => e[0]!="C").join("\t")
+    newInp.value = Schedules[i].map(x => x.CRN).filter(e => e[0] != "C").join("\t")
     document.body.append(newInp)
     newInp.select()
     document.execCommand("copy")
