@@ -409,9 +409,8 @@ async function getElectiveNames(Term, TypeOfElective){ // TypeOfElective just me
   let ElectiveSections = (await readElectives(Term))[TypeOfElective]
   let ListOfCourseNames = []
   for (let Element of ElectiveSections){
-    let CourseName = Element.Subject + Element.Code
-    if (!ListOfCourseNames.includes(CourseName)){
-      ListOfCourseNames.push(CourseName)
+    if (!ListOfCourseNames.includes(Element.Subject)){
+      ListOfCourseNames.push(Element.Subject)
     }}
   ListOfCourseNames.sort((x,y) => x.localeCompare(y))
   return ListOfCourseNames
