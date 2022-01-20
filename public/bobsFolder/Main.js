@@ -382,7 +382,6 @@ async function convertCourseNamesToSections(
 ) {
   let ArrayOfSections = [];
   let ArrayOfAllSections = [];
-  if (CourseFilterObjects.length == 0) return [[],[]]
   let ArrayOfUnsortedSections = await getArraysOfFilteredSections(
     Term,
     CourseFilterObjects,
@@ -401,7 +400,6 @@ async function convertCourseNamesToSections(
   ArrayOfAllSections.sort((x, y) => x.length - y.length);
   return [ArrayOfSections, ArrayOfAllSections];
 }
-module.exports.convertCourseNamesToSections = convertCourseNamesToSections
 
 /**This is the main function to be exported to the backend.
  * It takes all the inputs, converts them accordingly, validates that there are no inputted errors, and permutes all filtered sections.
@@ -409,7 +407,7 @@ module.exports.convertCourseNamesToSections = convertCourseNamesToSections
  * @param  {string} Term 6 Digit Term Code e.g., 202220, 202110
  * @param  {Object[]} [SetSections=[]] Array of Course Objects that were set by the user using their CRNs (Empty by Default)
  * @param  {Object[]} [CustomSections=[]] Array of Course Objects that were custom made by the user (Empty by Default)
- * @param  {{CourseName: string, SeatsFilter: boolean, ProfessorFilter: Array, Elective: boolean}[]}ConvertedCourseFilterObjects
+ * @param  {{CourseName: string, SeatsFilter: boolean, ProfessorFilter: Array, Elective: boolean}[]}CourseFilterObjects
  * Array of CourseFilter Objects. Each Filter Object contains 4 Attributes:
  * 1- CourseName string: e.g., 'EECE230', 'CMPS211', 'MATH251' if CourseFilterObject is not an elective, Otherwise:
  * switch (CourseName)
@@ -420,7 +418,7 @@ module.exports.convertCourseNamesToSections = convertCourseNamesToSections
  * case "H2" => Humanities 2
  * case "QT" => Quantitative Thought
  * 2- SeatsFilter boolean: filters out sections with no available seats if set to true, ignores seat availability if false
- * 3- ProfessorFilter Array of string: e.g., ['Louay Bazzi', 'Ibrahim Issa'] contains names of selected professors,
+ * 3- ProfesserFilter Array of string: e.g., ['Louay Bazzi', 'Ibrahim Issa'] contains names of selected professors,
  * if left empty then no professor is fitlered out
  * 4- Elective boolean: is set to true if our CourseFilter Object is for electives, false otherwise
  * @param  {?number} PStartTime=null Preferred Start Time, filters out all sections that start before it (null by Default)
@@ -431,12 +429,24 @@ async function getPermutations(
   Term,
   SetSections = [],
   CustomSections = [],
-  ConvertedCourseFilterObjects,
+  CourseFilterObjects,
   PStartTime = null,
   PEndTime = null
 ) {
-  let AllFilteredSections = ConvertedCourseFilterObjects[0];
-  let AllSections = ConvertedCourseFilterObjects[1];
+  var ConvertedSections = [];
+  var AllFilteredSections = [];
+  var AllSections = [];
+  if (CourseFilterObjects.length != 0) {
+    ConvertedSections = await convertCourseNamesToSections(
+      Term,
+      CourseFilterObjects,
+      PStartTime,
+      PEndTime
+    );
+    AllFilteredSections = ConvertedSections[0];
+    AllSections = ConvertedSections[1];
+  } else {
+  }
   let num = 1;
   for (let ArraySection of AllFilteredSections) {
     var sum = 0;
@@ -599,7 +609,7 @@ async function getPermutations(
     } else {
       let CoursesWithSeatsFilter = [];
       let FilteredProfessorsForEachCourse = {};
-      for (let CourseFilterObject of ConvertedCourseFilterObjects) {
+      for (let CourseFilterObject of CourseFilterObjects) {
         if (CourseFilterObject.Elective) continue
         if (CourseFilterObject.SeatsFilter)
           CoursesWithSeatsFilter.push(CourseFilterObject.CourseName);
