@@ -47,7 +47,7 @@ const {
  * case "QT" => Quantitative Thought
  * 2- SeatsFilter boolean: filters out sections with no available seats if set to true, ignores seat availability if false
  * 3- ProfesserFilter Array of string: e.g., ['Louay Bazzi', 'Ibrahim Issa'] contains names of selected professors,
- * if left empty then no professor is fitlered out
+ * if left empty then no professor is filtered out
  * 4- Elective boolean: is set to true if our CourseFilter Object is for electives, false otherwise
  * @param  {?number} PStartTime=null Preferred Start Time, filters out all sections that start before it (null by Default)
  * @param  {?number} PEndTime=null Preferred End Time, filters out all sections that end after it (null by Default)
@@ -456,7 +456,7 @@ async function getPermutations(
     }
     num *= sum;
   }
-  if (num > 16000)
+  if (num > 20000)
     throw new Error(
       ` Will not calculate ${num} schedules, use filters to lower amount of perms to get below 15000 schedules`
     );
@@ -520,7 +520,6 @@ async function getPermutations(
     }
   }
   getPermsRecursion(SetSections, MinTime, MaxTime, DayOccurences, 0);
-
   if (ArrayOfPermutations.length == 0) {
     let num2 = 1;
     for (let ArraySection of AllFilteredSections) {
@@ -611,6 +610,7 @@ async function getPermutations(
       let CoursesWithSeatsFilter = [];
       let FilteredProfessorsForEachCourse = {};
       for (let CourseFilterObject of CourseFilterObjects) {
+        if (CourseFilterObject.Elective) continue
         if (CourseFilterObject.SeatsFilter)
           CoursesWithSeatsFilter.push(CourseFilterObject.CourseName);
         FilteredProfessorsForEachCourse[CourseFilterObject.CourseName] =
@@ -672,7 +672,7 @@ async function getPermutations(
           let UnselectedProfessorsPerCourse = [];
           for (let Section of Permutation) {
             if (SetSections.includes(Section)) continue;
-            if (
+            if (FilteredProfessorsForEachCourse[Section.Subject + Section.Code] &&
               !FilteredProfessorsForEachCourse[
                 Section.Subject + Section.Code
               ].includes(Section.IName + " " + Section.ISName) &&
@@ -706,13 +706,10 @@ async function getPermutations(
         }
         let ProfessorsToChange = "";
         let AddedUnselectedProfessors = [];
+        let count = 1;
         for (
           let i = 1;
-          i <
-          Math.min(
-            5,
-            ArrayOfListOfAvailableUnselectedProfessorsPerCourse.length
-          );
+          i < ArrayOfListOfAvailableUnselectedProfessorsPerCourse.length;
           i++
         ) {
           let AvailableUnselectedProfessorsPerCourse =
@@ -725,7 +722,8 @@ async function getPermutations(
               JSON.stringify(AvailableUnselectedProfessorsPerCourse)
             )
           ) {
-            ProfessorsToChange += i + ": ";
+            ProfessorsToChange += count + ": ";
+            count++;
             AddedUnselectedProfessors.push(
               JSON.stringify(AvailableUnselectedProfessorsPerCourse)
             );
@@ -734,6 +732,7 @@ async function getPermutations(
                 x.split(":").join(": ")
               ).join(";\t") + "\n";
           }
+          if (count == 7) break;
         }
         throw new Error(
           "No Permutations Available:\nSuggestion: Select any of the following combination of professors\n" +
