@@ -155,7 +155,7 @@ try{
   setSections = JSON.parse(setSections)
   customCourses = JSON.parse(customCourses)
   let CustomSections = customCourses
-  courses2.concat(electivesFinal)
+  courses2 = courses2.concat(electivesFinal)
   try { 
     var Schedules = await getPermutations(Term, setSections, CustomSections, courses2, PStartTime, PEndTime)
   } catch (err) {
