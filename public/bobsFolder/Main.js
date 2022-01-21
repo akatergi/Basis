@@ -418,8 +418,8 @@ async function convertCourseNamesToSections(
  * case "H2" => Humanities 2
  * case "QT" => Quantitative Thought
  * 2- SeatsFilter boolean: filters out sections with no available seats if set to true, ignores seat availability if false
- * 3- ProfesserFilter Array of string: e.g., ['Louay Bazzi', 'Ibrahim Issa'] contains names of selected professors,
- * if left empty then no professor is fitlered out
+ * 3- ProfessorFilter Array of string: e.g., ['Louay Bazzi', 'Ibrahim Issa'] contains names of selected professors,
+ * if left empty then no professor is filtered out
  * 4- Elective boolean: is set to true if our CourseFilter Object is for electives, false otherwise
  * @param  {?number} PStartTime=null Preferred Start Time, filters out all sections that start before it (null by Default)
  * @param  {?number} PEndTime=null Preferred End Time, filters out all sections that end after it (null by Default)
