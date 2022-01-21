@@ -167,7 +167,7 @@ div.contentBoth{
     border:none;
     border-radius: 20px;
     background-color: red;
-    color:white
+    color:white;
 }
 
 #changeTime.time24{
@@ -248,5 +248,28 @@ div.contentBoth{
 
 .utils{
     display: flex;
+    justify-content: space-evenly;
+}
+
+.sortBtn{
+    border-radius: 1.5em;
+    padding-top:0.2em;
+    border: 0.1em solid #dadaa2;
+    padding-bottom:0.2em;
+    padding-left:0.5em;
+    padding-right:0.5em;
+    background-color: lightyellow;
+    -webkit-box-shadow: 8px 8px 3px -5px #dadaa2; 
+    box-shadow: 8px 8px 3px -5px #dadaa2;
+    font-size:0.9em;
+}
+
+.sortBtn.checkedRadio{
+    background-color: #dadaa2;
+    box-shadow: none;
+}
+
+.sortBtns{
+    display:flex;
     justify-content: space-evenly;
 }

@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const path = require("path")
 const ejsMate = require("ejs-mate")
-const { getProfessors, searchByCRNs, timeToInt, intToTime, checkIfConflictingArray } = require("./public/bobsFolder/Tools")
+const { getProfessors, searchByCRNs, timeToInt, intToTime, checkIfConflictingArray, getElectiveNames } = require("./public/bobsFolder/Tools")
 app.use(express.json());
 const { getPermutations } = require("./public/bobsFolder/Main")
 const session = require("express-session")
@@ -68,7 +68,7 @@ app.post("/filter", async (req, res) => {
 
   let electivesArr = []
   for (let elective of electives) {
-    electivesArr.push({ CourseName: elective, SeatsFilter: true, ProfessorFilter: [], Elective: true })
+    electivesArr.push({ CourseName: elective, SeatsFilter: true, ProfessorFilter: [], Elective: true, availableCourses: await getElectiveNames(Term, elective) })
   }
 
   try {
@@ -113,8 +113,9 @@ app.get("/filter", async (req, res) => {
 })
 
 app.post("/schedules", async (req, res) => {
-  let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses2, electivesArr, customCourses } = req.body
+  let { setSections, sHour, sMinute, stime, eHour, eMinute, etime, Term, courses2, electivesFinal, customCourses } = req.body
   Term = Term.slice(0,6)
+  if(!electivesFinal) electivesFinal = []
   if (sMinute.length === 0) sMinute = "00"
   if (eMinute.length === 0) eMinute = "00"
   req.session.sHour = sHour
@@ -131,6 +132,17 @@ app.post("/schedules", async (req, res) => {
     if (!courses2[i].ProfessorFilter) courses2[i].ProfessorFilter = []
     courses2[i].Elective = false
   }
+try{
+  electivesFinal.forEach(elective => {
+    elective.SeatsFilter ? elective.SeatsFilter = true : elective.SeatsFilter = false
+    elective.ProfessorFilter = []
+    elective.Elective = true
+    if(!elective.courseFilter) throw new Error(`Must select at least one elective course for ${elective.CourseName}!`)
+  })
+} catch(err){
+  req.flash("error", err.message)
+  return res.redirect("/filter")
+}
 
   req.session.courses2 = courses2
   let PStartTime, PEndTime;
@@ -144,7 +156,6 @@ app.post("/schedules", async (req, res) => {
   customCourses = JSON.parse(customCourses)
   let CustomSections = customCourses
 
-  courses2 = courses2.concat(JSON.parse(electivesArr))
   try { 
     var Schedules = await getPermutations(Term, setSections, CustomSections, courses2, PStartTime, PEndTime)
   } catch (err) {

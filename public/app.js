@@ -22,7 +22,7 @@ let t = false
 let timeTDs = document.querySelectorAll(".time")
 timeTDs = Array.from(timeTDs).slice(6)
 let removed = document.querySelector("#removed")
-let sortButton = document.querySelectorAll("input[type=radio]")
+let sortButton = document.querySelectorAll(".sRadio")
 let sortType = 0 //0 default, 1 timedif, 2 daydif
 //Functions
 
@@ -93,6 +93,14 @@ function getMaxTime(Section, MaxTime, Recitation = { ET1: 0 }) {
     return MaxTime;
 }
 
+function styleSorts() {
+    console.log(sortButton)
+    for (let indx = 0; indx < 3; indx++) {
+        console.log(sortButton[indx])
+        indx === sortType ? document.querySelector(`.sortBtn-${indx}`).classList.add("checkedRadio") : document.querySelector(`.sortBtn-${indx}`).classList.remove("checkedRadio")
+    }
+}
+
 sortButton[0].addEventListener("click", () => {
     sortType = 0
     Schedules = mainSchedules.filter(Schedule => {
@@ -107,6 +115,7 @@ sortButton[0].addEventListener("click", () => {
     genSched(i)
     boxes = document.querySelectorAll(".course")
     updateBoxes()
+    styleSorts();
 })
 
 sortButton[1].addEventListener("click", () => {
@@ -118,6 +127,7 @@ sortButton[1].addEventListener("click", () => {
     genSched(i)
     boxes = document.querySelectorAll(".course")
     updateBoxes()
+    styleSorts()
 })
 
 sortButton[2].addEventListener("click", () => {
@@ -129,6 +139,7 @@ sortButton[2].addEventListener("click", () => {
     genSched(i)
     boxes = document.querySelectorAll(".course")
     updateBoxes()
+    styleSorts()
 })
 
 function labelCourseBlock(course, courseBlock, startHour, startMin, endHour, endMin) {
@@ -366,7 +377,7 @@ function genSched(i) {
             })
         })
         let label = document.createElement("label")
-        label.for = `color-${course.CRN}`
+        label.htmlFor = `color-${course.CRN}`
         label.innerText = `${course.Subject} ${course.Code} - ${course.CRN}`
         label.classList.add("colorTitle")
         let div = document.createElement("div")
@@ -515,7 +526,7 @@ function updateBoxes() {
                 if (course.IName === "." && course.ISName === "STAFF") instructor.innerText = 'TBA'
                 else if (!course.IName || !course.ISName) instructor.innerText = "N/A"
                 else instructor.innerText = `${course.IName} ${course.ISName}`
-                if (box.classList.contains("occ1") && CRN[0]!="C") building.innerText = `${course.Buil1} ${course.R1}`
+                if (box.classList.contains("occ1") && CRN[0] != "C") building.innerText = `${course.Buil1} ${course.R1}`
                 else course.Buil2 ? building.innerText = `${course.Buil2} ${course.R2}` : building.innerText = "N/A"
             }
         })
