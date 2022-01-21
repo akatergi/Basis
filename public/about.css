@@ -21,3 +21,15 @@ a{
 li.social:hover{
     transform: scale(1.1);
 }
+
+.cardz{
+    display:flex;
+    justify-content: space-between;
+}
+
+.contents{
+    min-height:90vh;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+}

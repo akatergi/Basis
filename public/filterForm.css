@@ -21,3 +21,11 @@
 .form-control::placeholder{
   opacity: 0.5;
 }
+
+.electiveCard{
+    background-color: rgb(247, 247, 196);
+}
+
+.electiveBorder{
+    border-color:#bfbc6f;
+}

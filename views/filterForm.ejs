@@ -42,17 +42,20 @@
       <input type="hidden" name="Term" value="<%= Term %> ">
 
       <input type="hidden" name="setSections" value="<%= JSON.stringify(SetSections) %> ">
-      <input type="hidden" name="electivesArr" value="<%= JSON.stringify(electivesArr) %> ">
       <input type="hidden" name="customCourses" value="<%= JSON.stringify(customCourses) %> ">
 
       <h1>Courses + Professors</h1>
-      <small class="card-text text-muted mb-3">For each of the below courses, select the filters you desire. Check on the "seat
+      <small class="card-text text-muted mb-3">- For each of the below <b>courses</b> (white background), select the filters you desire. Check on the "seat
         availability" box if you want to filter out all sections of a course that do not have capacity. In addition, check on all professors that
-        you would like to take this course with and uncheck all professors that you would like to filter out.
+        you would like to take this course with and uncheck all professors that you would like to filter out.<br class="mb-3">
+        -For each of the below <b>electives</b> (yellow background), select the filters you desire. Check on the "seat
+        availability" box if you want to filter out all sections of a course that do not have capacity. In addition, check on all the courses you would
+        like to take under this category and uncheck all courses that you would like to filter out.
+
       </small>
       <% let i=0 %>
       <% for(let course of courses) {%>
-      <% let course2 = courses2 ? (courses2.filter(el => el.CourseName===course.CourseName))[0] : null %> 
+      <% let course2 = courses2 ? (courses2.filter(el => el.CourseName===course.CourseName))[0] : null %>
       <div class="col-6 col-md">
         <div class="card mb-3">
           <div class="card-body">
@@ -68,7 +71,7 @@
               </label>
             </div>
 
-            <% for(let prof of course.Professors) {%> 
+            <% for(let prof of course.Professors) {%>
             <div class="form-check">
               <% let label= `check-${prof}-${course.CourseName}` %>
               <input type="checkbox" class="form-check-input" id="<%= label %>" value="<%= prof %>" name="courses2[<%- i %>][ProfessorFilter][]" <%= course2&&!course2.ProfessorFilter.includes(prof) ? "" : "checked" %>>
@@ -77,6 +80,35 @@
               </label>
             </div>
             <% } i++ %>
+          </div>
+        </div>
+      </div>
+      <% } %>
+      <% let j=0 %>
+      <% for(let elective of electivesArr) {%>
+      <div class="col-6 col-md">
+        <div class="card electiveBorder mb-3">
+          <div class="card-body electiveCard">
+            <h3>
+              <%= elective.CourseName %>
+            </h3>
+            <input type="hidden" name="electivesFinal[<%- j %>][CourseName]" value="<%= elective.CourseName %>">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="electivesFinal[<%- j %>][SeatsFilter]" value=true id="seatsEl-<%= j %>">
+              <label for="seatsEl-<%=j%>" class="form-check-label">
+                <span class="seatCheck"> <i class="fas fa-chair"></i> Seat Availability </span>
+              </label>
+            </div>
+            <% console.log(elective.availableCourses) %> 
+            <% for(let course of elective.availableCourses) {%>
+            <div class="form-check">
+              <% let label= `checkEl-${elective.CourseName}-${course}-${j}` %>
+              <input type="checkbox" class="form-check-input" id="<%= label %>" value="<%= course %>" checked name="electivesFinal[<%- j %>][courseFilter][]">
+              <label class="form-check-label" for="<%= label %>">
+                <i class="fas fa-user-tie"></i> <%= course %>
+              </label>
+            </div>
+            <% } j++ %>
           </div>
         </div>
       </div>
@@ -107,10 +139,18 @@
     if (timeToInt(sHour.value + ":" + sMin.value, stime.value == "PM") > timeToInt(eHour.value + ":" + eMin.value, etime.value == "PM")) {
       e.preventDefault()
       alert("Start time must be less than end time!")
+    } else if (parseInt(sH) > 12 || parseInt(sH) < 1 || (sT === "AM" && (parseInt(sH) < 7 || parseInt(sH) === 12))) {
+      e.preventDefault();
+      alert("Start hour must be between 7 AM and 11 PM")
+    } else if (parseInt(sM) < 0 || parseInt(sM) > 59) {
+      e.preventDefault();
+      alert("Start minute must be between 0 and 60")
+    } else if (parseInt(eH) > 12 || parseInt(eH) < 1 || (eT === "AM" && (parseInt(eH) < 7 || parseInt(eH) === 12))) {
+      e.preventDefault();
+      alert("End hour must be between 7 AM and 11 PM")
+    } else if (parseInt(eM) < 0 || parseInt(eM) > 59) {
+      e.preventDefault();
+      alert("End minute must be between 0 and 60")
     }
-    else if (parseInt(sH) > 12 || parseInt(sH) < 1 || (sT === "AM" && (parseInt(sH) < 7 || parseInt(sH) === 12))) {e.preventDefault(); alert("Start hour must be between 7 AM and 11 PM")}
-    else if (parseInt(sM) < 0 || parseInt(sM) > 59) {e.preventDefault(); alert("Start minute must be between 0 and 60")}
-    else if (parseInt(eH) > 12 || parseInt(eH) < 1 || (eT === "AM" && (parseInt(eH) < 7 || parseInt(eH) === 12))) {e.preventDefault(); alert("End hour must be between 7 AM and 11 PM")}
-    else if (parseInt(eM) < 0 || parseInt(eM) > 59) {e.preventDefault(); alert("End minute must be between 0 and 60")}
   })
 </script>
