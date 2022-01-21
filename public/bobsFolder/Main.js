@@ -433,6 +433,7 @@ async function getPermutations(
   PStartTime = null,
   PEndTime = null
 ) {
+  console.log(CourseFilterObjects)
   var ConvertedSections = [];
   var AllFilteredSections = [];
   var AllSections = [];
