@@ -12,7 +12,7 @@
               this time will be filtered out.
             </small>
             <div class="form-group fg mt-2">
-              <input type="number" name="sHour" id="sHour" class="form-control" placeholder="09" max=12 min=1 value="<%= sHour?sHour:"" %>"> <span class="colon">:</span> <input id="sMin" type="number" name="sMinute" class="form-control" placeholder="30" max=59 min=0 step=5 value="<%= sMinute?sMinute:"" %>">
+              <input type="number" name="sHour" id="sHour" class="form-control" placeholder="09" max=12 min=1 value="<%= sHour?sHour:"" %>"> <span class="colon">:</span> <input id="sMin" type="number" name="sMinute" class="form-control" placeholder="30" max=59 min=0 value="<%= sMinute?sMinute:"" %>">
               <select class="form-select" name="stime" id="stime">
                 <option <%= stime&&stime==="AM"?"selected":"" %> value="AM">AM</option>
                 <option <%= stime&&stime==="PM"?"selected":"" %> value="PM">PM</option>
@@ -29,7 +29,7 @@
               this time will be filtered out.
             </small>
             <div class="form-group fg mt-2">
-              <input type="number" name="eHour" id="eHour" class="form-control" placeholder="05" max=12 min=1 value="<%= eHour?eHour:"" %>"> <span class="colon">:</span> <input type="number" name="eMinute" id="eMin" class="form-control" placeholder="00" max=59 min=0 step=5 value="<%= eMinute?eMinute:"" %>">
+              <input type="number" name="eHour" id="eHour" class="form-control" placeholder="05" max=12 min=1 value="<%= eHour?eHour:"" %>"> <span class="colon">:</span> <input type="number" name="eMinute" id="eMin" class="form-control" placeholder="00" max=59 min=0 value="<%= eMinute?eMinute:"" %>">
               <select class="form-select" name="etime" id="etime">
                 <option value="AM" <%= etime&&etime==="AM"?"selected":"" %>>AM</option>
                 <option value="PM" <%= !etime||etime==="PM"?"selected":"" %>>PM</option>

@@ -22,7 +22,8 @@ const checkSectionWithFilters = (
   ProfessorFilter,
   PStartTime,
   PEndTime,
-  Elective
+  Elective,
+  CourseNames
 ) =>
   (!SeatsFilter || Section.SeatsA > 0) &&
   (isRecitation(Section) ||
@@ -30,7 +31,7 @@ const checkSectionWithFilters = (
     Elective) &&
   (!PStartTime || Section.BT1 >= PStartTime) &&
   (!PEndTime || Section.ET1 <= PEndTime) &&
-  (!PEndTime || !hasLab(Section) || Section.ET2 <= PEndTime);
+  (!PEndTime || !hasLab(Section) || Section.ET2 <= PEndTime)
 module.exports.checkSectionWithFilters = checkSectionWithFilters;
 
 function checkIfConflictingArray(Sections, PBT, PET) {
