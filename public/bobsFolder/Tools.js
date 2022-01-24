@@ -4,6 +4,37 @@ const fs = require("fs");
 const math = require("mathjs");
 const { listenerCount } = require("process");
 
+let UpperCampus = {
+  518: false,
+  ADAD: true,
+  AGRIC: false,
+  ANNEX: true,
+  BECHTA: false,
+  BIOL: false,
+  BLISS: true,
+  CHEM: false,
+  CHSC: true,
+  COLL: true,
+  DTS: true,
+  FISK: true,
+  FS1: false,
+  HSON: true,
+  IOEC: false,
+  ISSAM: false,
+  JESUP: true,
+  MAMC: false,
+  NICELY: true,
+  OSB: false,
+  PHYS: false,
+  POST: true,
+  REYNOL: false,
+  RGB: false,
+  SRB: false,
+  STUDYS: false,
+  VANDYK: true,
+  WEST: true
+};
+
 const overLap = (S1, F1, S2, F2) => S1 < F2 && S2 < F1;
 module.exports.overLap = overLap;
 
@@ -31,7 +62,7 @@ const checkSectionWithFilters = (
     Elective) &&
   (!PStartTime || Section.BT1 >= PStartTime) &&
   (!PEndTime || Section.ET1 <= PEndTime) &&
-  (!PEndTime || !hasLab(Section) || Section.ET2 <= PEndTime)
+  (!PEndTime || !hasLab(Section) || Section.ET2 <= PEndTime);
 module.exports.checkSectionWithFilters = checkSectionWithFilters;
 
 function checkIfConflictingArray(Sections, PBT, PET) {
@@ -155,6 +186,20 @@ function getMaxMinDO(ArrayOfSections) {
   return [MaxTime, MinTime, DayOccurences];
 }
 module.exports.getMaxMinDO = getMaxMinDO;
+
+function getUpperCampusDif(Permutation) {
+  let [Upper, Lower] = [0, 0];
+  for (let Section of Permutation) {
+    if (UpperCampus[Section.Buil1]) Upper += Section.Schedule1.length;
+    else Lower += Section.Schedule1.length;
+    if (hasLab(Section)) {
+      if (UpperCampus[Section.Buil2]) Upper += Section.Schedule2.length;
+      else Lower += Section.Schedule1.length;
+    }
+  }
+  return [Upper,Lower]
+}
+module.exports.getUpperCampusDif = getUpperCampusDif;
 
 function getDayDif(DO) {
   return math.std(DO);
@@ -322,7 +367,7 @@ async function readElectives(Term) {
     for (let i = 0; i < Data[TypeOfElective].length; i++) {
       Data[TypeOfElective][i] = CRNs[Data[TypeOfElective][i]];
     }
-    Data[TypeOfElective] = Data[TypeOfElective].filter(x => Boolean(x))
+    Data[TypeOfElective] = Data[TypeOfElective].filter((x) => Boolean(x));
   }
   return Data;
 }
@@ -406,17 +451,19 @@ async function getProfessors(Term, CourseSubject, CourseCode) {
 }
 module.exports.getProfessors = getProfessors;
 
-async function getElectiveNames(Term, TypeOfElective){ // TypeOfElective just means //ss1 or ss2 or h1 or qt or ns
-  let ElectiveSections = (await readElectives(Term))[TypeOfElective]
-  let ListOfCourseNames = []
-  for (let Element of ElectiveSections){
-    if (!ListOfCourseNames.includes(Element.Subject)){
-      ListOfCourseNames.push(Element.Subject)
-    }}
-  ListOfCourseNames.sort((x,y) => x.localeCompare(y))
-  return ListOfCourseNames
+async function getElectiveNames(Term, TypeOfElective) {
+  // TypeOfElective just means //ss1 or ss2 or h1 or qt or ns
+  let ElectiveSections = (await readElectives(Term))[TypeOfElective];
+  let ListOfCourseNames = [];
+  for (let Element of ElectiveSections) {
+    if (!ListOfCourseNames.includes(Element.Subject)) {
+      ListOfCourseNames.push(Element.Subject);
+    }
+  }
+  ListOfCourseNames.sort((x, y) => x.localeCompare(y));
+  return ListOfCourseNames;
 }
-module.exports.getElectiveNames = getElectiveNames
+module.exports.getElectiveNames = getElectiveNames;
 
 async function getCoursesAndCRNs(Term) {
   let Courses = {};

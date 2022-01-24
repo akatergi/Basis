@@ -66,7 +66,10 @@ async function getArraysOfFilteredSections(
   for (let CourseFilterObject of CourseFilterObjects) {
     let Sections;
     let Elective = CourseFilterObject.Elective;
-    if (Elective) Sections = Electives[CourseFilterObject.CourseName].filter(x => CourseFilterObject.courseFilter.includes(x.Subject));
+    if (Elective)
+      Sections = Electives[CourseFilterObject.CourseName].filter((x) =>
+        CourseFilterObject.courseFilter.includes(x.Subject)
+      );
     else {
       var CourseSubject = CourseFilterObject.CourseName.slice(0, 4);
       var CourseCode = CourseFilterObject.CourseName.slice(4);
@@ -121,16 +124,17 @@ async function getArraysOfFilteredSections(
           if (!(!CourseFilterObject.SeatsFilter || Section.SeatsA > 0))
             RecitationsWithNoSeats.push(Section);
           else {
-          if (!(!PStartTime || Section.BT1 >= PStartTime)) {
-            if (LatestRecitationBeginTime < Section.BT1)
-              LatestRecitationBeginTime = Section.BT1;
-            RecitationsWithConflictingStartTime.push(Section);
+            if (!(!PStartTime || Section.BT1 >= PStartTime)) {
+              if (LatestRecitationBeginTime < Section.BT1)
+                LatestRecitationBeginTime = Section.BT1;
+              RecitationsWithConflictingStartTime.push(Section);
+            }
+            if (!(!PEndTime || Section.ET1 <= PEndTime)) {
+              if (EarliestRecitationEndTime > Section.ET2)
+                EarliestRecitationEndTime = Section.ET1;
+              RecitationsWithConflictingEndTime.push(Section);
+            }
           }
-          if (!(!PEndTime || Section.ET1 <= PEndTime)) {
-            if (EarliestRecitationEndTime > Section.ET2)
-              EarliestRecitationEndTime = Section.ET1;
-            RecitationsWithConflictingEndTime.push(Section);
-          }}
         }
         NumberOfRecitations++;
       } else {
@@ -147,35 +151,45 @@ async function getArraysOfFilteredSections(
         )
           ListOfFilteredSections.push(Section);
         else {
-          if (Elective ||
+          if (
+            Elective ||
             CourseFilterObject.ProfessorFilter.includes(
               Section.IName + " " + Section.ISName
             )
           ) {
-            let ConflictsWithBeginTime = false //TODO: do the same for recitations
+            let ConflictsWithBeginTime = false; //TODO: do the same for recitations
             if (!(!CourseFilterObject.SeatsFilter || Section.SeatsA > 0))
               SectionsWithNoSeats.push(Section);
             else {
-            if (!(!PStartTime || Section.BT1 >= PStartTime)) {
-              ConflictsWithBeginTime = true
-              if (LatestSectionBeginTime < Section.BT1){
-                LatestSectionBeginTime = Section.BT1;
-              SectionWithLatestBeginTime = Section}
-              SectionsWithConflictingStartTime.push(Section);
+              if (!(!PStartTime || Section.BT1 >= PStartTime)) {
+                ConflictsWithBeginTime = true;
+                if (LatestSectionBeginTime < Section.BT1) {
+                  LatestSectionBeginTime = Section.BT1;
+                  SectionWithLatestBeginTime = Section;
+                }
+                SectionsWithConflictingStartTime.push(Section);
+              }
+              if (!(!PEndTime || Section.ET1 <= PEndTime)) {
+                if (
+                  EarliestSectionEndTime > Section.ET1 &&
+                  !ConflictsWithBeginTime
+                ) {
+                  EarliestSectionEndTime = Section.ET1;
+                  SectionWithEarliestSectionEndTime = Section;
+                }
+                SectionsWithConflictingFinishTime.push(Section);
+              }
+              if (!(!PEndTime || !hasLab(Section) || Section.ET2 <= PEndTime)) {
+                if (
+                  EarliestSectionEndTime > Section.ET1 &&
+                  !ConflictsWithBeginTime
+                )
+                  EarliestSectionEndTime = Section.ET2;
+                SectionsWithConflictingFinishLabTime.push(Section);
+              }
             }
-            if (!(!PEndTime || Section.ET1 <= PEndTime)) {
-              if (EarliestSectionEndTime > Section.ET1 && !ConflictsWithBeginTime){
-                EarliestSectionEndTime = Section.ET1;
-              SectionWithEarliestSectionEndTime = Section}
-              SectionsWithConflictingFinishTime.push(Section);
-            }
-            if (!(!PEndTime || !hasLab(Section) || Section.ET2 <= PEndTime)) {
-              if (EarliestSectionEndTime > Section.ET1 && !ConflictsWithBeginTime)
-                EarliestSectionEndTime = Section.ET2;
-              SectionsWithConflictingFinishLabTime.push(Section);
-            }
+            NumberOfSectionsWithProf++;
           }
-          NumberOfSectionsWithProf++;}
         }
         NumberOfSections++;
       }
@@ -188,121 +202,179 @@ async function getArraysOfFilteredSections(
       if (NumberOfNulls == Sections.length)
         throw new Error("All sections had Null Start/End Times");
       let Reasons = "";
-      if (Elective){
+      if (Elective) {
         if (SectionsWithNoSeats.length == NumberOfSectionsWithProf) {
-          let SubjectsNames = CourseFilterObject.courseFilter
-          let n = SubjectsNames.length
-          if (SubjectsNames.length == 1) throw new Error(`All ${SubjectsNames[0]} electives have no available seats`)
-          throw new Error(`All ${SubjectsNames.slice(0,n-1).join(", ") + ", and " + SubjectsNames[n-1]} electives have no available seats`)
+          let SubjectsNames = CourseFilterObject.courseFilter;
+          let n = SubjectsNames.length;
+          if (SubjectsNames.length == 1)
+            throw new Error(
+              `All ${SubjectsNames[0]} electives have no available seats`
+            );
+          throw new Error(
+            `All ${
+              SubjectsNames.slice(0, n - 1).join(", ") +
+              ", and " +
+              SubjectsNames[n - 1]
+            } electives have no available seats`
+          );
         }
-      if (SectionsWithConflictingStartTime.length == NumberOfSectionsWithProf) throw new Error(`All selected electives start before ${intToTime(PStartTime)}\n Suggestion: Set preferred start time to ${intToTime(LatestSectionBeginTime)}`)
-      if (SectionsWithConflictingFinishTime.length == NumberOfSectionsWithProf) throw new Error(`All selected electives finish after ${intToTime(PEndTime)}\n Suggestion: Set preferred end time to ${intToTime(EarliestSectionEndTime)}`)
-      let Suggestions = []
-      if (SectionsWithConflictingStartTime.length != 0){
-        Reasons += SectionsWithConflictingStartTime.length +
-          ` Section${
-            SectionsWithConflictingStartTime.length > 1
-              ? "s that start"
-              : " that starts"
-          } before ` +
-          intToTime(PStartTime);
+        if (SectionsWithConflictingStartTime.length == NumberOfSectionsWithProf)
+          throw new Error(
+            `All selected electives start before ${intToTime(
+              PStartTime
+            )}\n Suggestion: Set preferred start time to ${intToTime(
+              LatestSectionBeginTime
+            )}`
+          );
+        if (
+          SectionsWithConflictingFinishTime.length == NumberOfSectionsWithProf
+        )
+          throw new Error(
+            `All selected electives finish after ${intToTime(
+              PEndTime
+            )}\n Suggestion: Set preferred end time to ${intToTime(
+              EarliestSectionEndTime
+            )}`
+          );
+        let Suggestions = [];
+        if (SectionsWithConflictingStartTime.length != 0) {
+          Reasons +=
+            SectionsWithConflictingStartTime.length +
+            ` Section${
+              SectionsWithConflictingStartTime.length > 1
+                ? "s that start"
+                : " that starts"
+            } before ` +
+            intToTime(PStartTime);
           Suggestions.push(
-          "Set preferred start time to " +
-          intToTime(LatestSectionBeginTime))}
-      if (SectionsWithConflictingFinishTime.length != 0){
-        Reasons +=
-        (Reasons != "" ? "\n" : "") + SectionsWithConflictingFinishTime.length +
-        ` Section${
-          SectionsWithConflictingFinishTime.length > 1
-            ? "s that finish"
-            : " that finish"
-        } after ` +
-        intToTime(PEndTime);
-        Suggestions.push(
-        "Set preferred finish time to " +
-        intToTime(EarliestSectionEndTime))}
-      throw new Error(
-        `No available sections for selected electives that applies with given filter!\n` + Reasons + "\n" + Suggestions.join("\n or ") //TODO: add word "available seats"
+            "Set preferred start time to " + intToTime(LatestSectionBeginTime)
+          );
+        }
+        if (SectionsWithConflictingFinishTime.length != 0) {
+          Reasons +=
+            (Reasons != "" ? "\n" : "") +
+            SectionsWithConflictingFinishTime.length +
+            ` Section${
+              SectionsWithConflictingFinishTime.length > 1
+                ? "s that finish"
+                : " that finish"
+            } after ` +
+            intToTime(PEndTime);
+          Suggestions.push(
+            "Set preferred finish time to " + intToTime(EarliestSectionEndTime)
+          );
+        }
+        throw new Error(
+          `No available sections for selected electives that applies with given filter!\n` +
+            Reasons +
+            "\n" +
+            Suggestions.join("\n or ") //TODO: add word "available seats"
         );
-      } else{
-      if (SectionsWithNoSeats.length == NumberOfSectionsWithProf) {
-        if (SectionsWithNoSeats.length == 1) {
+      } else {
+        if (SectionsWithNoSeats.length == NumberOfSectionsWithProf) {
+          if (SectionsWithNoSeats.length == 1) {
+            throw new Error(
+              `The one ${CourseSubject + CourseCode} Section with ` +
+                printArrayOfProfessors(CourseFilterObject.ProfessorFilter) +
+                " has no available seats"
+            );
+          } else {
+            throw new Error(
+              `All ${CourseSubject + CourseCode} Sections with ` +
+                printArrayOfProfessors(CourseFilterObject.ProfessorFilter) +
+                " have no available seats"
+            );
+          }
+        }
+        if (SectionsWithConflictingStartTime.length == NumberOfSectionsWithProf)
           throw new Error(
-            `The one ${CourseSubject + CourseCode} Section with ` +
-              printArrayOfProfessors(CourseFilterObject.ProfessorFilter) +
-              " has no available seats"
+            `All sections start before ${intToTime(
+              PStartTime
+            )}\n Suggestion: Set preferred start time to ${intToTime(
+              LatestSectionBeginTime
+            )}`
           );
-        } else {
+        if (
+          SectionsWithConflictingFinishTime.length == NumberOfSectionsWithProf
+        )
           throw new Error(
-            `All ${CourseSubject + CourseCode} Sections with ` +
-              printArrayOfProfessors(CourseFilterObject.ProfessorFilter) +
-              " have no available seats"
+            `All sections finish after ${intToTime(
+              PEndTime
+            )}\n Suggestion: Set preferred end time to ${intToTime(
+              EarliestSectionEndTime
+            )}`
+          );
+        let Suggestions = [];
+        let SuggestedEndTime = false;
+        if (SectionsWithConflictingStartTime != 0) {
+          Reasons +=
+            (Reasons != "" ? "\n" : "") +
+            SectionsWithConflictingStartTime.length +
+            ` Section${
+              SectionsWithConflictingStartTime.length > 1
+                ? "s that start"
+                : " that starts"
+            } before ` +
+            intToTime(PStartTime) +
+            ":\n" +
+            SectionsWithConflictingStartTime.map(
+              (Section) => `Section ${Section.Section} (${Section.CRN})`
+            ).join(" - ");
+          Suggestions.push(
+            "Set preferred start time to " + intToTime(LatestSectionBeginTime)
           );
         }
-      }
-      if (SectionsWithConflictingStartTime.length == NumberOfSectionsWithProf) throw new Error(`All sections start before ${intToTime(PStartTime)}\n Suggestion: Set preferred start time to ${intToTime(LatestSectionBeginTime)}`)
-      if (SectionsWithConflictingFinishTime.length == NumberOfSectionsWithProf) throw new Error(`All sections finish after ${intToTime(PEndTime)}\n Suggestion: Set preferred end time to ${intToTime(EarliestSectionEndTime)}`)
-      let Suggestions = []
-      let SuggestedEndTime = false
-      if (SectionsWithConflictingStartTime != 0){
-        Reasons +=
-          (Reasons != "" ? "\n" : "") +
-          SectionsWithConflictingStartTime.length +
-          ` Section${
-            SectionsWithConflictingStartTime.length > 1
-              ? "s that start"
-              : " that starts"
-          } before ` +
-          intToTime(PStartTime) +
-          ":\n" +
-          SectionsWithConflictingStartTime.map(
-            (Section) => `Section ${Section.Section} (${Section.CRN})`
-          ).join(" - ");
+        if (SectionsWithConflictingFinishTime != 0) {
+          Reasons +=
+            (Reasons != "" ? "\n" : "") +
+            SectionsWithConflictingFinishTime.length +
+            ` Section${
+              SectionsWithConflictingFinishTime.length > 1
+                ? "s that end"
+                : " that ends"
+            } after ` +
+            intToTime(PEndTime) +
+            ": " +
+            SectionsWithConflictingFinishTime.map(
+              (Section) => `Section ${Section.Section} (${Section.CRN})`
+            ).join(" - ");
           Suggestions.push(
-           "Set preferred start time to " +
-              intToTime(LatestSectionBeginTime))}
-      if (SectionsWithConflictingFinishTime != 0){
-        Reasons +=
-          (Reasons != "" ? "\n" : "") +
-          SectionsWithConflictingFinishTime.length +
-          ` Section${
-            SectionsWithConflictingFinishTime.length > 1
-              ? "s that end"
-              : " that ends"
-          } after ` +
-          intToTime(PEndTime) +
-          ": " +
-          SectionsWithConflictingFinishTime.map(
-            (Section) => `Section ${Section.Section} (${Section.CRN})`
-          ).join(" - ");
-          Suggestions.push("Set preferred end time to " +
-              intToTime(EarliestSectionEndTime))
-            SuggestedEndTime = true}
-      if (SectionsWithConflictingFinishLabTime != 0){
-        Reasons +=
-          (Reasons != "" ? "\n" : "") +
-          SectionsWithConflictingFinishLabTime.length +
-          ` Lab${
-            SectionsWithConflictingFinishLabTime.length > 1
-              ? "s that end"
-              : " that ends"
-          } after ` +
-          intToTime(PEndTime) +
-          ": " +
-          SectionsWithConflictingFinishLabTime.map(
-            (Section) => `Section ${Section.Section} (${Section.CRN})`
-          ).join(" - ")
-          if (!SuggestedEndTime){
+            "Set preferred end time to " + intToTime(EarliestSectionEndTime)
+          );
+          SuggestedEndTime = true;
+        }
+        if (SectionsWithConflictingFinishLabTime != 0) {
+          Reasons +=
+            (Reasons != "" ? "\n" : "") +
+            SectionsWithConflictingFinishLabTime.length +
+            ` Lab${
+              SectionsWithConflictingFinishLabTime.length > 1
+                ? "s that end"
+                : " that ends"
+            } after ` +
+            intToTime(PEndTime) +
+            ": " +
+            SectionsWithConflictingFinishLabTime.map(
+              (Section) => `Section ${Section.Section} (${Section.CRN})`
+            ).join(" - ");
+          if (!SuggestedEndTime) {
             Suggestions.push(
-          "Set preferred end time to " +
-              intToTime(EarliestSectionEndTime))}};
-      throw new Error(
-        `No available section for ${
-          CourseSubject + CourseCode
-        } that applies with given filter!\n` + Reasons + "\n" + Suggestions.join("\n or ")
-      );}
+              "Set preferred end time to " + intToTime(EarliestSectionEndTime)
+            );
+          }
+        }
+        throw new Error(
+          `No available section for ${
+            CourseSubject + CourseCode
+          } that applies with given filter!\n` +
+            Reasons +
+            "\n" +
+            Suggestions.join("\n or ")
+        );
+      }
     }
-    if (NumberOfRecitations != 0) { //TODO: finish error handling on recitations
+    if (NumberOfRecitations != 0) {
+      //TODO: finish error handling on recitations
       if (ListOfFilteredRecitations.length == 0 && !Elective) {
         let Reasons = "";
         if (RecitationsWithNoSeats.length == NumberOfRecitations) {
@@ -653,7 +725,7 @@ async function getPermutations(
       let CoursesWithSeatsFilter = [];
       let FilteredProfessorsForEachCourse = {};
       for (let CourseFilterObject of CourseFilterObjects) {
-        if (CourseFilterObject.Elective) continue
+        if (CourseFilterObject.Elective) continue;
         if (CourseFilterObject.SeatsFilter)
           CoursesWithSeatsFilter.push(CourseFilterObject.CourseName);
         FilteredProfessorsForEachCourse[CourseFilterObject.CourseName] =
@@ -686,10 +758,16 @@ async function getPermutations(
         }
         if (validSeats && validProfs) {
           let [PermMax, PermMin] = getMaxMinDO(Permutation);
-          let ErrorMessage = "No Permutations Available:\n"
-          if (PermMin < PStartTime && PStartTime) ErrorMessage += "Suggestion: Set Preferred StartTime to " + intToTime(PermMin) + "\n"
-          if (PermMax > PEndTime && PEndTime) ErrorMessage += "Suggestion: Set Preferred EndTime to " + intToTime(PermMax)
-          throw new Error(ErrorMessage)
+          let ErrorMessage = "No Permutations Available:\n";
+          if (PermMin < PStartTime && PStartTime)
+            ErrorMessage +=
+              "Suggestion: Set Preferred StartTime to " +
+              intToTime(PermMin) +
+              "\n";
+          if (PermMax > PEndTime && PEndTime)
+            ErrorMessage +=
+              "Suggestion: Set Preferred EndTime to " + intToTime(PermMax);
+          throw new Error(ErrorMessage);
         }
         if (validSeats) PermutationsWithSeatAvailability.push(Permutation);
       }
@@ -700,7 +778,8 @@ async function getPermutations(
           let UnselectedProfessorsPerCourse = [];
           for (let Section of Permutation) {
             if (SetSections.includes(Section)) continue;
-            if (FilteredProfessorsForEachCourse[Section.Subject + Section.Code] &&
+            if (
+              FilteredProfessorsForEachCourse[Section.Subject + Section.Code] &&
               !FilteredProfessorsForEachCourse[
                 Section.Subject + Section.Code
               ].includes(Section.IName + " " + Section.ISName) &&
@@ -769,6 +848,9 @@ async function getPermutations(
       }
       throw new Error("No Permutations Exist: Must Change Courses!");
     }
+  }
+  //TODO: Test the get upper campus function here
+  for (let perm of ArrayOfPermutations){
   }
   return ArrayOfPermutations;
 }
