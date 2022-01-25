@@ -157,7 +157,7 @@ async function getArraysOfFilteredSections(
               Section.IName + " " + Section.ISName
             )
           ) {
-            let ConflictsWithBeginTime = false; //TODO: do the same for recitations
+            let ConflictsWithBeginTime = false;
             if (!(!CourseFilterObject.SeatsFilter || Section.SeatsA > 0))
               SectionsWithNoSeats.push(Section);
             else {
