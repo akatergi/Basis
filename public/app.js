@@ -120,7 +120,7 @@ sortButton[0].addEventListener("click", () => {
 
 sortButton[1].addEventListener("click", () => {
     sortType = 1
-    Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2])).sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
+    Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
     i = 0
     idxSpan.innerText = 1
     clearSched()
@@ -132,7 +132,7 @@ sortButton[1].addEventListener("click", () => {
 
 sortButton[2].addEventListener("click", () => {
     sortType = 2
-    Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])).sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
+    Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
     i = 0
     idxSpan.innerText = 1
     clearSched()
@@ -543,8 +543,8 @@ function updateBoxes() {
                     }
                     return checkCRNsInSched(Schedule, lockedCRNs)
                 })
-                if (sortType == 1) Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2])).sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
-                else if (sortType == 2) Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])).sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
+                if (sortType == 1) Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
+                else if (sortType == 2) Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
                 let newIdxOfSched = Schedules.indexOf(currentSched)
                 i = newIdxOfSched
                 total.innerText = Schedules.length
@@ -620,8 +620,8 @@ function updateDeletedCRNs(CRN, name) {
             }
             return checkCRNsInSched(Schedule, lockedCRNs)
         })
-        if (sortType == 1) Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2])).sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
-        else if (sortType == 2) Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])).sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
+        if (sortType == 1) Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
+        else if (sortType == 2) Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
         let newIdxOfSched = Schedules.indexOf(currentSched)
         i = newIdxOfSched
         total.innerText = Schedules.length

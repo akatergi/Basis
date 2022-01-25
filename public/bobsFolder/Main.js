@@ -24,6 +24,17 @@ const {
   getUpperCampusDif
 } = require("./Tools.js");
 
+ElectivesDictionary = {
+  "SS1": "Social Sciences I",
+  "SS2": "Social Sciences II",
+  "H1": "Humanities I",
+  "H2": "Humanities II",
+  "NS":"Natural Sciences",
+  "Ar":"Arabic Communication Skills",
+  "En":"English Communication Skills",
+  "QT":"Quantitative Thought"
+};
+
 /**This function filters all our sections and contains most of the error handling.
  * It loops over each CourseFilterObject and then starts looping over its sections.
  * If Course is an elective (i.e. CourseFilterObject.Elective == true) then just get the elective sections,
@@ -64,6 +75,9 @@ async function getArraysOfFilteredSections(
   const Electives = await readElectives(Term);
   let AllAcceptedSections = [];
   let AllSections = [];
+  let CoursesWithNoSeats = []
+  let CoursesWithStartConflict = []
+  let CoursesWithEndConflict = []
   for (let CourseFilterObject of CourseFilterObjects) {
     let Sections;
     let Elective = CourseFilterObject.Elective;
@@ -200,10 +214,10 @@ async function getArraysOfFilteredSections(
       AllSections.push(ListOfAllSections);
     }
     if (ListOfFilteredSections.length == 0) {
-      if (NumberOfNulls == Sections.length)
-        throw new Error("All sections had Null Start/End Times");
       let Reasons = "";
       if (Elective) {
+        if (NumberOfNulls == Sections.length)
+        throw new Error(`All selected ${ElectivesDictionary[CourseFilterObject.CourseName]} sections had Null Start/End Times`);
         if (SectionsWithNoSeats.length == NumberOfSectionsWithProf) {
           let SubjectsNames = CourseFilterObject.courseFilter;
           let n = SubjectsNames.length;
@@ -221,7 +235,7 @@ async function getArraysOfFilteredSections(
         }
         if (SectionsWithConflictingStartTime.length == NumberOfSectionsWithProf)
           throw new Error(
-            `All selected electives start before ${intToTime(
+            `All selected ${ElectivesDictionary[CourseFilterObject.CourseName]} electives start before ${intToTime(
               PStartTime
             )}\n Suggestion: Set preferred start time to ${intToTime(
               LatestSectionBeginTime
@@ -266,12 +280,15 @@ async function getArraysOfFilteredSections(
           );
         }
         throw new Error(
-          `No available sections${(CourseFilterObject.SeatsFilter) ? " with available seats":""} for selected electives that applies with given filter!\n` +
+          `No available sections${
+            CourseFilterObject.SeatsFilter ? " with available seats" : ""
+          } for selected electives that applies with given filter!\n` +
             Reasons +
             "\n" +
             Suggestions.join("\n or ")
         );
       } else {
+        if (NumberOfNulls == Sections.length) throw new Error(`All ${CourseSubject + CourseCode} sections had Null Start/End Times`);
         if (SectionsWithNoSeats.length == NumberOfSectionsWithProf) {
           if (SectionsWithNoSeats.length == 1) {
             throw new Error(
@@ -289,7 +306,9 @@ async function getArraysOfFilteredSections(
         }
         if (SectionsWithConflictingStartTime.length == NumberOfSectionsWithProf)
           throw new Error(
-            `All ${CourseSubject + CourseCode} sections start before ${intToTime(
+            `All ${
+              CourseSubject + CourseCode
+            } sections start before ${intToTime(
               PStartTime
             )}\n Suggestion: Set preferred start time to ${intToTime(
               LatestSectionBeginTime
@@ -299,7 +318,9 @@ async function getArraysOfFilteredSections(
           SectionsWithConflictingFinishTime.length == NumberOfSectionsWithProf
         )
           throw new Error(
-            `All ${CourseSubject + CourseCode} sections finish after ${intToTime(
+            `All ${
+              CourseSubject + CourseCode
+            } sections finish after ${intToTime(
               PEndTime
             )}\n Suggestion: Set preferred end time to ${intToTime(
               EarliestSectionEndTime
@@ -858,4 +879,5 @@ module.exports.getPermutations = getPermutations;
  * Todo: Error Handling
  * Todo: Fix S1 and H1 in choice page
  * Todo: Fix Option to choose subject if ar or eng
+ * Todo: Fix sorting by upper/lower
  */
