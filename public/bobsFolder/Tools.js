@@ -406,6 +406,7 @@ async function getProfessors(Term, CourseSubject, CourseCode) {
           if (!ListOfProfs.includes(Professor) && !isRecitation(Section))
             ListOfProfs.push(Professor);
         }
+        ListOfProfs.sort((a,b) => a.localeCompare(b))
         return ListOfProfs;
       } else {
         let TermsThatHaveTheCourse = [];

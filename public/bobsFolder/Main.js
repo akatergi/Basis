@@ -20,7 +20,8 @@ const {
   getMaxMinDO,
   resetColors,
   printArrayOfProfessors,
-  compareTimeDifs
+  compareTimeDifs,
+  getUpperCampusDif
 } = require("./Tools.js");
 
 /**This function filters all our sections and contains most of the error handling.
@@ -157,7 +158,7 @@ async function getArraysOfFilteredSections(
               Section.IName + " " + Section.ISName
             )
           ) {
-            let ConflictsWithBeginTime = false; //TODO: do the same for recitations
+            let ConflictsWithBeginTime = false;
             if (!(!CourseFilterObject.SeatsFilter || Section.SeatsA > 0))
               SectionsWithNoSeats.push(Section);
             else {
@@ -265,10 +266,10 @@ async function getArraysOfFilteredSections(
           );
         }
         throw new Error(
-          `No available sections for selected electives that applies with given filter!\n` +
+          `No available sections${(CourseFilterObject.SeatsFilter) ? " with available seats":""} for selected electives that applies with given filter!\n` +
             Reasons +
             "\n" +
-            Suggestions.join("\n or ") //TODO: add word "available seats"
+            Suggestions.join("\n or ")
         );
       } else {
         if (SectionsWithNoSeats.length == NumberOfSectionsWithProf) {
@@ -288,7 +289,7 @@ async function getArraysOfFilteredSections(
         }
         if (SectionsWithConflictingStartTime.length == NumberOfSectionsWithProf)
           throw new Error(
-            `All sections start before ${intToTime(
+            `All ${CourseSubject + CourseCode} sections start before ${intToTime(
               PStartTime
             )}\n Suggestion: Set preferred start time to ${intToTime(
               LatestSectionBeginTime
@@ -298,7 +299,7 @@ async function getArraysOfFilteredSections(
           SectionsWithConflictingFinishTime.length == NumberOfSectionsWithProf
         )
           throw new Error(
-            `All sections finish after ${intToTime(
+            `All ${CourseSubject + CourseCode} sections finish after ${intToTime(
               PEndTime
             )}\n Suggestion: Set preferred end time to ${intToTime(
               EarliestSectionEndTime
@@ -316,7 +317,7 @@ async function getArraysOfFilteredSections(
                 : " that starts"
             } before ` +
             intToTime(PStartTime) +
-            ":\n" +
+            ": " +
             SectionsWithConflictingStartTime.map(
               (Section) => `Section ${Section.Section} (${Section.CRN})`
             ).join(" - ");
@@ -368,7 +369,7 @@ async function getArraysOfFilteredSections(
             CourseSubject + CourseCode
           } that applies with given filter!\n` +
             Reasons +
-            "\n" +
+            "\nSuggestions:\n" +
             Suggestions.join("\n or ")
         );
       }
@@ -849,9 +850,12 @@ async function getPermutations(
       throw new Error("No Permutations Exist: Must Change Courses!");
     }
   }
-  //TODO: Test the get upper campus function here
-  for (let perm of ArrayOfPermutations){
-  }
   return ArrayOfPermutations;
 }
 module.exports.getPermutations = getPermutations;
+/**
+ * Todo: Fix time difference sort
+ * Todo: Error Handling
+ * Todo: Fix S1 and H1 in choice page
+ * Todo: Fix Option to choose subject if ar or eng
+ */
