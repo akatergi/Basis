@@ -94,9 +94,7 @@ function getMaxTime(Section, MaxTime, Recitation = { ET1: 0 }) {
 }
 
 function styleSorts() {
-    console.log(sortButton)
     for (let indx = 0; indx < 3; indx++) {
-        console.log(sortButton[indx])
         indx === sortType ? document.querySelector(`.sortBtn-${indx}`).classList.add("checkedRadio") : document.querySelector(`.sortBtn-${indx}`).classList.remove("checkedRadio")
     }
 }
@@ -511,7 +509,6 @@ function updateBoxes() {
                 let credits = document.querySelector("#credits")
                 let seats = document.querySelector("#seats")
                 let course = findByCRN(CRN)
-                console.log(box, course, CRN)
                 let cardTitle = document.querySelector("#cardTitle")
                 let cardName = document.querySelector("#cardName")
                 let instructor = document.querySelector("#instructor")
@@ -522,7 +519,6 @@ function updateBoxes() {
                 seats.innerText = `${course.SeatsA || course.SeatsA == 0 ? course.SeatsA : "N/A"}/${(course.SeatsA + course.SeatsT) ? (course.SeatsA + course.SeatsT) : "N/A"}`
                 cardTitle.innerText = `${course.Subject} ${course.Code}`
                 cardName.innerText = course.Title
-                console.log(course, course.Buil2)
                 if (course.IName === "." && course.ISName === "STAFF") instructor.innerText = 'TBA'
                 else if (!course.IName || !course.ISName) instructor.innerText = "N/A"
                 else instructor.innerText = `${course.IName} ${course.ISName}`

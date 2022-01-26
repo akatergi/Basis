@@ -29,3 +29,22 @@
 .electiveBorder{
     border-color:#bfbc6f;
 }
+
+.top{
+    display:flex;
+    justify-content: space-between;
+}
+
+.selBtn{
+    border:none;
+    border-radius:2em;
+    background-color: #cfedf7;
+    border:1px solid #236075;
+    height:1.8em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;    
+}
+.selSpan{
+    font-size: 0.8em;
+}
