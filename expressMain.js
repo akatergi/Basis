@@ -11,13 +11,12 @@ app.engine("ejs", ejsMate)
 const cron = require('node-cron')
 const shell = require('shelljs');
 
-cron.schedule("30 36 19 * * *", () => {
-  console.log("Hi")
+cron.schedule("00 00 ** * * *", () => {
   if (shell.exec('node public\\bobsFolder\\Update.js').code !== 0) {
     shell.exit(1);
   }
   else {
-    shell.echo('Database backup complete');
+    shell.echo('Data updated');
   }
 })
 
@@ -46,7 +45,7 @@ const port = process.env.PORT || 3000
 app.use(express.static(__dirname + "/public"));
 app.listen(port, () => console.log(`Listening on port ${port}`))
 
-app.get("/", (req, res) => res.redirect("/new"))
+app.get("/", (req, res) => res.render("home"))
 
 app.get("/new", (req, res) => {
   let { Term, setCRNs, sections, electives, customCourses } = req.session
