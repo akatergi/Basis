@@ -69,31 +69,31 @@ function checkIfConflictingArray(Sections, PBT, PET) {
   for (let i = 0; i < Sections.length; i++) {
     if (!Sections[i].BT1)
       throw new Error(
-        `Section: ${
+        `Set CRN: ${
           Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
         } has no Start Time`
       );
     if (!Sections[i].ET1)
       throw new Error(
-        `Section: ${
+        `Set CRN: ${
           Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
         } has no Begin Time`
       );
     if (Sections[i].BT1 < PBT && PBT)
       throw new Error(
-        `Section: ${
+        `Set CRN: ${
           Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
         } starts before ${intToTime(PBT)}`
       );
     if (Sections[i].ET1 > PET && PET)
       throw new Error(
-        `Section: ${
+        `Set CRN: ${
           Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
         } starts after ${intToTime(PET)}`
       );
     if (hasLab(Sections[i]) && PET && PET < Sections[i].ET2)
       throw new Error(
-        `Lab of Section: ${
+        `Lab of Set CRN: ${
           Sections[i].Subject + Sections[i].Code + " (" + Sections[i].CRN + ")"
         } starts before ${intToTime(PET)}`
       );
@@ -197,7 +197,7 @@ function getUpperCampusDif(Permutation) {
       else Lower += Section.Schedule1.length;
     }
   }
-  return [Upper,Lower]
+  return [Upper, Lower];
 }
 module.exports.getUpperCampusDif = getUpperCampusDif;
 
@@ -406,6 +406,7 @@ async function getProfessors(Term, CourseSubject, CourseCode) {
           if (!ListOfProfs.includes(Professor) && !isRecitation(Section))
             ListOfProfs.push(Professor);
         }
+        ListOfProfs.sort((a, b) => a.localeCompare(b));
         return ListOfProfs;
       } else {
         let TermsThatHaveTheCourse = [];

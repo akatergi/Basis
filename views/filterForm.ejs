@@ -1,6 +1,16 @@
 <link rel="stylesheet" href="filterForm.css">
 <% layout("boilerplate") %>
 <h1 class="display-3 text-center mt-3 mb-4" id="title">Filter Schedules</h1>
+<% var D = {
+  "SS1":"Social Sciences I",
+  "SS2":"Social Sciences II",
+  "H1":"Humanities I",
+  "H2":"Humanities II",
+  "NS":"Natural Sciences",
+  "Ar":"Arabic Communication Skills",
+  "En":"English Communication Skills",
+  "QT":"Quantitative Thought"
+}; %>
 <form action="/schedules" method="POST">
   <div class="container">
     <div class="row">
@@ -55,17 +65,20 @@
       </small>
       <% let i=0 %>
       <% for(let course of courses) {%>
-      <% let course2 = courses2 ? (courses2.filter(el => el.CourseName===course.CourseName))[0] : null %>
+      <% let course2 = courses2 ? (courses2.find(el => el.CourseName===course.CourseName)) : null %>
       <div class="col-6 col-md">
         <div class="card mb-3">
-          <div class="card-body">
-            <h3>
-              <%= course.CourseName %>
-            </h3>
+          <div class="card-body card-<%= i %>">
+            <div class="top">
+              <h3>
+                <%= course.CourseName %>
+              </h3>
+              <button class="selBtn sel-<%= i %>">Uncheck All</button>
+            </div>
             <input type="hidden" name="courses2[<%- i %>][CourseName]" value="<%= course.CourseName %>">
             <div class="form-check">
               <% let c = course2&&course2.SeatsFilter %>
-              <input type="checkbox" class="form-check-input" name="courses2[<%- i %>][SeatsFilter]" value="true" id="seats-<%= i %>" <%= c ? "checked" : ""%>>
+              <input type="checkbox" class="form-check-input checkbox-<%= i %>" name="courses2[<%- i %>][SeatsFilter]" value="true" id="seats-<%= i %>" <%= c ? "checked" : ""%>>
               <label for="seats-<%=i%>" class="form-check-label">
                 <span class="seatCheck"> <i class="fas fa-chair"></i> Seat Availability </span>
               </label>
@@ -74,7 +87,7 @@
             <% for(let prof of course.Professors) {%>
             <div class="form-check">
               <% let label= `check-${prof}-${course.CourseName}` %>
-              <input type="checkbox" class="form-check-input" id="<%= label %>" value="<%= prof %>" name="courses2[<%- i %>][ProfessorFilter][]" <%= course2&&!course2.ProfessorFilter.includes(prof) ? "" : "checked" %>>
+              <input type="checkbox" class="form-check-input checkbox-<%= i %>" id="<%= label %>" value="<%= prof %>" name="courses2[<%- i %>][ProfessorFilter][]" <%= course2&&!course2.ProfessorFilter.includes(prof) ? "" : "checked" %>>
               <label class="form-check-label" for="<%= label %>">
                 <i class="fas fa-user-tie"></i> <%= prof===". STAFF" ? prof="TBA" : prof %>
               </label>
@@ -89,12 +102,16 @@
       <div class="col-6 col-md">
         <div class="card electiveBorder mb-3">
           <div class="card-body electiveCard">
-            <h3>
-              <%= elective.CourseName %>
-            </h3>
+            <div class="top">
+              <h3>
+                <%= D[elective.CourseName] %> 
+              </h3>
+              <button class="selBtn sel-<%= i+j+1 %>">Uncheck All</button>
+            </div>
+            <% let elective2 = electivesFinal ? (electivesFinal.find(el => el.CourseName===elective.CourseName)) : null %>
             <input type="hidden" name="electivesFinal[<%- j %>][CourseName]" value="<%= elective.CourseName %>">
             <div class="form-check">
-              <input type="checkbox" class="form-check-input" name="electivesFinal[<%- j %>][SeatsFilter]" value=true id="seatsEl-<%= j %>">
+              <input type="checkbox" class="form-check-input checkbox-<%= j+1+i %>" name="electivesFinal[<%- j %>][SeatsFilter]" value="true" id="seatsEl-<%= j %>" <%= elective2&&elective2.SeatsFilter ? "checked" : ""%>>
               <label for="seatsEl-<%=j%>" class="form-check-label">
                 <span class="seatCheck"> <i class="fas fa-chair"></i> Seat Availability </span>
               </label>
@@ -102,7 +119,7 @@
             <% for(let course of elective.availableCourses) {%>
             <div class="form-check">
               <% let label= `checkEl-${elective.CourseName}-${course}-${j}` %>
-              <input type="checkbox" class="form-check-input" id="<%= label %>" value="<%= course %>" checked name="electivesFinal[<%- j %>][courseFilter][]">
+              <input type="checkbox" class="form-check-input checkbox-<%= j+1+i %>" id="<%= label %>" value="<%= course %>" <%= elective2&&elective2.courseFilter&&!elective2.courseFilter.includes(course) ? "" : "checked" %> name="electivesFinal[<%- j %>][courseFilter][]">
               <label class="form-check-label" for="<%= label %>">
                 <i class="fas fa-user-tie"></i> <%= course %>
               </label>
@@ -119,37 +136,7 @@
 </form>
 
 <script>
-  let sHour = document.querySelector("#sHour")
-  let sMin = document.querySelector("#sMin")
-  let eHour = document.querySelector("#eHour")
-  let eMin = document.querySelector("#eMin")
-  let form = document.querySelector("form")
-  let stime = document.querySelector("#stime")
-  let etime = document.querySelector("#etime")
-
   let timeToInt = <%- timeToInt %>
-  form.addEventListener("submit", e => {
-    let sH = sHour.value
-    let sM = sMin.value
-    let eH = eHour.value
-    let eM = eMin.value
-    let sT = stime.value
-    let eT = etime.value
-    if (timeToInt(sHour.value + ":" + sMin.value, stime.value == "PM") > timeToInt(eHour.value + ":" + eMin.value, etime.value == "PM")) {
-      e.preventDefault()
-      alert("Start time must be less than end time!")
-    } else if (parseInt(sH) > 12 || parseInt(sH) < 1 || (sT === "AM" && (parseInt(sH) < 7 || parseInt(sH) === 12))) {
-      e.preventDefault();
-      alert("Start hour must be between 7 AM and 11 PM")
-    } else if (parseInt(sM) < 0 || parseInt(sM) > 59) {
-      e.preventDefault();
-      alert("Start minute must be between 0 and 60")
-    } else if (parseInt(eH) > 12 || parseInt(eH) < 1 || (eT === "AM" && (parseInt(eH) < 7 || parseInt(eH) === 12))) {
-      e.preventDefault();
-      alert("End hour must be between 7 AM and 11 PM")
-    } else if (parseInt(eM) < 0 || parseInt(eM) > 59) {
-      e.preventDefault();
-      alert("End minute must be between 0 and 60")
-    }
-  })
 </script>
+
+<script src="filterForm.js"></script>

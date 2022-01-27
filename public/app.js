@@ -94,9 +94,7 @@ function getMaxTime(Section, MaxTime, Recitation = { ET1: 0 }) {
 }
 
 function styleSorts() {
-    console.log(sortButton)
     for (let indx = 0; indx < 3; indx++) {
-        console.log(sortButton[indx])
         indx === sortType ? document.querySelector(`.sortBtn-${indx}`).classList.add("checkedRadio") : document.querySelector(`.sortBtn-${indx}`).classList.remove("checkedRadio")
     }
 }
@@ -120,7 +118,7 @@ sortButton[0].addEventListener("click", () => {
 
 sortButton[1].addEventListener("click", () => {
     sortType = 1
-    Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2])).sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
+    Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
     i = 0
     idxSpan.innerText = 1
     clearSched()
@@ -132,7 +130,7 @@ sortButton[1].addEventListener("click", () => {
 
 sortButton[2].addEventListener("click", () => {
     sortType = 2
-    Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])).sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
+    Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
     i = 0
     idxSpan.innerText = 1
     clearSched()
@@ -511,7 +509,6 @@ function updateBoxes() {
                 let credits = document.querySelector("#credits")
                 let seats = document.querySelector("#seats")
                 let course = findByCRN(CRN)
-                console.log(box, course, CRN)
                 let cardTitle = document.querySelector("#cardTitle")
                 let cardName = document.querySelector("#cardName")
                 let instructor = document.querySelector("#instructor")
@@ -522,7 +519,6 @@ function updateBoxes() {
                 seats.innerText = `${course.SeatsA || course.SeatsA == 0 ? course.SeatsA : "N/A"}/${(course.SeatsA + course.SeatsT) ? (course.SeatsA + course.SeatsT) : "N/A"}`
                 cardTitle.innerText = `${course.Subject} ${course.Code}`
                 cardName.innerText = course.Title
-                console.log(course, course.Buil2)
                 if (course.IName === "." && course.ISName === "STAFF") instructor.innerText = 'TBA'
                 else if (!course.IName || !course.ISName) instructor.innerText = "N/A"
                 else instructor.innerText = `${course.IName} ${course.ISName}`
@@ -543,8 +539,8 @@ function updateBoxes() {
                     }
                     return checkCRNsInSched(Schedule, lockedCRNs)
                 })
-                if (sortType == 1) Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2])).sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
-                else if (sortType == 2) Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])).sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
+                if (sortType == 1) Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
+                else if (sortType == 2) Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
                 let newIdxOfSched = Schedules.indexOf(currentSched)
                 i = newIdxOfSched
                 total.innerText = Schedules.length
@@ -620,8 +616,8 @@ function updateDeletedCRNs(CRN, name) {
             }
             return checkCRNsInSched(Schedule, lockedCRNs)
         })
-        if (sortType == 1) Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2])).sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
-        else if (sortType == 2) Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])).sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
+        if (sortType == 1) Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
+        else if (sortType == 2) Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
         let newIdxOfSched = Schedules.indexOf(currentSched)
         i = newIdxOfSched
         total.innerText = Schedules.length

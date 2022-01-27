@@ -8,6 +8,18 @@ const { getPermutations } = require("./public/bobsFolder/Main")
 const session = require("express-session")
 const flash = require("connect-flash")
 app.engine("ejs", ejsMate)
+const cron = require('node-cron')
+const shell = require('shelljs');
+
+cron.schedule("30 36 19 * * *", () => {
+  console.log("Hi")
+  if (shell.exec('node public\\bobsFolder\\Update.js').code !== 0) {
+    shell.exit(1);
+  }
+  else {
+    shell.echo('Database backup complete');
+  }
+})
 
 app.use(express.urlencoded({ extended: true }))
 app.set('view engine', 'ejs')
@@ -98,7 +110,8 @@ app.post("/filter", async (req, res) => {
 })
 
 app.get("/filter", async (req, res) => {
-  let { Term, SetSections, courses, courses2, electivesArr, customCourses, sHour, sMinute, stime, eHour, eMinute, etime } = req.session
+  let { Term, SetSections, courses, courses2, electivesArr, customCourses, sHour, sMinute, stime, eHour, eMinute, etime, electivesFinal } = req.session
+  if(!electivesFinal) electivesFinal = []
   if (!courses2) courses2 = []
   if (!Term || !SetSections || !courses) {
     req.flash("error", "Missing parameters!")
@@ -109,7 +122,7 @@ app.get("/filter", async (req, res) => {
     req.flash("error", "Need at least one course to create schedule!")
     return res.redirect("/new")
   }
-  res.render("filterForm", { timeToInt, Term, SetSections, courses, electivesArr, customCourses, sHour, sMinute, stime, eHour, eMinute, etime, courses2 })
+  res.render("filterForm", { timeToInt, Term, SetSections, courses, electivesArr, customCourses, sHour, sMinute, stime, eHour, eMinute, etime, courses2, electivesFinal })
 })
 
 app.post("/schedules", async (req, res) => {
@@ -125,24 +138,27 @@ app.post("/schedules", async (req, res) => {
   req.session.eMinute = eMinute
   req.session.etime = etime
   if (!courses2) courses2 = []
-
+  
   for (let i in courses2) {
     if (courses2[i].SeatsFilter === "true") courses2[i].SeatsFilter = true;
     else courses2[i].SeatsFilter = false;
     if (!courses2[i].ProfessorFilter) courses2[i].ProfessorFilter = []
     courses2[i].Elective = false
   }
-try{
-  electivesFinal.forEach(elective => {
-    elective.SeatsFilter ? elective.SeatsFilter = true : elective.SeatsFilter = false
-    elective.ProfessorFilter = []
-    elective.Elective = true
-    if(!elective.courseFilter) throw new Error(`Must select at least one elective course for ${elective.CourseName}!`)
-  })
-} catch(err){
-  req.flash("error", err.message)
-  return res.redirect("/filter")
-}
+  try{
+    var throwError = false
+    electivesFinal.forEach(elective => {
+      elective.SeatsFilter ? elective.SeatsFilter = true : elective.SeatsFilter = false
+      elective.ProfessorFilter = []
+      elective.Elective = true
+      if(!elective.courseFilter) {elective.courseFilter=[]; throwError = true}
+    })
+    req.session.electivesFinal = electivesFinal
+    if(throwError) throw new Error("Must select at least one course for chosen electives!")
+  } catch(err){
+    req.flash("error", err.message)
+    return res.redirect("/filter")
+  }
 
   req.session.courses2 = courses2
   let PStartTime, PEndTime;
