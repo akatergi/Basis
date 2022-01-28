@@ -93,6 +93,60 @@ function getMaxTime(Section, MaxTime, Recitation = { ET1: 0 }) {
     return MaxTime;
 }
 
+function getTimeDifferenceDev(Perm){
+  let Days = {M:[], T:[], W:[],R:[],F:[],S:[]}
+  for (let Section of Perm){
+    for (let D of Section.Schedule1){
+      Days[D].push({B:Section.BT1, E:Section.ET1})
+    }
+    for (let D of Section.Schedule2){
+      Days[D].push({B:Section.BT2, E:Section.ET2})
+    }
+  }
+  for (let D in Days){
+    Day = Days[D]
+    if (Day.length){
+      Day.sort((x,y)=> x.B - y.B)
+      let first = true
+      let nextEnd = null
+      for (let Timing in Day){
+        if (first){
+          nextEnd = Day[Timing].E
+          Day[Timing] = SubtractTime(800, Day[Timing].B)
+          first = false
+        } else {
+          let CurrentEnd = Day[Timing].E
+          Day[Timing] = SubtractTime(nextEnd, Day[Timing].B)
+          nextEnd = CurrentEnd
+        }
+    }
+    Days[D] = Avg(Day)
+    } else {
+      Days[D] = null
+    }
+  }
+  let ToAdd = []
+  for (let D in Days){
+    console.log(Days[D],ToAdd)
+    if (Days[D] != null) ToAdd.push(Days[D])
+  }
+  return Avg(ToAdd)
+}
+
+function Avg(L){
+  return L.reduce((a,b) => a + b)/L.length
+}
+
+function SubtractTime(T1, T2){
+  T1 = String(T1)
+  T1 = [T1.slice(0,T1.length - 2),T1.slice(T1.length - 2)]
+  T2 = String(T2)
+  T2 = [T2.slice(0,T2.length - 2), T2.slice(T2.length - 2)]
+  T1 = parseInt(T1[0])*60 + parseInt(T1[1])
+  T2 = parseInt(T2[0])*60 + parseInt(T2[1])
+  return T2 - T1
+}
+
 function styleSorts() {
     for (let indx = 0; indx < 3; indx++) {
         indx === sortType ? document.querySelector(`.sortBtn-${indx}`).classList.add("checkedRadio") : document.querySelector(`.sortBtn-${indx}`).classList.remove("checkedRadio")
@@ -118,7 +172,10 @@ sortButton[0].addEventListener("click", () => {
 
 sortButton[1].addEventListener("click", () => {
     sortType = 1
-    Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
+    Schedules.sort((x, y) => {
+      let compute = (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])
+      if (compute == 0) return getTimeDifferenceDev(x) - getTimeDifferenceDev(y)
+      return compute})
     i = 0
     idxSpan.innerText = 1
     clearSched()
