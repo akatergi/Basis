@@ -899,10 +899,3 @@ async function getPermutations(
   return ArrayOfPermutations;
 }
 module.exports.getPermutations = getPermutations;
-/**
- * Todo: Fix time difference sort
- * Todo: Error Handling
- * Todo: Fix S1 and H1 in choice page
- * Todo: Fix Option to choose subject if ar or eng
- * Todo: Fix sorting by upper/lower
- */

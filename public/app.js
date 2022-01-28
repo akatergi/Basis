@@ -104,7 +104,7 @@ function getTimeDifferenceDev(Perm){
     }
   }
   for (let D in Days){
-    Day = Days[D]
+    let Day = Days[D]
     if (Day.length){
       Day.sort((x,y)=> x.B - y.B)
       let first = true
@@ -127,7 +127,6 @@ function getTimeDifferenceDev(Perm){
   }
   let ToAdd = []
   for (let D in Days){
-    console.log(Days[D],ToAdd)
     if (Days[D] != null) ToAdd.push(Days[D])
   }
   return Avg(ToAdd)
@@ -153,6 +152,17 @@ function styleSorts() {
     }
 }
 
+function sortByTime(x,y){
+  let compute = (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])
+  if (compute == 0) return getTimeDifferenceDev(x) - getTimeDifferenceDev(y)
+  return compute}
+
+function sortByDay(x,y){
+  let compute = getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2])
+  if (compute == 0) return sortByTime(x,y)
+  return compute
+}
+
 sortButton[0].addEventListener("click", () => {
     sortType = 0
     Schedules = mainSchedules.filter(Schedule => {
@@ -172,10 +182,7 @@ sortButton[0].addEventListener("click", () => {
 
 sortButton[1].addEventListener("click", () => {
     sortType = 1
-    Schedules.sort((x, y) => {
-      let compute = (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1])
-      if (compute == 0) return getTimeDifferenceDev(x) - getTimeDifferenceDev(y)
-      return compute})
+    Schedules.sort((x, y) => sortByTime(x,y))
     i = 0
     idxSpan.innerText = 1
     clearSched()
@@ -187,7 +194,7 @@ sortButton[1].addEventListener("click", () => {
 
 sortButton[2].addEventListener("click", () => {
     sortType = 2
-    Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
+    Schedules.sort((x, y) => sortByDay(x,y))
     i = 0
     idxSpan.innerText = 1
     clearSched()
@@ -596,8 +603,8 @@ function updateBoxes() {
                     }
                     return checkCRNsInSched(Schedule, lockedCRNs)
                 })
-                if (sortType == 1) Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
-                else if (sortType == 2) Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
+                if (sortType == 1) Schedules.sort((x, y) => sortByTime(x,y))
+                else if (sortType == 2) Schedules.sort((x, y) => sortByDay(x,y))
                 let newIdxOfSched = Schedules.indexOf(currentSched)
                 i = newIdxOfSched
                 total.innerText = Schedules.length
@@ -673,8 +680,8 @@ function updateDeletedCRNs(CRN, name) {
             }
             return checkCRNsInSched(Schedule, lockedCRNs)
         })
-        if (sortType == 1) Schedules.sort((x, y) => (getMaxMinDO(x)[0] - getMaxMinDO(x)[1]) - (getMaxMinDO(y)[0] - getMaxMinDO(y)[1]))
-        else if (sortType == 2) Schedules.sort((x, y) => getDayDif(getMaxMinDO(y)[2]) - getDayDif(getMaxMinDO(x)[2]))
+        if (sortType == 1) Schedules.sort((x, y) => sortByTime(x,y))
+        else if (sortType == 2) Schedules.sort((x, y) => sortByDay(x,y))
         let newIdxOfSched = Schedules.indexOf(currentSched)
         i = newIdxOfSched
         total.innerText = Schedules.length
