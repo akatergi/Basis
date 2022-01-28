@@ -25,14 +25,14 @@ const {
 } = require("./Tools.js");
 
 ElectivesDictionary = {
-  "SS1": "Social Sciences I",
-  "SS2": "Social Sciences II",
-  "H1": "Humanities I",
-  "H2": "Humanities II",
-  "NS":"Natural Sciences",
-  "Ar":"Arabic Communication Skills",
-  "En":"English Communication Skills",
-  "QT":"Quantitative Thought"
+  SS1: "Social Sciences I",
+  SS2: "Social Sciences II",
+  H1: "Humanities I",
+  H2: "Humanities II",
+  NS: "Natural Sciences",
+  Ar: "Arabic Communication Skills",
+  En: "English Communication Skills",
+  QT: "Quantitative Thought"
 };
 
 /**This function filters all our sections and contains most of the error handling.
@@ -75,10 +75,10 @@ async function getArraysOfFilteredSections(
   const Electives = await readElectives(Term);
   let AllAcceptedSections = [];
   let AllSections = [];
-  let CoursesWithAllStartConflict = []
-  let CoursesWithAllEndConflict = []
-  let CoursesWithStartConflict = []
-  let CoursesWithEndConflict = []
+  let CoursesWithAllStartConflict = [];
+  let CoursesWithAllEndConflict = [];
+  let CoursesWithStartConflict = [];
+  let CoursesWithEndConflict = [];
   for (let CourseFilterObject of CourseFilterObjects) {
     let Sections;
     let Elective = CourseFilterObject.Elective;
@@ -110,11 +110,7 @@ async function getArraysOfFilteredSections(
       RecitationsWithConflictingStartTime,
       RecitationsWithConflictingEndTime
     ] = [[], [], []];
-    let NumberOfSections =
-      (NumberOfRecitations =
-      NumberOfNulls =
-      NumberOfSectionsWithProf =
-        0);
+    let NumberOfRecitations = (NumberOfNulls = NumberOfSectionsWithProf = 0);
     let [LatestSectionBeginTime, EarliestSectionEndTime] = [0, 2400];
     let [LatestRecitationBeginTime, EarliestRecitationEndTime] = [0, 2400];
     for (let Section of Sections) {
@@ -218,7 +214,11 @@ async function getArraysOfFilteredSections(
       let Reasons = "";
       if (Elective) {
         if (NumberOfNulls == Sections.length)
-        throw new Error(`All selected ${ElectivesDictionary[CourseFilterObject.CourseName]} sections had Null Start/End Times`);
+          throw new Error(
+            `All selected ${
+              ElectivesDictionary[CourseFilterObject.CourseName]
+            } sections had Null Start/End Times`
+          );
         if (SectionsWithNoSeats.length == NumberOfSectionsWithProf) {
           let SubjectsNames = CourseFilterObject.courseFilter;
           let n = SubjectsNames.length;
@@ -236,7 +236,9 @@ async function getArraysOfFilteredSections(
         }
         if (SectionsWithConflictingStartTime.length == NumberOfSectionsWithProf)
           throw new Error(
-            `All selected ${ElectivesDictionary[CourseFilterObject.CourseName]} electives start before ${intToTime(
+            `All selected ${
+              ElectivesDictionary[CourseFilterObject.CourseName]
+            } electives start before ${intToTime(
               PStartTime
             )}\n Suggestion: Set preferred start time to ${intToTime(
               LatestSectionBeginTime
@@ -289,7 +291,12 @@ async function getArraysOfFilteredSections(
             Suggestions.join("\n or ")
         );
       } else {
-        if (NumberOfNulls == Sections.length) throw new Error(`All ${CourseSubject + CourseCode} sections had Null Start/End Times`);
+        if (NumberOfNulls == Sections.length)
+          throw new Error(
+            `All ${
+              CourseSubject + CourseCode
+            } sections had Null Start/End Times`
+          );
         if (SectionsWithNoSeats.length == NumberOfSectionsWithProf) {
           if (SectionsWithNoSeats.length == 1) {
             throw new Error(
@@ -305,31 +312,42 @@ async function getArraysOfFilteredSections(
             );
           }
         }
-        if (SectionsWithConflictingStartTime.length == NumberOfSectionsWithProf){
-          CoursesWithAllStartConflict.push({CourseName: CourseSubject + CourseCode, Time:LatestSectionBeginTime})
-          continue}
-          // throw new Error(
-          //   `All ${
-          //     CourseSubject + CourseCode
-          //   } sections start before ${intToTime(
-          //     PStartTime
-          //   )}\n Suggestion: Set preferred start time to ${intToTime(
-          //     LatestSectionBeginTime
-          //   )}`
-          // );
+        if (
+          SectionsWithConflictingStartTime.length == NumberOfSectionsWithProf
+        ) {
+          CoursesWithAllStartConflict.push({
+            CourseName: CourseSubject + CourseCode,
+            Time: LatestSectionBeginTime
+          });
+          continue;
+        }
+        // throw new Error(
+        //   `All ${
+        //     CourseSubject + CourseCode
+        //   } sections start before ${intToTime(
+        //     PStartTime
+        //   )}\n Suggestion: Set preferred start time to ${intToTime(
+        //     LatestSectionBeginTime
+        //   )}`
+        // );
         if (
           SectionsWithConflictingFinishTime.length == NumberOfSectionsWithProf
-        ){CoursesWithAllEndConflict.push({CourseName: CourseSubject + CourseCode, Time:EarliestSectionEndTime})
-      continue}
-          // throw new Error(
-          //   `All ${
-          //     CourseSubject + CourseCode
-          //   } sections finish after ${intToTime(
-          //     PEndTime
-          //   )}\n Suggestion: Set preferred end time to ${intToTime(
-          //     EarliestSectionEndTime
-          //   )}`
-          // );
+        ) {
+          CoursesWithAllEndConflict.push({
+            CourseName: CourseSubject + CourseCode,
+            Time: EarliestSectionEndTime
+          });
+          continue;
+        }
+        // throw new Error(
+        //   `All ${
+        //     CourseSubject + CourseCode
+        //   } sections finish after ${intToTime(
+        //     PEndTime
+        //   )}\n Suggestion: Set preferred end time to ${intToTime(
+        //     EarliestSectionEndTime
+        //   )}`
+        // );
         let Suggestions = [];
         let SuggestedEndTime = false;
         if (SectionsWithConflictingStartTime != 0) {
@@ -491,26 +509,36 @@ async function getArraysOfFilteredSections(
       }
     }
   }
-  let Suggestions = []
-  let CourseNamesThatStartBefore = []
-  let SuggestedStartTime = null
-  let CourseNamesThatFinishAfter = []
-  let SuggestedEndTime = null
-  if (CoursesWithAllStartConflict.length){
-    for (let CObject of CoursesWithAllStartConflict){
-      CourseNamesThatStartBefore.push(CObject.CourseName)
-      if (!SuggestedStartTime || CObject.Time < SuggestedStartTime) SuggestedStartTime = CObject.Time
+  let Suggestions = [];
+  let CourseNamesThatStartBefore = [];
+  let SuggestedStartTime = null;
+  let CourseNamesThatFinishAfter = [];
+  let SuggestedEndTime = null;
+  if (CoursesWithAllStartConflict.length) {
+    for (let CObject of CoursesWithAllStartConflict) {
+      CourseNamesThatStartBefore.push(CObject.CourseName);
+      if (!SuggestedStartTime || CObject.Time < SuggestedStartTime)
+        SuggestedStartTime = CObject.Time;
     }
-    throw new Error(`All sections for ${printArrayOfProfessors(CourseNamesThatStartBefore)} start before ${intToTime(PStartTime)}\n`
-    + `Set preferred start time to ${intToTime(SuggestedStartTime)}`)
+    throw new Error(
+      `All sections for ${printArrayOfProfessors(
+        CourseNamesThatStartBefore
+      )} start before ${intToTime(PStartTime)}\n` +
+        `Set preferred start time to ${intToTime(SuggestedStartTime)}`
+    );
   }
-  if (CoursesWithAllEndConflict.length){
-    for (let CObject of CoursesWithAllEndConflict){
-      CourseNamesThatFinishAfter.push(CObject.CourseName)
-      if (!SuggestedEndTime || CObject.Time > SuggestedEndTime) SuggestedEndTime = CObject.Time
+  if (CoursesWithAllEndConflict.length) {
+    for (let CObject of CoursesWithAllEndConflict) {
+      CourseNamesThatFinishAfter.push(CObject.CourseName);
+      if (!SuggestedEndTime || CObject.Time > SuggestedEndTime)
+        SuggestedEndTime = CObject.Time;
     }
-    throw new Error(`All sections for ${printArrayOfProfessors(CourseNamesThatFinishAfter)} finish after ${intToTime(PEndTime)}\n`
-    + `Set preferred end time to ${intToTime(SuggestedEndTime)}`)
+    throw new Error(
+      `All sections for ${printArrayOfProfessors(
+        CourseNamesThatFinishAfter
+      )} finish after ${intToTime(PEndTime)}\n` +
+        `Set preferred end time to ${intToTime(SuggestedEndTime)}`
+    );
   }
   return [AllAcceptedSections, AllSections];
 }
