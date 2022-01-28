@@ -1,0 +1,91 @@
+body{
+    background-image: url("../backgroundpic.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top;
+    -webkit-text-size-adjust:100%;
+    text-size-adjust: none
+}
+
+.myContainer{
+    margin-left:8%;
+}
+
+#subtitle{
+    font-size:larger;
+}
+
+.customNav{
+    display:flex;
+    justify-content: space-between;
+    font-size: 1.5em;
+    margin-top:0.7em;
+}
+
+.customLink{
+    text-decoration: none;
+    color: rgb(35, 35, 140);
+    font-weight: 600;
+}
+
+.right{
+    display:flex;
+    justify-content: space-around;
+
+    width:40%;
+}
+
+#content{
+    margin-top:120px;
+    width:630px;
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    margin-left:8em;
+    /* position:absolute; */
+}
+
+#line{
+    display: flex;
+    /* justify-content: center; */
+}
+
+hr{
+    width:60%;
+}
+
+@media(max-width:1000px){
+    body{
+        background-color: aliceblue;
+        background-image: none;
+    }
+    .right{
+        width:80%;
+    }
+
+}
+
+
+#sub{
+    /* margin-left:20%; */
+    font-size:1.2em;
+    line-height: 1.5em;
+    width:80%;
+}
+
+.scheduleBtn{
+    background-color: #bdd4f5;
+    font-size: xx-large;
+    color:rgb(34, 34, 84);
+    margin-left:50%;
+    width:fit-content;
+    border-radius: 0.4em;
+    margin-top:2%;
+    border:none;
+    padding:0.4em;
+    text-decoration: none;
+}
+.scheduleBtn:hover{
+    color:rgb(34, 34, 84);
+    
+}
