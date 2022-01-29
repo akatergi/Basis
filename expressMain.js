@@ -11,7 +11,7 @@ app.engine("ejs", ejsMate)
 const cron = require('node-cron')
 const shell = require('shelljs');
 
-cron.schedule("00 00 ** * * *", () => {
+cron.schedule("00 *\5 ** * * *", () => {
   if (shell.exec('node public\\bobsFolder\\Update.js').code !== 0) {
     shell.exit(1);
   }

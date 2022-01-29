@@ -4,11 +4,8 @@ body{
     background-repeat: no-repeat;
     background-position: top;
     -webkit-text-size-adjust:100%;
-    text-size-adjust: none
-}
-
-.myContainer{
-    margin-left:8%;
+    text-size-adjust: none;
+    max-height:100vh;
 }
 
 #subtitle{
@@ -18,31 +15,47 @@ body{
 .customNav{
     display:flex;
     justify-content: space-between;
-    font-size: 1.5em;
+    font-size: 1.7em;
     margin-top:0.7em;
 }
 
 .customLink{
     text-decoration: none;
-    color: rgb(35, 35, 140);
+    color: #23238c;
     font-weight: 600;
+    transition: all 200ms;
+}
+
+.customLink:hover{
+    text-decoration: underline;
+    color:#4444bb;
 }
 
 .right{
     display:flex;
     justify-content: space-around;
-
     width:40%;
 }
 
 #content{
-    margin-top:120px;
-    width:630px;
-    max-height: 60vh;
+    margin-top:80px;
     display: flex;
     flex-direction: column;
-    margin-left:8em;
-    /* position:absolute; */
+    margin-left:2em;
+    background-image: url("../innerBackground.png");
+    border:2px solid black;
+    box-sizing: border-box;
+    border-radius:1em;
+    background-size: contain;
+    background-repeat: no-repeat;
+    height:494px;
+    width:1200px;
+    padding-left:170px;
+    padding-right:340px;
+    word-wrap:break-word;
+    padding-top:2em;
+    -webkit-box-shadow: 4px 7px 28px 11px #a7a5ac9e; 
+    box-shadow: 4px 7px 14px 11px #a7a5ac;
 }
 
 #line{
@@ -54,7 +67,7 @@ hr{
     width:60%;
 }
 
-@media(max-width:1000px){
+/* @media(max-width:1000px){
     body{
         background-color: aliceblue;
         background-image: none;
@@ -63,7 +76,7 @@ hr{
         width:80%;
     }
 
-}
+} */
 
 
 #sub{
@@ -71,16 +84,17 @@ hr{
     font-size:1.2em;
     line-height: 1.5em;
     width:80%;
+    margin-bottom:1.3em;
 }
 
 .scheduleBtn{
     background-color: #bdd4f5;
     font-size: xx-large;
     color:rgb(34, 34, 84);
-    margin-left:50%;
+    margin-left:30%;
     width:fit-content;
     border-radius: 0.4em;
-    margin-top:2%;
+    margin-top:4%;
     border:none;
     padding:0.4em;
     text-decoration: none;
@@ -88,4 +102,11 @@ hr{
 .scheduleBtn:hover{
     color:rgb(34, 34, 84);
     
+}
+
+@media(max-width:1100px){
+    .right{
+        width:80%;
+    }
+
 }
