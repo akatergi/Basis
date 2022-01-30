@@ -45,6 +45,7 @@ const editsPM = document.querySelector("#editsPM")
 const mainClose = document.querySelector("#mainClose")
 const editClose = document.querySelector("#editClose")
 const form = document.querySelector("form")
+var customIdx;
 
 // let crnCount = 0
 // let counter = 0
@@ -313,6 +314,7 @@ createCourse.addEventListener("click", e => {
                 let li = document.createElement("li")
                 li.classList.add("list-group-item", "form-control", "mt-2")
                 li.innerText = `Title: ${Subject}, Time: ${intToTime(BT1)} - ${intToTime(ET1)}, Schedule:${Schedule1}`
+                li.id = `li-${customCourses.indexOf(customCourseObj)}`
 
                 let clearButton = document.createElement("a")
                 clearButton.append(getIcon())
@@ -328,6 +330,9 @@ createCourse.addEventListener("click", e => {
                 editButton.id = `edit-${CRN}`
 
                 editButton.addEventListener("click", () => {
+                    e.preventDefault()
+                    console.log(editButton.id.slice(9))
+                    customIdx = parseInt(editButton.id.slice(9))
                     editTitle.value = Subject
                     editsHour.value = sH
                     editeHour.value = eH
@@ -350,51 +355,6 @@ createCourse.addEventListener("click", e => {
                     else { editsPM.selected = false; editsAM.selected = true }
                     if (eT === "PM") { editePM.selected = true; editeAM.selected = false }
                     else { editePM.selected = false; editeAM.selected = true }
-
-                    updateButton.addEventListener("click", e => {
-                        e.preventDefault()
-                        let idx = customCourses.indexOf(customCourseObj)
-                        Subject = editTitle.value
-                        sH = editsHour.value
-                        sM = editsMinute.value
-                        sT = editsTime.value
-                        eH = editeHour.value
-                        eM = editeMinute.value
-                        eT = editeTime.value
-                        BT1 = timeToInt(sH + ":" + sM, sT === "PM")
-                        ET1 = timeToInt(eH + ":" + eM, eT === "PM")
-                        if (!sM) sM = "00"
-                        if (!eM) eM = "00"
-                        if (parseInt(sH) > 12 || parseInt(sH) < 1 || (sT === "AM" && (parseInt(sH) < 7 || parseInt(sH) === 12))) alert("Start hour must be between 7 AM and 11 PM")
-                        else if (parseInt(sM) < 0 || parseInt(sM) > 59) alert("Start minute must be between 0 and 60")
-                        else if (parseInt(eH) > 12 || parseInt(eH) < 1 || (eT === "AM" && (parseInt(eH) < 7 || parseInt(eH) === 12))) alert("End hour must be between 7 AM and 11 PM")
-                        else if (parseInt(eM) < 0 || parseInt(eM) > 59) alert("End minute must be between 0 and 60")
-                        else if (Subject === "") alert("Need to specify name!")
-                        else if (sH.length === 0) alert("Must specify Start Hour!")
-                        else if (eH.length === 0) alert("Must specify End Hour!")
-                        else if (BT1 > ET1) alert("End time must be less than start time!")
-                        else if ((ET1 - BT1) < 30) alert("Custom Course must be at least 30 minutes!")
-
-                        else {
-
-                            days = [editcheckMonday, editcheckTuesday, editcheckWednesday, editcheckThursday, editcheckFriday, editcheckSaturday]
-                            Schedule1 = ""
-
-                            for (let day of days) {
-                                if (day.checked) {
-                                    if (day.value !== "Thursday") Schedule1 += day.value[0]
-                                    else Schedule1 += "R"
-                                }
-                            }
-                            if (Schedule1.length === 0) alert("Course must be on at least one day!")
-                            else {
-                                customCourseObj = { Subject, Code: "", CRN, BT1, ET1, Schedule1, LCRN: [], Schedule2: "" }
-                                customCourses[idx] = customCourseObj
-                                li.innerText = `Title: ${Subject}, Time: ${intToTime(BT1)} - ${intToTime(ET1)}, Schedule:${Schedule1}`
-                                editClose.click()
-                            }
-                        }
-                    })
                 })
 
                 clearButton.addEventListener("click", function (e) {
@@ -487,7 +447,7 @@ if (customDelButtons.length) {
 let editButtons = document.querySelectorAll(".editButton")
 editButtons.forEach(editButton => {
     editButton.addEventListener("click", () => {
-        let idx = parseInt(editButton.id.slice(12))
+        customIdx = parseInt(editButton.id.slice(9))
         let customCourseObj = customCourses[idx]
         let { Subject, BT1, ET1, CRN, Schedule1 } = customCourseObj
         let P = String(BT1)
@@ -524,48 +484,7 @@ editButtons.forEach(editButton => {
         else { editsPM.selected = false; editsAM.selected = true }
         if (eT === "PM") { editePM.selected = true; editeAM.selected = false }
         else { editePM.selected = false; editeAM.selected = true }
-
-        updateButton.addEventListener("click", () => {
-            Subject = editTitle.value
-            sH = editsHour.value
-            sM = editsMinute.value
-            sT = editsTime.value
-            eH = editeHour.value
-            eM = editeMinute.value
-            eT = editeTime.value
-            BT1 = timeToInt(sH + ":" + sM, sT === "PM")
-            ET1 = timeToInt(eH + ":" + eM, eT === "PM")
-            if (!sM) sM = "00"
-            if (!eM) eM = "00"
-            if (parseInt(sH) > 12 || parseInt(sH) < 1 || (sT === "AM" && (parseInt(sH) < 7 || parseInt(sH) === 12))) alert("Start hour must be between 7 AM and 11 PM")
-            else if (parseInt(sM) < 0 || parseInt(sM) > 59) alert("Start minute must be between 0 and 60")
-            else if (parseInt(eH) > 12 || parseInt(eH) < 1 || (eT === "AM" && (parseInt(eH) < 7 || parseInt(eH) === 12))) alert("End hour must be between 7 AM and 11 PM")
-            else if (parseInt(eM) < 0 || parseInt(eM) > 59) alert("End minute must be between 0 and 60")
-            else if (Subject === "") alert("Need to specify name!")
-            else if (sH.length === 0) alert("Must specify Start Hour!")
-            else if (eH.length === 0) alert("Must specify End Hour!")
-
-            else {
-
-                days = [editcheckMonday, editcheckTuesday, editcheckWednesday, editcheckThursday, editcheckFriday, editcheckSaturday]
-                Schedule1 = ""
-
-                for (let day of days) {
-                    if (day.checked) {
-                        if (day.value !== "Thursday") Schedule1 += day.value[0]
-                        else Schedule1 += "R"
-                    }
-                }
-                if (Schedule1.length === 0) alert("Course must be on at least one day!")
-                else {
-                    customCourseObj = { Subject, Code: "", CRN, BT1, ET1, Schedule1, LCRN: [], Schedule2: "" }
-                    customCourses[idx] = customCourseObj
-                    let li = document.querySelector(`#li-${idx}`)
-                    li.innerText = `Title: ${Subject}, Time: ${intToTime(BT1)} - ${intToTime(ET1)}, Schedule:${Schedule1}`
-                    editClose.click()
-                }
-            }
-        })
+        
     })
 })
 
@@ -649,4 +568,55 @@ document.querySelectorAll(".crnInput").forEach(course => {
             newerInp.select()
         }
     })
+})
+
+function updateCustomCourse() {
+    Subject = editTitle.value
+    sH = editsHour.value
+    sM = editsMinute.value
+    sT = editsTime.value
+    eH = editeHour.value
+    eM = editeMinute.value
+    eT = editeTime.value
+    BT1 = timeToInt(sH + ":" + sM, sT === "PM")
+    ET1 = timeToInt(eH + ":" + eM, eT === "PM")
+    if (!sM) sM = "00"
+    if (!eM) eM = "00"
+    if (parseInt(sH) > 12 || parseInt(sH) < 1 || (sT === "AM" && (parseInt(sH) < 7 || parseInt(sH) === 12))) alert("Start hour must be between 7 AM and 11 PM")
+    else if (parseInt(sM) < 0 || parseInt(sM) > 59) alert("Start minute must be between 0 and 60")
+    else if (parseInt(eH) > 12 || parseInt(eH) < 1 || (eT === "AM" && (parseInt(eH) < 7 || parseInt(eH) === 12))) alert("End hour must be between 7 AM and 11 PM")
+    else if (parseInt(eM) < 0 || parseInt(eM) > 59) alert("End minute must be between 0 and 60")
+    else if (Subject === "") alert("Need to specify name!")
+    else if (sH.length === 0) alert("Must specify Start Hour!")
+    else if (eH.length === 0) alert("Must specify End Hour!")
+    else if (BT1 > ET1) alert("End time must be less than start time!")
+    else if ((ET1 - BT1) < 30) alert("Custom Course must be at least 30 minutes!")
+
+    else {
+
+        days = [editcheckMonday, editcheckTuesday, editcheckWednesday, editcheckThursday, editcheckFriday, editcheckSaturday]
+        Schedule1 = ""
+
+        for (let day of days) {
+            if (day.checked) {
+                if (day.value !== "Thursday") Schedule1 += day.value[0]
+                else Schedule1 += "R"
+            }
+        }
+        if (Schedule1.length === 0) alert("Course must be on at least one day!")
+        else {
+            let { CRN } = customCourses[customIdx]
+            let customCourseObj = { Subject, BT1, ET1, Code: "", CRN, LCRN: [], Schedule1, Schedule2: "" }
+            console.log(customCourses, customIdx, customCourseObj)
+            customCourses[customIdx] = customCourseObj
+            let li = document.querySelector(`#li-${customIdx}`)
+            li.innerText = `Title: ${Subject}, Time: ${intToTime(BT1)} - ${intToTime(ET1)}, Schedule:${Schedule1}`
+            editClose.click()
+        }
+    }
+}
+
+updateButton.addEventListener("click", e => {
+    e.preventDefault()
+    updateCustomCourse()
 })
