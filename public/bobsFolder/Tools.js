@@ -352,6 +352,7 @@ module.exports.readCourses = readCourses;
 async function readCRNs(Term) {
   let path = `./public/bobsFolder/${codeToTerm(Term)[1]}/CRNs.json`;
   if (!fs.existsSync(path)) await getCoursesAndCRNs(Term);
+  console.log(path)
   return JSON.parse(fs.readFileSync(path));
 }
 module.exports.readCRNs = readCRNs;

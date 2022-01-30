@@ -1,4 +1,4 @@
-const { getCoursesAndCRNs, getElectives } = require("./Tools.js");
+const { getCoursesAndCRNs} = require("./Tools.js");
 
 let Term = "202210";
 
