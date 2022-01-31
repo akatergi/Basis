@@ -203,7 +203,6 @@ async function getArraysOfFilteredSections(
             NumberOfSectionsWithProf++;
           }
         }
-        NumberOfSections++;
       }
     }
     if (ListOfFilteredSections.length != 0 && NumberOfRecitations == 0) {
