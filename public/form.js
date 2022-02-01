@@ -101,6 +101,7 @@ addCRN.addEventListener('click', e => {
         e.preventDefault();
         let newInp = document.createElement("input")
         newInp.type = "number"
+        newInp.min = "10000"
         newInp.id = `crnInput-${counter}`
         newInp.classList.add(`crnInput`)
         newInp.name = "setCRNs[]"
