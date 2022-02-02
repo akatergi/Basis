@@ -43,7 +43,7 @@
             <div id="setCRNs">
               <% for(let ci=0; ci<setCRNs.length; ci++) {%>
               <div class="CRNInpGrp">
-                <input type="number" id="crnInput-<%= ci %>" class="crnInput form-control mt-2" name="setCRNs[]" value="<%= setCRNs[ci] %>">
+                <input type="number" id="crnInput-<%= ci %>" min="10000" class="crnInput form-control mt-2" name="setCRNs[]" value="<%= setCRNs[ci] %>">
                 <a class="clearButton crnClear" id="AclearButton-<%= ci %>"><i class="fas fa-trash"></i></a>
               </div>
               <% }%>
