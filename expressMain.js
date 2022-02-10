@@ -2,24 +2,17 @@ const express = require("express")
 const app = express()
 const path = require("path")
 const ejsMate = require("ejs-mate")
-const { getProfessors, searchByCRNs, timeToInt, intToTime, checkIfConflictingArray, getElectiveNames } = require("./public/bobsFolder/Tools")
+const { getProfessors, searchByCRNs, timeToInt, intToTime, checkIfConflictingArray, getElectiveNames, getCoursesAndCRNs} = require("./public/bobsFolder/Tools")
 app.use(express.json());
 const { getPermutations } = require("./public/bobsFolder/Main")
 const session = require("express-session")
 const flash = require("connect-flash")
 app.engine("ejs", ejsMate)
 const cron = require('node-cron')
-const shell = require('shelljs');
 
-cron.schedule("00 ** ** * * *", () => {
-  if (shell.exec('node Update.js').code !== 0) {
-    shell.exit(1);
-  }
-  else {
-    console.log("p");
-    shell.echo('Data updated');
-  }
-})
+// cron.schedule("00 00 ** * * *", () => {
+//   getCoursesAndCRNs("202210");
+// })
 
 app.use(express.urlencoded({ extended: true }))
 app.set('view engine', 'ejs')
